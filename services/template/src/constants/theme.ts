@@ -1,24 +1,11 @@
-import { Theme } from '@emotion/react';
 import { MonoColor, PrimaryColor, SecondaryColor } from './color';
-
+import { ITheme } from 'mi-ui';
 declare module '@emotion/react' {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  export interface Theme {
-    color: {
-      mono: {
-        [key: string]: string;
-      };
-      primary: {
-        [key: string]: string;
-      };
-      secondary: {
-        [key: string]: string;
-      };
-    };
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  export interface Theme extends ITheme {}
 }
 
-export const theme: Theme = {
+export const theme: ITheme = {
   color: {
     mono: MonoColor,
     primary: PrimaryColor,
