@@ -1,10 +1,14 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
-
+import { Header } from 'mi-ui';
 const Layout = () => {
+  const handleClickLogo = () => {
+    window.open('/', '_self');
+  };
+
   return (
     <>
-      <div>Header</div>
+      <Header onClick={handleClickLogo}>Header</Header>
       <div>
         <div>SNB</div>
         <section>

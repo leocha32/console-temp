@@ -5,7 +5,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Button, TButtonProps } from 'components/Atoms';
 
 export default {
-  title: 'Atom/Button',
+  title: 'Atoms/Button',
   component: Button,
 } as ComponentMeta<typeof Button>;
 

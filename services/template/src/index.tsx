@@ -6,6 +6,8 @@ import { RecoilRoot } from 'recoil';
 import { BrowserRouter } from 'react-router-dom';
 import { theme } from './constants/theme';
 import { ThemeProvider } from '@emotion/react';
+import { ThemeProvider as ThemeProviderMui, createTheme } from '@mui/material/styles';
+
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
@@ -15,9 +17,11 @@ root.render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <RecoilRoot>
-          <ThemeProvider theme={theme}>
-            <App />
-          </ThemeProvider>
+          <ThemeProviderMui theme={createTheme()}>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </ThemeProviderMui>
         </RecoilRoot>
       </QueryClientProvider>
     </BrowserRouter>
