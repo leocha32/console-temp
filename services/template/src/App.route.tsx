@@ -1,34 +1,105 @@
 import React, { lazy } from 'react';
-
+//
+import { TMenu } from 'mi-ui';
 import Layout from 'components/Layout';
-import { Link } from 'react-router-dom';
 const Sample = lazy(() => import('pages/Sample'));
-const Page1 = lazy(() => import('pages/Sample/Page1'));
-const Page2 = lazy(() => import('pages/Sample/Page2'));
 
-const routes = [
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import BackupIcon from '@mui/icons-material/Backup';
+
+export const routes: TMenu[] = [
   {
-    page: '/',
+    path: '/',
     element: <Layout />,
     children: [
       {
-        index: true,
-        element: (
-          <>
-            Home <Link to="sample">samplePage</Link>
-          </>
-        ),
+        path: 'page1',
+        label: '리포트',
+        element: <Sample />,
+        icon: <SummarizeIcon />,
+        children: [
+          {
+            path: 'sub1',
+            label: '시장 현황',
+            children: [
+              {
+                path: 'children1',
+                label: 'Executive Summary',
+              },
+              {
+                path: 'children2',
+                label: '시장 점유율(M/S)',
+              },
+            ],
+          },
+          {
+            path: 'sub2',
+            label: '계정 및 판매',
+            children: [
+              {
+                path: 'children1',
+                label: 'Executive Summary',
+              },
+              {
+                path: 'children2',
+                label: '계정',
+              },
+              {
+                path: 'children3',
+                label: '고객',
+              },
+            ],
+          },
+        ],
       },
       {
-        path: 'sample',
+        path: 'page2',
+        label: '분석',
         element: <Sample />,
+        icon: <AssessmentIcon />,
         children: [
-          { index: true, element: <Page1 /> },
-          { path: 'page1', element: <Page1 /> },
-          { path: 'page2', element: <Page2 /> },
+          {
+            path: 'sub1',
+            label: '시장 현황',
+            children: [
+              {
+                path: 'children1',
+                label: 'Executive Summary',
+              },
+              {
+                path: 'children2',
+                label: '시장 점유율(M/S)',
+              },
+            ],
+          },
+          {
+            path: 'sub2',
+            label: '계정 및 판매',
+            children: [
+              {
+                path: 'children1',
+                label: 'Executive Summary',
+              },
+              {
+                path: 'children2',
+                label: '계정',
+              },
+              {
+                path: 'children3',
+                label: '고객',
+              },
+            ],
+          },
         ],
+      },
+      {
+        path: 'test',
+        label: '테스트',
+        icon: <BackupIcon />,
       },
     ],
   },
 ];
+
 export default routes;

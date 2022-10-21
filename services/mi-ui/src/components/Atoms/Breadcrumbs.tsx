@@ -2,8 +2,8 @@ import React from 'react';
 import {
   Breadcrumbs as MuiBreadcrumbs,
   BreadcrumbsProps as MuiBreadcrumbsProps,
-  Typography as MuiTypography,
   TypographyProps as MuiTypographyProps,
+  Link as MuiLink,
 } from '@mui/material';
 
 export interface IBreadcrumbsProps extends MuiBreadcrumbsProps {
@@ -15,17 +15,20 @@ export interface IMuiTypographyProps extends MuiTypographyProps {
   icon?: React.ReactElement;
 }
 
+const Crumb = ({ icon, name }: IMuiTypographyProps) => {
+  return (
+    <MuiLink
+      underline="hover"
+      color="inherit"
+      sx={{ display: 'flex', alignItems: 'center' }}
+    >
+      {icon}
+      {name}
+    </MuiLink>
+  );
+};
+
 export const Breadcrumbs = (props: IBreadcrumbsProps) => {
-  const Crumb = (props: IMuiTypographyProps) => {
-    return (
-      <MuiTypography>
-        <>
-          {props?.icon}
-          {props?.name}
-        </>
-      </MuiTypography>
-    );
-  };
   const Crumbs = props?.crumbs?.map((crumb, index) => <Crumb key={index} {...crumb} />);
 
   return <MuiBreadcrumbs {...props}>{Crumbs}</MuiBreadcrumbs>;

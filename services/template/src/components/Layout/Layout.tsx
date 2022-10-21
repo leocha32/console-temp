@@ -1,23 +1,42 @@
-import React, { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Header } from 'mi-ui';
+import React from 'react';
+import { css } from '@emotion/react';
+import { Layout as CLayout } from 'mi-ui';
+import routes from 'App.route';
+import { useRecoilState, useResetRecoilState } from 'recoil';
+import menu from 'recoils/menu';
+
+const Header = (
+  <div
+    css={css`
+      font-size: 24px;
+      font-weight: 700;
+    `}
+  >
+    Coway
+    <span
+      css={css`
+        font-size: 20px;
+        font-weight: 500;
+      `}
+    >
+      {`${' Platform'}`}
+    </span>
+  </div>
+);
 const Layout = () => {
+  const setMenuStatus = useResetRecoilState(menu);
   const handleClickLogo = () => {
+    setMenuStatus();
     window.open('/', '_self');
   };
 
   return (
-    <>
-      <Header onClick={handleClickLogo}>Header</Header>
-      <div>
-        <div>SNB</div>
-        <section>
-          <Suspense>
-            <Outlet />
-          </Suspense>
-        </section>
-      </div>
-    </>
+    <CLayout
+      menuStatusHook={useRecoilState(menu)}
+      onClickLogo={handleClickLogo}
+      menu={routes}
+      header={Header}
+    />
   );
 };
 

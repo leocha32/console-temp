@@ -3,14 +3,7 @@ module.exports = {
     browser: true,
     commonjs: true,
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-  ],
+
   plugins: ['react', '@typescript-eslint'],
   ignorePatterns: ['.eslintrc.js'],
   rules: {
@@ -24,7 +17,13 @@ module.exports = {
         leadingUnderscore: 'allow',
       },
       {
-        selector: ['classProperty', 'typeProperty', 'classMethod', 'typeMethod', 'accessor'],
+        selector: [
+          'classProperty',
+          'typeProperty',
+          'classMethod',
+          'typeMethod',
+          'accessor',
+        ],
         format: ['camelCase'],
         modifiers: ['requiresQuotes'],
       },
@@ -81,9 +80,16 @@ module.exports = {
         format: ['PascalCase'],
       },
     ],
-    'prettier/prettier': 'error',
     'max-len': ['warn', { code: 100 }],
     'react-hooks/rules-of-hooks': ['error'],
     'react-hooks/exhaustive-deps': ['warn'],
   },
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
+  ],
 };

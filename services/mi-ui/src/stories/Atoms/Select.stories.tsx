@@ -12,12 +12,40 @@ export default {
 export const Select: ComponentStory<typeof CSelect> = (args: ISelectProps) => <CSelect {...args} />;
 
 Select.args = {
-  options: ['A', 'B', 'C'],
+  options: [
+    {
+      key: '2021',
+      value: '2021',
+    },
+    {
+      key: '2022',
+      value: '2022',
+    },
+    {
+      key: '2023',
+      value: '2023',
+    },
+  ],
+  autoWidth: true,
 };
 
 export const MultiSelect: ComponentStory<typeof CSelect> = (args: ISelectProps) => <CSelect {...args} />;
 
 MultiSelect.args = {
-  options: ['A', 'B', 'C'],
+  options: [
+    {
+      key: '2021',
+      value: '2021',
+    },
+    {
+      key: '2022',
+      value: '2022',
+    },
+    {
+      key: '2023',
+      value: '2023',
+    },
+  ],
+  autoWidth: true,
   multiple: true,
 };

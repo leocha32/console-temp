@@ -11,5 +11,5 @@ export default {
 
 export const Header: ComponentStory<typeof CHeader> = (props: IHeaderProps) => <CHeader {...props} />;
 Header.args = {
-  children: 'Header',
+  children: <h2>Storybook</h2>,
 };

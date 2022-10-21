@@ -1,12 +1,20 @@
 export interface ITheme {
   color: {
-    mono: {
-      [key: string]: string;
-    };
     primary: {
       [key: string]: string;
     };
     secondary: {
+      [key: string]: string;
+    };
+    mono: {
+      [key: string]: string;
+    };
+  };
+  palettes: {
+    blue: {
+      [key: string]: string;
+    };
+    gray: {
       [key: string]: string;
     };
   };

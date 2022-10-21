@@ -10,18 +10,6 @@ export const MonoColor = {
   MONO_WHITE: '#FFFFFF',
 } as const;
 
-export const PrimaryColor = {
-  PRIMARY_900: '#1F3372',
-  PRIMARY_800: '#2842A3',
-  PRIMARY_700: '#2F4CBC',
-  PRIMARY_600: '#3557D5',
-  PRIMARY_500: '#3E66FB',
-  PRIMARY_400: '#9FB3FD',
-  PRIMARY_300: '#CFD9FE',
-  PRIMARY_200: '#E2E8FE',
-  PRIMARY_100: '#ECF0FF',
-} as const;
-
 export const SecondaryColor = {
   SECONDARY_900: '#7F471C',
   SECONDARY_800: '#985522',
@@ -32,18 +20,6 @@ export const SecondaryColor = {
   SECONDARY_300: '#FED7BA',
   SECONDARY_200: '#FFE807',
   SECONDARY_100: '#FFF4EB',
-} as const;
-
-export const GrayColor = {
-  GRAY_900: '#616469',
-  GRAY_800: '#888D92',
-  GRAY_700: '#9BA1A7',
-  GRAY_600: '#AFB5BC',
-  GRAY_500: '#C2C9D1',
-  GRAY_400: '#DADFE3',
-  GRAY_300: '#EAECEF',
-  GRAY_200: '#F3F4F6',
-  GRAY_100: '#F6F7F8',
 } as const;
 
 export const RedColor = {
@@ -60,9 +36,9 @@ export const RedColor = {
 
 export const BlueColor = {
   BLUE_900: '#0000FF',
-  BLUE_800: '#2727E5',
+  BLUE_800: '#00377d',
   BLUE_700: '#3636D8',
-  BLUE_600: '#4343C6',
+  BLUE_600: '#082a54',
   BLUE_500: '#6666B6',
   BLUE_400: '#5F5F99',
   BLUE_300: '#D3D3F9',
@@ -76,4 +52,30 @@ export const ActionColor = {
   ACTION_RED: '#FF0000',
   ACTION_ORANGE: '#FF8A00',
   ACTION_NAVY: '#2300AF',
+} as const;
+
+export const PrimaryColor = {
+  PRIMARY_900: '#19598f',
+  PRIMARY_800: '#2178b1',
+  PRIMARY_700: '#2489c5',
+  PRIMARY_600: '#2b9cd9',
+  PRIMARY_500: '#30aae8',
+  PRIMARY_400: '#41b7eb',
+  PRIMARY_300: '#5cc3ed',
+  PRIMARY_200: '#87d4f3',
+  PRIMARY_100: '#b5e5f8',
+  PRIMARY_50: '#b5e5f8',
+} as const;
+
+export const GrayColor = {
+  GRAY_900: '#212121',
+  GRAY_800: '#424242',
+  GRAY_700: '#616161',
+  GRAY_600: '#757575',
+  GRAY_500: '#9e9e9e',
+  GRAY_400: '#bdbdbd',
+  GRAY_300: '#e0e0e0',
+  GRAY_200: '#eeeeee',
+  GRAY_100: '#f5f5f5',
+  GRAY_50: '#fafafa',
 } as const;
