@@ -60,32 +60,16 @@ export const Table = ({ columns, headers, rowData, ...props }: ITableContainerPr
       <MuiTable>
         <MuiTableHead>
           <MuiTableRow>
-            {headers.map(({ label, value }) => (
-              <MuiTableCell key={value}>{label}</MuiTableCell>
+            {headers.map(({ label, value }, i) => (
+              <MuiTableCell key={value + i}>{label}</MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
 
         <MuiTableBody>
-          {rowData.map((data, i) => {
-            const checkChildren = data['children'] || [];
-            const rowKeys = Object.keys(data);
-            return (
-              <>
-                <TableRow tabIndex={i} columns={columns} rowData={data}></TableRow>
-
-                {checkChildren?.map((children, j) => {
-                  return (
-                    <MuiTableRow key={j}>
-                      {rowKeys.map((key, k) => (
-                        <Cell key={j + '' + k} name={key} value={children[key]}></Cell>
-                      ))}
-                    </MuiTableRow>
-                  );
-                })}
-              </>
-            );
-          })}
+          {rowData.map((data, i) => (
+            <TableRow key={i} tabIndex={i} columns={columns} rowData={data}></TableRow>
+          ))}
         </MuiTableBody>
       </MuiTable>
     </MuiTableContainer>

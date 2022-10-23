@@ -13,17 +13,17 @@ export interface ITableRowProps extends MuiTableRowProps {
   columns: TCellOptions[];
 }
 
-export const TableRow = ({ columns, rowData, ...props }: ITableRowProps) => {
+export const TableRow = ({ tabIndex, columns, rowData, ...props }: ITableRowProps) => {
   const keys = Object.keys(rowData);
 
   return (
-    <MuiTableRow {...props}>
+    <MuiTableRow key={tabIndex} {...props}>
       {keys.map((key, i) => {
         const renderOptioin = columns.find(({ name }) => name === key);
 
         return (
           <Cell
-            key={i}
+            key={tabIndex + '' + i}
             name={key}
             renderOptions={renderOptioin}
             value={rowData[key]}

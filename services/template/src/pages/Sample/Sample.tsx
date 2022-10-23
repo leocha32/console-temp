@@ -24,12 +24,19 @@ const headerData = [
 const columns = [
   {
     name: 'division',
+    data: [
+      { value: '판매건', subValue: ['가', '나'] },
+      'PLT매출액',
+      'A매출액',
+      'B매출액',
+    ],
   },
   {
     name: 'apr',
     renderOptions: {
       renderer: 'number',
       readonly: true,
+      fontColor: 'warning',
     },
   },
   {
@@ -79,12 +86,12 @@ const Sample = () => {
     <PageLayout>
       <div>Sample Page</div>
       <Table
-        key={'test'}
         rowData={rowData}
         columns={columns}
         headers={headerData}
         css={css`
           // background-color: red;
+          max-width: 500px;
         `}
       />
       <Outlet />

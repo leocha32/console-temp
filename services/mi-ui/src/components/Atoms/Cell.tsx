@@ -36,10 +36,11 @@ const TCellOptionsDefaultValue: TCellOptions = {
 };
 
 export const Cell = ({ value, onChange, renderOptions, ...props }: ICellProps) => {
-  const { readonly } = { ...TCellOptionsDefaultValue, ...renderOptions };
+  const { readonly, renderer } = { ...TCellOptionsDefaultValue, ...renderOptions };
   const [inputValue, setInputValue] = useState<string>(value);
 
   const changeMultipleValue = ({ target: { value } }: any) => {
+    console.log(value);
     setInputValue(value);
   };
 
@@ -51,6 +52,7 @@ export const Cell = ({ value, onChange, renderOptions, ...props }: ICellProps) =
       ) : (
         <RenderInputByType
           {...props}
+          renderOptions={renderOptions}
           onChange={changeMultipleValue}
           value={inputValue}
         ></RenderInputByType>
@@ -60,20 +62,11 @@ export const Cell = ({ value, onChange, renderOptions, ...props }: ICellProps) =
 };
 
 const Input = ({ ...props }) => {
-  return (
-    <MuiInput
-      css={css`
-        border: none;
-        font-family: 'Noto Sans KR';
-        font-size: 1rem;
-      `}
-      {...props}
-    ></MuiInput>
-  );
+  return <MuiInput {...fontStyle('default')} {...props}></MuiInput>;
 };
 
-const RenderInputByType = (rendererName, { options, onChange, value }) => {
-  switch (rendererName) {
+const RenderInputByType = (renderOptions, { options, onChange, ...props }) => {
+  switch (renderOptions.renderer) {
     case 'select':
       return <Select options={options} onChange={onChange}></Select>;
     case 'number':
@@ -81,4 +74,19 @@ const RenderInputByType = (rendererName, { options, onChange, value }) => {
     default:
       return <Input>value</Input>;
   }
+};
+
+const fontStyle = (info) => {
+  return css`
+    color: ${FontColor[info]};
+    border: none;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+  `;
+};
+
+const FontColor = {
+  default: 'black',
+  warning: 'darkorange',
+  danger: 'lightcoral',
 };
