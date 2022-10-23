@@ -21,23 +21,29 @@ const headerData = [
     value: 'june',
   },
 ];
-const columnData = [
+const columns = [
   {
     name: 'division',
   },
   {
     name: 'apr',
+    renderOptions: {
+      renderer: 'number',
+      readonly: true,
+    },
   },
   {
     name: 'may',
     renderOptions: {
       renderer: 'number',
+      readonly: false,
     },
   },
   {
     name: 'june',
     renderOptions: {
       renderer: 'number',
+      readonly: false,
     },
   },
 ];
@@ -73,15 +79,14 @@ const Sample = () => {
     <PageLayout>
       <div>Sample Page</div>
       <Table
+        key={'test'}
         rowData={rowData}
+        columns={columns}
         headers={headerData}
-        columns={columnData}
         css={css`
           // background-color: red;
         `}
-      >
-        test
-      </Table>
+      />
       <Outlet />
     </PageLayout>
   );

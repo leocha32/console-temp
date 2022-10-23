@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { css } from '@emotion/react';
 import { TableRow } from './TableRow';
-import { Cell } from '../Atoms';
+import { Cell, TCellOptions } from '../Atoms';
 
 /**
  * @rows Row 데이터 {Object Array}
@@ -26,8 +26,8 @@ import { Cell } from '../Atoms';
  */
 export interface ITableContainerProps extends MuiTableContainerProps {
   headers: IHeaderData[];
-  columns: TColumnConfig[];
   rowData: object[];
+  columns: TCellOptions[];
 }
 
 /**
@@ -54,13 +54,11 @@ export type TColumnConfig = {
 export const Table = ({ columns, headers, rowData, ...props }: ITableContainerProps) => {
   /**
    * todo : Row / Column Span
-   * todo : Row / Column Span
    */
   return (
     <MuiTableContainer {...props} component={MuiPaper}>
       <MuiTable>
         <MuiTableHead>
-          headers.map()
           <MuiTableRow>
             {headers.map(({ label, value }) => (
               <MuiTableCell key={value}>{label}</MuiTableCell>
@@ -72,16 +70,15 @@ export const Table = ({ columns, headers, rowData, ...props }: ITableContainerPr
           {rowData.map((data, i) => {
             const checkChildren = data['children'] || [];
             const rowKeys = Object.keys(data);
-
             return (
               <>
-                <TableRow row={data}></TableRow>
+                <TableRow tabIndex={i} columns={columns} rowData={data}></TableRow>
 
                 {checkChildren?.map((children, j) => {
                   return (
                     <MuiTableRow key={j}>
                       {rowKeys.map((key, k) => (
-                        <Cell key={j + '' + k} value={children[key]}></Cell>
+                        <Cell key={j + '' + k} name={key} value={children[key]}></Cell>
                       ))}
                     </MuiTableRow>
                   );

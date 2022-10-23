@@ -6,20 +6,30 @@ import {
   TableRowProps as MuiTableRowProps,
 } from '@mui/material';
 import { css } from '@emotion/react';
-import { Cell, ICellProps } from '../Atoms';
+import { Cell, TCellOptions } from '../Atoms';
 
 export interface ITableRowProps extends MuiTableRowProps {
-  row: object;
+  rowData: object;
+  columns: TCellOptions[];
 }
 
-export const TableRow = ({ row, ...props }: ITableRowProps) => {
-  const keys = Object.keys(row);
+export const TableRow = ({ columns, rowData, ...props }: ITableRowProps) => {
+  const keys = Object.keys(rowData);
 
   return (
     <MuiTableRow {...props}>
-      {keys.map((key, i) => (
-        <Cell key={i} value={row[key]}></Cell>
-      ))}
+      {keys.map((key, i) => {
+        const renderOptioin = columns.find(({ name }) => name === key);
+
+        return (
+          <Cell
+            key={i}
+            name={key}
+            renderOptions={renderOptioin}
+            value={rowData[key]}
+          ></Cell>
+        );
+      })}
     </MuiTableRow>
   );
 };
