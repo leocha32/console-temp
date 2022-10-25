@@ -3,35 +3,35 @@ import { Outlet } from 'react-router-dom';
 import { PageLayout } from 'mi-ui/src';
 import { TableHeader, Select as CSelect, RadioButton, Table, BaseEChart } from 'mi-ui';
 import { css } from '@emotion/react';
-const headerData = [
+const headers = [
   {
-    label: '제품군',
-    rowSpan: 3,
+    name: '제품군',
   },
   {
-    label: '재렌탈 개요',
-    child: [
+    name: '재 렌탈 개요',
+    columns: [
       {
-        label: '소유권도래',
-        rowSpan: 2,
+        name: '소유권도래',
+        header: 'First Name',
       },
       {
-        label: '재렌탈',
-        colSpan: 3,
-        child: [
+        name: '재렌탈',
+        columns: [
           {
-            label: '재 렌탈',
+            name: '재 렌탈',
+            header: '재 렌탈',
           },
           {
-            label: '동일 제품군',
+            name: '동일 제품군',
+            header: '동일 제품군',
           },
           {
-            label: '타 제품군',
+            name: '타 제품군',
+            header: '타 제품군',
           },
         ],
       },
     ],
-    colSpan: 4,
   },
 ];
 
@@ -39,16 +39,8 @@ const Sample = () => {
   return (
     <PageLayout>
       <div>Sample Page</div>
-      <TableHeader headers={headerData}></TableHeader>
-      {/*<Table*/}
-      {/*  rowData={rowData}*/}
-      {/*  columns={columns}*/}
-      {/*  headers={headerData}*/}
-      {/*  css={css`*/}
-      {/*    // background-color: red;*/}
-      {/*    max-width: 1000px;*/}
-      {/*  `}*/}
-      {/*/>*/}
+
+      <Table headers={headers} columns={columns} rowData={rowData}></Table>
       <Outlet />
     </PageLayout>
   );

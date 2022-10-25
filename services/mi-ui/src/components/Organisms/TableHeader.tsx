@@ -1,53 +1,108 @@
 import * as React from 'react';
 import {
   TableRow as MuiTableRow,
-  TableRowProps as MuiTableRowProps,
   TableHead as MuiTableHead,
-  Table as MuiTable,
+  TableHeadProps as MuiTableHeadProps,
 } from '@mui/material';
-import { Cell, IDropdownProps, IOptionProps, TCellRenderOptions } from '../Atoms';
-import { generateGridRowSpacingStyles } from '@mui/system/Unstable_Grid/gridGenerator';
-import { NestedItem } from '../Atoms/Dropdown/NestedItem';
-import { DropdownItem } from '../Atoms/Dropdown/DropdownItem';
+import { Cell } from '../Atoms';
+import { css } from '@emotion/react';
 
-export interface ITableRowProps extends MuiTableRowProps {
-  headers: TTableHeader[];
+export interface ITableRowProps extends MuiTableHeadProps {
+  headers: IColumn[];
 }
 
-export type TTableHeader = {
-  label: string;
-  rowSpan?: number;
+export interface IColumn<TData = any> {
+  name: string;
+  columns?: IColumn<TData>[];
+  header?: string;
   colSpan?: number;
-  child?: TTableHeader[];
+  rowSpan?: number;
+}
+
+const getDepth = (columns: IColumn[] | undefined) => {
+  if (columns == null) {
+    return 0;
+  }
+
+  let depth = 0;
+  columns.forEach((item) => {
+    depth = Math.max(depth, getDepth(item.columns));
+  });
+
+  return depth + 1;
 };
 
-const renderHeader = ({ label, rowSpan, colSpan, child }: TTableHeader) => {
-  return (
-    <>
-      {child ? (
-        child.map((item) => (
-          <>
-            <MuiTableRow key={item.label}>
-              <Cell rowSpan={item.rowSpan} name={item.label} value={item.label}></Cell>
-            </MuiTableRow>
-            {item.child ? item.child.map((child) => renderHeader(child)) : null}
-          </>
-        ))
-      ) : (
-        <Cell rowSpan={rowSpan} colSpan={colSpan} name={label} value={label}></Cell>
-      )}
-    </>
-  );
+const getColSpan = (column: IColumn) => {
+  if (column.columns == null) {
+    return 1;
+  }
+
+  let width = 0;
+  column.columns.forEach((child) => {
+    width += getColSpan(child);
+  });
+
+  return width;
 };
 
+const getHeaders = (columns: IColumn[]) => {
+  const maxDepth = getDepth(columns);
+  const result: IColumn[][] = Array.from({
+    length: maxDepth,
+  }).map(() => []);
+
+  const addItems = (columns: IColumn[], depth: number) => {
+    columns.forEach((column) => {
+      const columnDef: IColumn = {
+        ...column,
+      };
+      delete columnDef.columns;
+
+      if (column.columns) {
+        const colSpan = getColSpan(column);
+        if (colSpan > 1) {
+          columnDef.colSpan = colSpan;
+        }
+        addItems(column.columns, depth + 1);
+      } else {
+        const rowSpan = maxDepth - depth;
+        if (rowSpan > 1) {
+          columnDef.rowSpan = maxDepth - depth;
+        }
+      }
+      result[depth].push(columnDef);
+    });
+  };
+
+  addItems(columns, 0);
+
+  return result;
+};
 export const TableHeader = ({ headers, ...props }: ITableRowProps) => {
   return (
-    <MuiTable>
-      <MuiTableHead>
-        {headers.map((header, i) => {
-          return renderHeader(header);
-        })}
-      </MuiTableHead>
-    </MuiTable>
+    <MuiTableHead {...props}>
+      {getHeaders(headers).map((headerRow, headerRowIndex) => (
+        <MuiTableRow key={`header-row-${headerRowIndex}`}>
+          {headerRow &&
+            headerRow.map((column, colIndex) => {
+              const contents = column.header || column.name;
+              return (
+                <Cell
+                  css={css`
+                    text-align: center;
+                  `}
+                  key={`header-cell-${column.name}`}
+                  name={column.name}
+                  value={column.name}
+                  colSpan={column.colSpan}
+                  rowSpan={column.rowSpan}
+                >
+                  {contents}
+                </Cell>
+              );
+            })}
+        </MuiTableRow>
+      ))}
+    </MuiTableHead>
   );
 };

@@ -14,8 +14,6 @@ export type TRowData = {
   [key: string]: string | number | any;
 };
 
-const renderRow = () => {};
-
 export const TableRow = ({ tabIndex, columns, rowData, ...props }: ITableRowProps) => {
   const keys = Object.keys(rowData);
 
