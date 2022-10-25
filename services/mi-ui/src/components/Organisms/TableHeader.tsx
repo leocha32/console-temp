@@ -14,8 +14,8 @@ export interface ITableRowProps extends MuiTableHeadProps {
 export interface IColumn<TData = any> {
   name: string;
   columns?: IColumn<TData>[];
-  header?: string;
   colSpan?: number;
+  colSpanOffset?: number;
   rowSpan?: number;
 }
 
@@ -84,21 +84,18 @@ export const TableHeader = ({ headers, ...props }: ITableRowProps) => {
       {getHeaders(headers).map((headerRow, headerRowIndex) => (
         <MuiTableRow key={`header-row-${headerRowIndex}`}>
           {headerRow &&
-            headerRow.map((column, colIndex) => {
-              const contents = column.header || column.name;
+            headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0 }) => {
               return (
                 <Cell
                   css={css`
                     text-align: center;
                   `}
-                  key={`header-cell-${column.name}`}
-                  name={column.name}
-                  value={column.name}
-                  colSpan={column.colSpan}
-                  rowSpan={column.rowSpan}
-                >
-                  {contents}
-                </Cell>
+                  key={`header-cell-${name}`}
+                  name={name}
+                  value={name}
+                  colSpan={colSpan + colSpanOffset}
+                  rowSpan={rowSpan}
+                ></Cell>
               );
             })}
         </MuiTableRow>

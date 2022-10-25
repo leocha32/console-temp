@@ -27,7 +27,8 @@ const headers = [
           },
           {
             name: '타 제품군',
-            header: '타 제품군',
+            header: '동일 제품군',
+            colSpanOffset: 2,
           },
         ],
       },
@@ -103,7 +104,7 @@ const rowData = [
     division: 'PLT 매출액',
     apr: '4',
     may: 5,
-    june: 6,
+    june: [1, 2, 3],
   },
 ];
 export default Sample;
