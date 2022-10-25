@@ -78,3 +78,26 @@ export const ActionColor = {
   ACTION_ORANGE: '#FF8A00',
   ACTION_NAVY: '#2300AF',
 } as const;
+
+export const ChartColor = {
+  CHART_100: '#5082ff',
+  CHART_200: '#32d3d0',
+  CHART_300: '#0091cb',
+  CHART_400: '#044957',
+  CHART_500: '#ff5b5b',
+  CHART_600: '#25a75f',
+  CHART_700: '#eb9954',
+  CHART_800: '#dd0060',
+  CHART_900: '#9332d3',
+  CHART_110: '#9bd460',
+  CHART_120: '#FF61E1',
+  CHART_130: '#FFCB00',
+  CHART_140: '#9F8367',
+  CHART_150: '#B398FF',
+  CHART_160: '#DC5043',
+  CHART_170: '#0D00B0',
+  CHART_180: '#7FBCBB',
+  CHART_190: '#8995AE',
+  CHART_210: '#50E0FF',
+  CHART_220: '#614092',
+} as const;

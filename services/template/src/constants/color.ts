@@ -79,3 +79,26 @@ export const GrayColor = {
   GRAY_100: '#f5f5f5',
   GRAY_50: '#fafafa',
 } as const;
+
+export const ChartColor = {
+  CHART_100: '#74B7F9',
+  CHART_200: '#E274D2',
+  CHART_300: '#25a75f',
+  CHART_400: '#EA4E85',
+  CHART_500: '#70E2D3',
+  CHART_600: '#6B4EF1',
+  CHART_700: '#EB9954',
+  CHART_800: '#2C65F6',
+  CHART_900: '#9BD460',
+  CHART_110: '#A135FF',
+  CHART_120: '#13AD9E',
+  CHART_130: '#D67673',
+  CHART_140: '#72DA83',
+  CHART_150: '#825AF4',
+  CHART_160: '#ED7160',
+  CHART_170: '#49ab4e',
+  CHART_180: '#DC5043',
+  CHART_190: '#31D6BA',
+  CHART_210: '#5393E3',
+  CHART_220: '#EACA56',
+} as const;

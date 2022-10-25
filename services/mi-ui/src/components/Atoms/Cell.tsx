@@ -2,31 +2,34 @@ import React, { useState } from 'react';
 import {
   TableCell as MuiTableCell,
   TableCellProps as MuiTableCellProps,
-  Input as MuiInput,
+  TextField as MuiInput,
 } from '@mui/material';
-import { css } from '@emotion/react';
-import { Select } from './Select';
 
+import { css, SerializedStyles } from '@emotion/react';
 export interface ICellProps extends MuiTableCellProps {
   name: string;
-  value: string;
-  renderOptions?: TCellOptions;
+  value: string | number;
+  renderOptions?: TCellRenderOptions;
 }
 
-export type TCellOptions = {
+export type TCellRenderOptions = {
   name: string;
   readonly?: boolean;
   renderer?: string;
+  colSpan?: number;
+  css?: SerializedStyles;
   options?: {
     key: string;
     value: string;
   }[];
 };
 
-const TCellOptionsDefaultValue: TCellOptions = {
+export const TCellOptionsDefaultValue: TCellRenderOptions = {
   name: '',
   readonly: true,
   renderer: 'text',
+  css: css``,
+  colSpan: 0,
   options: [
     {
       key: '',
@@ -35,58 +38,29 @@ const TCellOptionsDefaultValue: TCellOptions = {
   ],
 };
 
-export const Cell = ({ value, onChange, renderOptions, ...props }: ICellProps) => {
-  const { readonly, renderer } = { ...TCellOptionsDefaultValue, ...renderOptions };
-  const [inputValue, setInputValue] = useState<string>(value);
+export const Cell = ({
+  value,
+  onChange,
+  renderOptions = TCellOptionsDefaultValue,
+  ...props
+}: ICellProps) => {
+  const { readonly = true, renderer, css, colSpan, options } = renderOptions;
+
+  const [inputValue, setInputValue] = useState<string | number>(value);
 
   const changeMultipleValue = ({ target: { value } }: any) => {
-    console.log(value);
     setInputValue(value);
+    onChange;
   };
 
   //todo : Renderer 조건 별 동작 수정
   return (
-    <MuiTableCell {...props}>
+    <MuiTableCell css={css} colSpan={colSpan} {...props}>
       {readonly ? (
         value
       ) : (
-        <RenderInputByType
-          {...props}
-          renderOptions={renderOptions}
-          onChange={changeMultipleValue}
-          value={inputValue}
-        ></RenderInputByType>
+        <MuiInput sx={{ border: 'none' }} variant="outlined" defaultValue={inputValue} />
       )}
     </MuiTableCell>
   );
-};
-
-const Input = ({ ...props }) => {
-  return <MuiInput {...fontStyle('default')} {...props}></MuiInput>;
-};
-
-const RenderInputByType = (renderOptions, { options, onChange, ...props }) => {
-  switch (renderOptions.renderer) {
-    case 'select':
-      return <Select options={options} onChange={onChange}></Select>;
-    case 'number':
-      return <Input type="number">value</Input>;
-    default:
-      return <Input>value</Input>;
-  }
-};
-
-const fontStyle = (info) => {
-  return css`
-    color: ${FontColor[info]};
-    border: none;
-    font-family: 'Noto Sans KR';
-    font-size: 1rem;
-  `;
-};
-
-const FontColor = {
-  default: 'black',
-  warning: 'darkorange',
-  danger: 'lightcoral',
 };

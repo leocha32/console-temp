@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useMemo } from 'react';
+import React, { ReactElement, useCallback, useMemo, ReactNode } from 'react';
 import styled from '@emotion/styled';
 import { css, Theme } from '@emotion/react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -13,10 +13,10 @@ import {
   ListItem as MuiListItem,
   ListItemButton as MuiListItemButton,
   ListItemText,
-  ListItemIcon,
+  ListItemIcon as MuiListItemIcon,
 } from '@mui/material';
 import { TMenu } from '../../types';
-import { Tooltip } from '../Atoms';
+import { Dropdown, Tooltip } from '../Atoms';
 export interface IMenuStatus {
   expands: string[];
   open: boolean;
@@ -134,6 +134,36 @@ interface IMenuClickProps {
   hasChildren: boolean;
   path: string;
 }
+
+const ListItemIcon = ({
+  depth,
+  icon,
+}: {
+  depth: number;
+  icon: ReactNode;
+}): ReactElement => (
+  <MuiListItemIcon
+    sx={{
+      paddingLeft: `${15 * (depth - 1)}px`,
+      minWidth: 0,
+      color: 'white',
+      justifyContent: 'center',
+    }}
+  >
+    {icon}
+  </MuiListItemIcon>
+);
+
+const makeOptions = (children, parentPath) => {
+  return children?.map(({ children, path, label }) => {
+    return {
+      label,
+      key: `${parentPath}/${path}`,
+      children: makeOptions(children, `${parentPath}/${path}`),
+    };
+  });
+};
+
 const makeList = ({
   menus,
   depth = 0,
@@ -150,8 +180,7 @@ const makeList = ({
         const subMenu = children?.filter((child) => !child.index && !child.hidden);
         const hasChildren = !!subMenu.length;
         const path = `${parentPath}/${originPath}`;
-        const active = pathname?.startsWith(path) && !hasChildren;
-
+        const active = pathname?.startsWith(path) && ((open && !hasChildren) || !open);
         return (
           <ListItem
             disablePadding
@@ -165,34 +194,48 @@ const makeList = ({
               };
             `}
           >
-            <ListItemButton onClick={() => onClick({ hasChildren, path })}>
-              {icon && (
-                <Tooltip
-                  title={label}
-                  placement={'right-start'}
-                  disableHoverListener={open}
-                >
-                  <ListItemIcon
-                    sx={{
-                      paddingLeft: `${15 * (depth - 1)}px`,
-                      minWidth: 0,
-                      color: 'white',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                </Tooltip>
-              )}
-
-              <ListItemText
-                primary={label}
-                css={css`
-                  padding-left: ${icon ? 15 : 20 * depth + 15}px;
-                `}
+            {hasChildren && !open ? (
+              <Dropdown
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                Component={(props) => (
+                  <ListItemButton {...props} ref={props.anchorEl}>
+                    <ListItemIcon depth={depth} icon={icon} />
+                  </ListItemButton>
+                )}
+                options={makeOptions(children, path)}
+                onClickOption={(key) => {
+                  onClick({ hasChildren: false, path: key });
+                }}
               />
-              {hasChildren ? <KeyboardArrowDownIcon /> : null}
-            </ListItemButton>
+            ) : (
+              <ListItemButton onClick={() => onClick({ hasChildren, path })}>
+                {icon && (
+                  <Tooltip title={label} placement={'right'} disableHoverListener={open}>
+                    <MuiListItemIcon
+                      sx={{
+                        paddingLeft: `${15 * (depth - 1)}px`,
+                        minWidth: 0,
+                        color: 'white',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {icon}
+                    </MuiListItemIcon>
+                  </Tooltip>
+                )}
+                <ListItemText
+                  primary={label}
+                  css={css`
+                    padding-left: ${icon ? 15 : 20 * depth + 15}px;
+                  `}
+                />
+                {hasChildren ? <KeyboardArrowDownIcon /> : null}
+              </ListItemButton>
+            )}
 
             {open && hasChildren && expands.includes(path)
               ? makeList({

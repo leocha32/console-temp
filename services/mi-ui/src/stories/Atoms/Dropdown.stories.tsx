@@ -1,10 +1,6 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { Menu, Button, ButtonProps } from '@mui/material';
-import {
-  Dropdown as CDropdown,
-  IDropdownProps,
-} from 'components/Atoms/Dropdown/Dropdown';
+import { Dropdown as CDropdown, IDropdownProps } from 'components/Atoms';
 
 export default {
   title: 'Atoms/Dropdown',

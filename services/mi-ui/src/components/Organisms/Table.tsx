@@ -1,33 +1,27 @@
 import * as React from 'react';
 import {
   TableCell as MuiTableCell,
-  TableCellProps as MuiTableCellProps,
   TableRow as MuiTableRow,
-  TableRowProps as MuiTableRowProps,
   TableHead as MuiTableHead,
   TableHeadProps as MuiTableHeadProps,
   TableBody as MuiTableBody,
-  TableBodyProps as MuiTableBodyProps,
   Table as MuiTable,
-  TableProps as MuiTableProps,
   TableContainer as MuiTableContainer,
   TableContainerProps as MuiTableContainerProps,
-  TablePagination as MuiTablePagination,
-  TablePaginationProps as MuiTablePaginationProps,
   Paper as MuiPaper,
 } from '@mui/material';
-import { css } from '@emotion/react';
-import { TableRow } from './TableRow';
-import { Cell, TCellOptions } from '../Atoms';
 
+import { TableRow, TRowData } from './TableRow';
+import { Cell, TCellRenderOptions } from '../Atoms';
+import { textAlign } from '@mui/system';
 /**
  * @rows Row 데이터 {Object Array}
  * @headers Header 데이터 {@link IHeaderData}
  */
 export interface ITableContainerProps extends MuiTableContainerProps {
   headers: IHeaderData[];
-  rowData: object[];
-  columns: TCellOptions[];
+  rowData: TRowData[];
+  columns: TCellRenderOptions[];
 }
 
 /**
@@ -39,19 +33,46 @@ export interface IHeaderData extends MuiTableHeadProps {
   css?: string;
   columnType?: string;
 }
-
-export type TColumnConfig = {
-  name: string;
-  renderOptions?: {
-    renderer: string;
-    options?: {
-      key: string;
-      value: string;
-    }[];
-  };
+type THeaderType = {
+  label: string;
+  value: string;
+  subValues?: Array<THeaderType>;
+  child?: Array<THeaderType>;
 };
 
-export const Table = ({ columns, headers, rowData, ...props }: ITableContainerProps) => {
+type THeaderInterface = Array<THeaderType>;
+
+const renderHeader = (data: THeaderType) => {
+  if (!data['child']) {
+    const colSpan = data.subValues?.length || 1;
+    return (
+      <MuiTableRow>
+        <MuiTableCell align={'center'} key={data.value}>
+          {data.label}
+        </MuiTableCell>
+      </MuiTableRow>
+    );
+  }
+  const colSpan = data.child?.length + 1 || 1;
+  return (
+    <>
+      <MuiTableCell rowSpan={2} align={'center'} key={data.value}>
+        {data.label}
+      </MuiTableCell>
+      {data.child.map((value) => renderHeader(value))}
+      {data?.subValues?.map((value) => (
+        <MuiTableCell key={value.value}>{value.label}</MuiTableCell>
+      ))}
+    </>
+  );
+};
+
+export const Table = ({
+  columns = [],
+  headers = [],
+  rowData,
+  ...props
+}: ITableContainerProps) => {
   /**
    * todo : Row / Column Span
    */
@@ -60,16 +81,54 @@ export const Table = ({ columns, headers, rowData, ...props }: ITableContainerPr
       <MuiTable>
         <MuiTableHead>
           <MuiTableRow>
-            {headers.map(({ label, value }, i) => (
-              <MuiTableCell key={value + i}>{label}</MuiTableCell>
+            {headers?.map(({ label, value }, i) => (
+              <MuiTableCell
+                sx={{
+                  textAlign: 'center',
+                }}
+                key={value + i}
+                colSpan={value === 'division' ? 2 : 1}
+              >
+                {label}
+              </MuiTableCell>
             ))}
           </MuiTableRow>
         </MuiTableHead>
 
         <MuiTableBody>
-          {rowData.map((data, i) => (
-            <TableRow key={i} tabIndex={i} columns={columns} rowData={data}></TableRow>
-          ))}
+          {rowData?.map((data, i) => {
+            if (data['subValues']) {
+              return (
+                <>
+                  <MuiTableRow>
+                    <Cell
+                      name={data.value + ''}
+                      value={data.value}
+                      rowSpan={data.subValues.length + 1 || 1}
+                    ></Cell>
+                  </MuiTableRow>
+
+                  {data.subValues.map((value, i) => (
+                    <TableRow
+                      key={i + i}
+                      tabIndex={i}
+                      columns={columns}
+                      rowData={value}
+                    ></TableRow>
+                  ))}
+                </>
+              );
+            } else {
+              return (
+                <TableRow
+                  key={i}
+                  tabIndex={i}
+                  columns={columns}
+                  rowData={data}
+                ></TableRow>
+              );
+            }
+          })}
         </MuiTableBody>
       </MuiTable>
     </MuiTableContainer>

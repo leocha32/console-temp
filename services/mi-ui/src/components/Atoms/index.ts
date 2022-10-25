@@ -5,4 +5,5 @@ export * from './RadioButton';
 export * from './Tooltip';
 export * from './Tabs';
 export * from './Dropdown';
+export * from './DatePicker';
 export * from './Cell';
