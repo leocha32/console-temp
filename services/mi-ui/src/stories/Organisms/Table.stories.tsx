@@ -10,22 +10,36 @@ export default {
 export const Table: ComponentStory<typeof CTable> = (args: ITableContainerProps) => (
   <CTable {...args} />
 );
-const headerData = [
+const headers = [
   {
-    label: '구분',
-    value: 'division',
+    name: '제품군',
   },
   {
-    label: '21년 4월',
-    value: 'apr',
-  },
-  {
-    label: '21년 5월',
-    value: 'may',
-  },
-  {
-    label: '21년 6월',
-    value: 'june',
+    name: '재 렌탈 개요',
+    columns: [
+      {
+        name: '소유권도래',
+        header: 'First Name',
+      },
+      {
+        name: '재렌탈',
+        columns: [
+          {
+            name: '재 렌탈',
+            header: '재 렌탈',
+          },
+          {
+            name: '동일 제품군',
+            header: '동일 제품군',
+          },
+          {
+            name: '타 제품군',
+            header: '동일 제품군',
+            colSpanOffset: 2,
+          },
+        ],
+      },
+    ],
   },
 ];
 
@@ -50,7 +64,7 @@ const columns = [
 ];
 const rowData = [
   {
-    value: '매출액',
+    value: '정수기',
     subValues: [
       {
         division_2: '전반기',
@@ -67,29 +81,29 @@ const rowData = [
     ],
   },
   {
-    division: 'PLT 매출액',
-    apr: '4',
-    may: 5,
-    june: 6,
+    division: '청정기',
+    apr: '53,000',
+    may: '19,000',
+    june: '71,000',
   },
   {
-    division: 'PLT 매출액',
-    apr: '4',
-    may: 5,
-    june: 6,
+    division: '비데',
+    apr: '8,010',
+    may: '9,200',
+    june: '52,900',
   },
   {
-    division: 'PLT 매출액',
-    apr: '4',
-    may: 5,
-    june: 6,
+    division: '매트릭스',
+    apr: '22,550',
+    may: '21,040',
+    june: '18,000',
   },
 ];
 
 Table.args = {
   rowData: rowData,
   columns: columns,
-  headers: headerData,
+  headers: headers,
   sx: {
     maxWidth: '500px',
   },

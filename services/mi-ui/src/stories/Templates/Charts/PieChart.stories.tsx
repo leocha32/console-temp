@@ -12,6 +12,7 @@ const ChartWrap = styled.div`
   height: 500px;
   border: 1px solid #dbdbdb;
   border-radius: 4px;
+  padding: 10px;
 `;
 export const PieChart: ComponentStory<typeof CPieChart> = (props: IPieChartProps) => {
   return (

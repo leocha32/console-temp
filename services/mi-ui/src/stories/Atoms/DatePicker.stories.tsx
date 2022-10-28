@@ -17,3 +17,17 @@ export const DatePicker: ComponentStory<typeof CDatePicker> = (
 };
 
 DatePicker.args = {};
+
+export const YearMonthDatePicker: ComponentStory<typeof CDatePicker> = (
+  args: TDatePickerProps,
+) => {
+  const [date, onChangeDate] = useState<Dayjs | null>(dayjs());
+
+  return <CDatePicker {...args} value={date} onChange={onChangeDate} />;
+};
+
+YearMonthDatePicker.args = {
+  views: ['year', 'month'],
+  inputFormat: 'YYYY.MM',
+  maxDate: dayjs(),
+};

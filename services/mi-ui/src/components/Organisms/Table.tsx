@@ -1,8 +1,6 @@
 import * as React from 'react';
 import {
-  TableCell as MuiTableCell,
   TableRow as MuiTableRow,
-  TableHeadProps as MuiTableHeadProps,
   TableBody as MuiTableBody,
   Table as MuiTable,
   TableContainer as MuiTableContainer,
@@ -13,7 +11,6 @@ import {
 import { TableRow, TRowData } from './TableRow';
 import { Cell, TCellRenderOptions } from '../Atoms';
 import { TableHeader, IColumn } from './TableHeader';
-import { css } from '@emotion/react';
 
 export interface ITableContainerProps extends MuiTableContainerProps {
   headers: IColumn[];

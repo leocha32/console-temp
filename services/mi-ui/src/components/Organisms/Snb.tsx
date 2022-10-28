@@ -27,6 +27,7 @@ export interface ISnbProps {
   minWidth?: number;
   menuStatusHook: [IMenuStatus, (menu: IMenuStatus) => void];
   footer?: ReactElement;
+  onClickMenu?: ({ currentInfo, parentLabels }) => void;
 }
 
 const Drawer = styled(MuiDrawer)(
@@ -129,10 +130,15 @@ interface IMenuListProps {
   pathname: string;
   parentPath?: string;
   open: boolean;
+  parentLabels?: string[];
 }
 interface IMenuClickProps {
   hasChildren: boolean;
-  path: string;
+  currentInfo: {
+    label: string;
+    path: string;
+  };
+  parentLabels?: string[];
 }
 
 const ListItemIcon = ({
@@ -172,6 +178,7 @@ const makeList = ({
   pathname = '',
   parentPath = '',
   open,
+  parentLabels = [],
 }: IMenuListProps) => {
   depth++;
   return (
@@ -208,11 +215,19 @@ const makeList = ({
                 )}
                 options={makeOptions(children, path)}
                 onClickOption={(key) => {
-                  onClick({ hasChildren: false, path: key });
+                  onClick({
+                    hasChildren: false,
+                    currentInfo: { path: key, label },
+                    parentLabels,
+                  });
                 }}
               />
             ) : (
-              <ListItemButton onClick={() => onClick({ hasChildren, path })}>
+              <ListItemButton
+                onClick={() =>
+                  onClick({ hasChildren, currentInfo: { path, label }, parentLabels })
+                }
+              >
                 {icon && (
                   <Tooltip title={label} placement={'right'} disableHoverListener={open}>
                     <MuiListItemIcon
@@ -246,6 +261,7 @@ const makeList = ({
                   open,
                   pathname,
                   parentPath: path,
+                  parentLabels: [...parentLabels, label],
                 })
               : null}
           </ListItem>
@@ -261,6 +277,7 @@ export const Snb = ({
   minWidth = 55,
   footer,
   menu,
+  onClickMenu,
 }: ISnbProps) => {
   const [{ open, expands }, onSetMenuStatus] = menuStatusHook;
   const { pathname } = useLocation();
@@ -281,7 +298,8 @@ export const Snb = ({
   }, [onSetMenuStatus, open, expands]);
 
   const handleMenuItemClick = useCallback(
-    ({ hasChildren, path }: IMenuClickProps) => {
+    ({ hasChildren, currentInfo, parentLabels }: IMenuClickProps) => {
+      const { path } = currentInfo;
       if (hasChildren) {
         const newExpand = [...expands];
         const findIndex = newExpand.findIndex((menu) => menu === path);
@@ -295,10 +313,13 @@ export const Snb = ({
           expands: newExpand,
         });
       } else {
+        if (onClickMenu instanceof Function) {
+          onClickMenu({ currentInfo, parentLabels });
+        }
         navigate(path);
       }
     },
-    [expands, navigate, onSetMenuStatus, open],
+    [expands, navigate, onSetMenuStatus, onClickMenu, open],
   );
 
   return (

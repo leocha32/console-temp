@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 export interface ILayoutProps {
   menuStatusHook: ISnbProps['menuStatusHook'];
   onClickLogo?: () => void;
+  onClickMenu?: ISnbProps['onClickMenu'];
   menu: ISnbProps['menu'];
   header?: ReactElement;
 }
@@ -31,12 +32,18 @@ const Wrap = styled.div`
   padding: 20px 30px;
   flex: 1;
 `;
-export const Layout = ({ menu, menuStatusHook, onClickLogo, header }: ILayoutProps) => {
+export const Layout = ({
+  menu,
+  menuStatusHook,
+  onClickLogo,
+  header,
+  onClickMenu,
+}: ILayoutProps) => {
   return (
     <>
       <Header onClick={onClickLogo}>{header}</Header>
       <Main>
-        <Snb menu={menu} menuStatusHook={menuStatusHook} />
+        <Snb menu={menu} menuStatusHook={menuStatusHook} onClickMenu={onClickMenu} />
         <Section>
           <Wrap>
             <Suspense>

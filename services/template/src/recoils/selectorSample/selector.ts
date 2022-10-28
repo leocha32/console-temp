@@ -1,8 +1,15 @@
-import { atom } from 'recoil';
+import { selector } from 'recoil';
+import minute from './atom';
 
-const sample = atom({
-  key: 'selector-sample',
-  default: '',
+const hourSelector = selector({
+  key: 'hours',
+  get: ({ get }) => {
+    const minutes = get(minute);
+    return minutes / 60;
+  },
+  set: ({ set }, value) => {
+    const minutes = Number(value) * 60;
+    set(minute, minutes);
+  },
 });
-
-export default sample;
+export default hourSelector;

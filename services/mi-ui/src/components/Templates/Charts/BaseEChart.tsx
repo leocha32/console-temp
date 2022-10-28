@@ -14,9 +14,10 @@ import type {
   BarSeriesOption,
   LineSeriesOption,
   ScatterSeriesOption,
+  CustomSeriesOption,
+  PieSeriesOption,
 } from 'echarts/charts';
 import type { TitleComponentOption, GridComponentOption } from 'echarts/components';
-import { PieSeriesOption } from 'echarts';
 import { ChartColor } from '../../../constants/color';
 
 // Register the required components
@@ -38,6 +39,7 @@ export type TBaseEChartsOption = ComposeOption<
   | GridComponentOption
   | ScatterSeriesOption
   | PieSeriesOption
+  | CustomSeriesOption
 >;
 
 export interface IBaseEChartsProps {

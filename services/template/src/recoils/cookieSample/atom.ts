@@ -1,9 +1,9 @@
-import { atom, AtomEffect, AtomOptions } from 'recoil';
+import { atom } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 import { cookieStorage } from 'utils/cookie-storage';
 
 const { persistAtom } = recoilPersist({
-  key: 'cookie-sample',
+  key: 'cookie-sample-persist',
   storage: cookieStorage,
 });
 

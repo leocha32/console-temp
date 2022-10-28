@@ -1,51 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 // Components
-import { Select as CSelect, ISelectProps } from 'components/Atoms';
+import {
+  SingleSelect as CSelect,
+  ISingleSelectProps,
+  MultiSelect as CMultiSelect,
+  IMultiSelectProps,
+} from 'components/Atoms';
 
 export default {
   title: 'Atoms/Select',
-  component: CSelect,
+  components: [CSelect, CMultiSelect],
 } as ComponentMeta<typeof CSelect>;
 
-export const Select: ComponentStory<typeof CSelect> = (args: ISelectProps) => <CSelect {...args} />;
+export const Select: ComponentStory<typeof CSelect> = (args: ISingleSelectProps) => (
+  <CSelect {...args} />
+);
 
 Select.args = {
+  isMulti: false,
   options: [
     {
-      key: '2021',
+      label: '2021',
       value: '2021',
     },
     {
-      key: '2022',
+      label: '2022',
       value: '2022',
     },
     {
-      key: '2023',
+      label: '2023',
       value: '2023',
     },
   ],
-  autoWidth: true,
 };
 
-export const MultiSelect: ComponentStory<typeof CSelect> = (args: ISelectProps) => <CSelect {...args} />;
+export const MultiSelect: ComponentStory<typeof CMultiSelect> = (
+  args: IMultiSelectProps,
+) => {
+  const [selected, setSelected] = useState<any>([]);
+  return <CMultiSelect {...args} value={selected} onChange={setSelected} />;
+};
 
 MultiSelect.args = {
+  width: '300px',
   options: [
-    {
-      key: '2021',
-      value: '2021',
-    },
-    {
-      key: '2022',
-      value: '2022',
-    },
-    {
-      key: '2023',
-      value: '2023',
-    },
+    { value: '1', label: 'Jimmy' },
+    { value: '2', label: 'Laura' },
+    { value: '3', label: 'Tommy' },
+    { value: '4', label: 'Jane' },
+    { value: '5', label: 'Mike' },
   ],
-  autoWidth: true,
-  multiple: true,
+  selectAllLabel: '모두선택',
 };

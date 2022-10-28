@@ -21,8 +21,11 @@ interface IDataProps {
   type: LineSeriesOption['type'] | BarSeriesOption['type'];
   name?: string;
 }
-export interface IMixedChartProps extends Omit<IBaseEChartsProps, 'option'> {
+type TMixedChartProps = Omit<IBaseEChartsProps, 'option'>;
+
+export interface IMixedChartProps extends TMixedChartProps {
   data: IDataProps[];
+  option: LineSeriesOption | BarSeriesOption;
   xAixData: string[];
   yAxis?: YAXisOption[];
   showLegendBottom?: boolean;
@@ -58,6 +61,7 @@ export const MixedChart = ({
   const option = useMemo(() => {
     const series = data.map((d, index) => ({
       ...d,
+      type: d.type as BarSeriesOption['type'] & LineSeriesOption['type'],
       color: BACKGROUND_COLOR[index % BACKGROUND_COLOR.length],
       label: {
         position: ChartPosition.TOP,

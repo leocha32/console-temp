@@ -8,15 +8,15 @@ import {
   LocalizationProvider,
 } from '@mui/x-date-pickers';
 export type TDatePickerProps = DatePickerProps<Dayjs, Dayjs>;
-/* view = ['year'] || ['year','month'] || ['year','month',day'](default)*/
+/* views = ['year'] || ['year','month'] || ['year','month',day'](default)*/
 export const DatePicker = ({
-  inputFormat = 'YYYY-MM-DD',
+  inputFormat = 'YYYY.MM.DD',
   onChange,
   ...props
 }: TDatePickerProps) => {
   const handleChange = useCallback(
     (value) => {
-      onChange(value.valueOf());
+      onChange(value);
     },
     [onChange],
   );

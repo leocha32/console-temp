@@ -1,8 +1,8 @@
 import { atom } from 'recoil';
 
-const sample = atom({
+const minute = atom({
   key: 'selector-sample',
-  default: '',
+  default: 0,
 });
 
-export default sample;
+export default minute;
