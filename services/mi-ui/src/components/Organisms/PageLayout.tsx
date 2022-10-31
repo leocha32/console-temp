@@ -1,8 +1,12 @@
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { PropsWithChildren } from 'react';
 import styled from '@emotion/styled';
+import { IBreadcrumbsProps, Breadcrumbs } from '../Atoms';
 
-export interface IPageLayoutProps extends PropsWithChildren {
-  header: ReactElement;
+export interface IPageLayoutProps
+  extends PropsWithChildren,
+    Omit<IBreadcrumbsProps, 'crumbs'> {
+  headerName: string;
+  crumbs?: IBreadcrumbsProps['crumbs'];
 }
 
 const Wrap = styled.div`
@@ -10,18 +14,30 @@ const Wrap = styled.div`
   flex-direction: column;
   height: 100%;
 `;
+
 const Header = styled.div`
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
 `;
 export const HeaderTitle = styled.h2`
   color: #191f28;
   margin: 0;
 `;
-export const PageLayout = ({ children, header }: IPageLayoutProps) => {
+export const Body = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+export const PageLayout = ({ children, headerName, crumbs = [] }: IPageLayoutProps) => {
   return (
     <Wrap>
-      <Header>{header}</Header>
-      <div>{children}</div>
+      <Header>
+        <HeaderTitle>{headerName}</HeaderTitle>
+        <Breadcrumbs crumbs={crumbs}></Breadcrumbs>
+      </Header>
+      <Body>{children}</Body>
     </Wrap>
   );
 };

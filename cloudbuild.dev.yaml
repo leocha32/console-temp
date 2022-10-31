@@ -25,7 +25,8 @@ steps:
       'run',
       'deploy', 'mi-console-front-v2',
       '--image', 'asia.gcr.io/nm-prod-global-cw-mi/mi-console-front:v2',
-      '--region', 'asia-northeast1'
+      '--region', 'asia-northeast1',
+      '--revision-suffix', '$SHORT_SHA'
     ]
 
 # Specific Worker Pool

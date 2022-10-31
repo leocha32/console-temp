@@ -6,6 +6,7 @@ import {
   BarSeriesOption,
   TooltipOption,
   GridOption,
+  YAXisOption,
 } from 'echarts/types/dist/shared';
 
 import { BarChart as EBarChart } from 'echarts/charts';
@@ -16,6 +17,7 @@ import {
   ChartLeft,
   ChartPosition,
 } from '../../../constants/enum';
+import { EmptyContent } from './EmptyContent';
 
 use([EBarChart]);
 
@@ -35,8 +37,9 @@ export interface IStackBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   tooltip?: TooltipOption;
   title?: TitleOption;
   legend?: LegendOption;
-  label?: BarSeriesOption['label'];
+  seriesOption?: BarSeriesOption;
   grid?: GridOption;
+  yAxis?: YAXisOption;
 }
 
 const getTotalData = (items: IDataProps[]) => {
@@ -44,6 +47,7 @@ const getTotalData = (items: IDataProps[]) => {
     return data.map((v, dataIndex) => v + (pre[dataIndex] ?? 0));
   }, []);
 };
+
 export const StackChart = ({
   data,
   useTooltip = true,
@@ -56,7 +60,8 @@ export const StackChart = ({
   grid,
   legend,
   xAixData,
-  label,
+  seriesOption,
+  yAxis,
   ...props
 }: IStackBarChartProps) => {
   const option = useMemo(() => {
@@ -66,11 +71,13 @@ export const StackChart = ({
       color: BACKGROUND_COLOR[index % BACKGROUND_COLOR.length],
       label: {
         show: useLabel,
-        ...label,
+        ...seriesOption?.label,
       },
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
       },
+      barMaxWidth: 80,
+      ...seriesOption,
     }));
     if (useAccumulate) {
       const total = getTotalData(data);
@@ -87,7 +94,7 @@ export const StackChart = ({
         label: {
           show: useLabel,
           position: ChartPosition.TOP,
-          ...label,
+          ...seriesOption?.label,
           fontSize: 16,
           color: '#bbbaba',
         },
@@ -113,12 +120,13 @@ export const StackChart = ({
       },
       yAxis: {
         type: 'value' as const,
+        ...yAxis,
       },
       series,
     };
   }, [
     data,
-    label,
+    seriesOption,
     tooltip,
     grid,
     legend,
@@ -128,7 +136,8 @@ export const StackChart = ({
     useLabel,
     useTooltip,
     xAixData,
+    yAxis,
     useAccumulate,
   ]);
-  return <BaseEChart {...props} option={option} />;
+  return data.length ? <BaseEChart {...props} option={option} /> : <EmptyContent />;
 };

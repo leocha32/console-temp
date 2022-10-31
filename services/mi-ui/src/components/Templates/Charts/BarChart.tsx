@@ -6,6 +6,7 @@ import {
   BarSeriesOption,
   TooltipOption,
   GridOption,
+  YAXisOption,
 } from 'echarts/types/dist/shared';
 
 import { BarChart as EBarChart } from 'echarts/charts';
@@ -16,6 +17,7 @@ import {
   ChartType,
   ChartLeft,
 } from '../../../constants/enum';
+import { EmptyContent } from './EmptyContent';
 
 use([EBarChart]);
 
@@ -33,8 +35,9 @@ export interface IBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   tooltip?: TooltipOption;
   title?: TitleOption;
   legend?: LegendOption;
-  label?: BarSeriesOption['label'];
+  seriesOption?: BarSeriesOption;
   grid?: GridOption;
+  yAxis?: YAXisOption;
 }
 
 export const BarChart = ({
@@ -47,8 +50,9 @@ export const BarChart = ({
   useLegend = true,
   useLabel = true,
   legend,
-  label,
+  seriesOption,
   grid,
+  yAxis,
   ...props
 }: IBarChartProps) => {
   const option = useMemo(() => {
@@ -59,11 +63,13 @@ export const BarChart = ({
       label: {
         position: ChartPosition.TOP,
         show: useLabel,
-        ...label,
+        ...seriesOption?.label,
       },
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
       },
+      barMaxWidth: 80,
+      ...seriesOption,
     }));
     return {
       title,
@@ -84,12 +90,13 @@ export const BarChart = ({
       },
       yAxis: {
         type: 'value' as const,
+        ...yAxis,
       },
       series,
     };
   }, [
     data,
-    label,
+    seriesOption,
     legend,
     grid,
     useFocus,
@@ -99,6 +106,7 @@ export const BarChart = ({
     useLabel,
     useTooltip,
     xAixData,
+    yAxis,
   ]);
-  return <BaseEChart {...props} option={option} />;
+  return data.length ? <BaseEChart {...props} option={option} /> : <EmptyContent />;
 };

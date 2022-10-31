@@ -13,9 +13,8 @@ RUN npm i -g yarn
 # coway망에서 수행시, 보안문제로 인해 "Request Error: self-signed certificate in certificate chain" 발생
 RUN yarn set version berry
 RUN yarn install
-RUN yarn workspace template add react-dev-utils
-RUN yarn workspace template build
+RUN yarn workspace mi build
 
 EXPOSE 3000
 
-ENTRYPOINT ["yarn", "start:tp"]
+ENTRYPOINT ["yarn", "start:mi"]

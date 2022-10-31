@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import { css } from '@emotion/react';
 import { Layout as CLayout } from 'mi-ui';
 import routes from 'App.route';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import menu from 'recoils/menu';
-import { recentMenuSelector } from '../../recoils/recentMenu';
+import { recentMenuSelector } from 'recoils/recentMenu';
 
 const Header = (
   <div
@@ -25,12 +25,10 @@ const Header = (
   </div>
 );
 const Layout = () => {
-  const setMenuStatus = useResetRecoilState(menu);
   const setRecentMenu = useSetRecoilState(recentMenuSelector);
   const handleClickLogo = useCallback(() => {
-    setMenuStatus();
     window.open('/', '_self');
-  }, [setMenuStatus]);
+  }, []);
 
   const onClickMenu = useCallback(
     (params) => {

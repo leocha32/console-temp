@@ -3,9 +3,8 @@ import {
   Breadcrumbs as MuiBreadcrumbs,
   BreadcrumbsProps as MuiBreadcrumbsProps,
   TypographyProps as MuiTypographyProps,
-  Link as MuiLink,
 } from '@mui/material';
-
+import styled from '@emotion/styled';
 export interface IBreadcrumbsProps extends MuiBreadcrumbsProps {
   crumbs: IMuiTypographyProps[];
 }
@@ -14,22 +13,31 @@ export interface IMuiTypographyProps extends MuiTypographyProps {
   name: string;
   icon?: React.ReactElement;
 }
+const CrumbWrap = styled.span`
+  font-size: 14px;
+  cursor: default;
+  display: flex;
+`;
 
 const Crumb = ({ icon, name }: IMuiTypographyProps) => {
   return (
-    <MuiLink
-      underline="hover"
-      color="inherit"
-      sx={{ display: 'flex', alignItems: 'center' }}
-    >
+    <CrumbWrap>
       {icon}
       {name}
-    </MuiLink>
+    </CrumbWrap>
   );
 };
 
-export const Breadcrumbs = (props: IBreadcrumbsProps) => {
-  const Crumbs = props?.crumbs?.map((crumb, index) => <Crumb key={index} {...crumb} />);
+export const Breadcrumbs = ({ separator = '›', ...props }: IBreadcrumbsProps) => {
+  /**
+   * Todo: Icon 추가 및 viewBox 부분 수정 필요
+   */
 
-  return <MuiBreadcrumbs {...props}>{Crumbs}</MuiBreadcrumbs>;
+  return (
+    <MuiBreadcrumbs separator={separator} {...props}>
+      {props.crumbs.map((crumb, index) => (
+        <Crumb key={index} {...crumb} />
+      ))}
+    </MuiBreadcrumbs>
+  );
 };

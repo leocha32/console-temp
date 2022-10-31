@@ -10,6 +10,8 @@ const absolutePath = path.join(__dirname, '../mi-ui');
 const evalSourceMap = require('react-dev-utils/evalSourceMapMiddleware');
 const redirectServedPath = require('react-dev-utils/redirectServedPathMiddleware');
 const noopServiceWorker = require('react-dev-utils/noopServiceWorkerMiddleware');
+const TerserPlugin = require('terser-webpack-plugin');
+const posixPath = require('path/posix');
 
 module.exports = {
   devServer: (devServerConfig, { env, paths }) => {
@@ -40,6 +42,10 @@ module.exports = {
           warnings: false,
         },
       },
+      static: {
+        directory: path.join(__dirname, 'dist'),
+        publicPath: 'dist',
+      },
       historyApiFallback: true,
       allowedHosts: 'all',
       proxy: {
@@ -53,9 +59,19 @@ module.exports = {
 
     return devServerConfig;
   },
+
   webpack: {
     alias: {},
     plugins: [],
+    alias: {
+      $components: posixPath.resolve(__dirname, 'src/components'),
+      $constants: posixPath.resolve(__dirname, 'src/constants'),
+      $modules: posixPath.resolve(__dirname, 'src/modules'),
+      $pages: posixPath.resolve(__dirname, 'src/pages'),
+      $recoils: posixPath.resolve(__dirname, 'src/recoils'),
+      $types: posixPath.resolve(__dirname, 'src/types'),
+      $utils: posixPath.resolve(__dirname, 'src/utils'),
+    },
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(webpackConfig, loaderByName('babel-loader'));
       if (isFound) {

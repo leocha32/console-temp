@@ -14,5 +14,4 @@ export const Breadcrumbs: ComponentStory<typeof CBreadcrumbs> = (
 
 Breadcrumbs.args = {
   crumbs: [{ name: 'HOME', icon: <Home /> }, { name: 'Atoms' }, { name: 'Breadcrumbs' }],
-  separator: '›',
 };

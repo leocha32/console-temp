@@ -5,7 +5,9 @@ const Home = lazy(() => import('pages/Home'));
 const Report = lazy(() => import('pages/Report'));
 const MarketConditions = lazy(() => import('pages/Report/MarketConditions'));
 const SalesVolume = lazy(() => import('pages/Report/MarketConditions/SalesVolume'));
-
+const ExecutiveSummary = lazy(
+  () => import('pages/Report/MarketConditions/ExecutiveSummary'),
+);
 import SummarizeIcon from '@mui/icons-material/Summarize';
 
 export const routes: TMenu[] = [
@@ -28,6 +30,7 @@ export const routes: TMenu[] = [
               {
                 path: 'summary',
                 label: 'Executive Summary',
+                element: <ExecutiveSummary />,
               },
               {
                 path: 'share',
