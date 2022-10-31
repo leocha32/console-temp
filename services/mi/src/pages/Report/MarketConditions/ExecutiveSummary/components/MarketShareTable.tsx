@@ -56,7 +56,7 @@ const MarketShareTable = ({ data }: any) => {
   return (
     <Contents>
       <label>시장 점유율(M/S)</label>
-      <Table headers={headers} rowData={rowData} columns={[]}></Table>
+      <Table showHeader={false} headers={headers} rowData={rowData} columns={[]}></Table>
     </Contents>
   );
 };
