@@ -41,41 +41,34 @@ export const Table = ({
       data: SHARE.productPenetration.map((s) => s[key]),
     };
   });
-  const nameOrderStandard = ['정수기', '청정기', '비데', '매트리스', '안마의자'];
-  const valueOrderSandard = [
+  const orderStandard = [
+    'productGroup',
     'marketShareRank',
+    'marketShareValue',
     'hohDiff',
-    'marketShareRank',
-    'productPenetrationValue',
+    // 'productPenetrationValue',
   ];
-  const nameOrderedArray = nameOrderStandard.map((orderName) => {
-    return SHARE.cowayMarketShare.find((te) => te.productGroup === orderName);
-  });
 
-  const marketShare = Object.keys(nameOrderedArray[0]!).map((key) => {
-    return nameOrderedArray.map((s) => {
-      return {
-        name: key,
-        value: s![key],
-      };
+  const nameOrderedArray = ['정수기', '청정기', '비데', '매트리스', '안마의자'].map(
+    (orderName) => {
+      return SHARE.cowayMarketShare.find((te) => te.productGroup === orderName);
+    },
+  );
+
+  const newArray = orderStandard.map((stdName) => {
+    return nameOrderedArray.map((obj) => {
+      if (obj) return obj[stdName];
     });
   });
 
-  Object.keys(nameOrderedArray[0]!).map((name) => {
-    return {
-      name: name,
-      type: 'string',
-      format: '%',
-    };
-  });
-  console.log(marketShare);
+  const cowayMarketShare = SHARE.cowayMarketShare;
   return (
     <MuiTableContainer {...props} component={MuiPaper}>
       <MuiTable>
         {showHeader ? <TableHeader headers={headers}></TableHeader> : null}
         <MuiTableBody>
-          {marketShare.map((row, i) => (
-            <TableRow key={i} rowData={row}></TableRow>
+          {newArray.map((ary, i) => (
+            <TableRow key={i} columns={orderStandard} rowData={ary}></TableRow>
           ))}
         </MuiTableBody>
       </MuiTable>

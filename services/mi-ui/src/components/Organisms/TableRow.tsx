@@ -7,12 +7,12 @@ import { Cell } from '../Atoms';
 
 export interface ITableRowProps extends MuiTableRowProps {
   rowData: TRowData;
-  columns?: TColumnOptions;
+  columns?: string[];
 }
 
 export type TColumnOptions = {
-  colName: string;
-  colValue: string;
+  nameStandart: string[];
+  valueStandart: string[];
 };
 
 export type TRowData = {
@@ -20,11 +20,12 @@ export type TRowData = {
 };
 
 export const TableRow = ({ tabIndex, columns, rowData, ...props }: ITableRowProps) => {
+  console.log(rowData);
   return (
     <MuiTableRow>
-      {rowData.map(({ name, value }, i) => (
-        <Cell key={name + i} name={value} value={value}></Cell>
-      ))}
+      {rowData.map((row, i) => {
+        return <Cell key={i} name={row} value={row}></Cell>;
+      })}
     </MuiTableRow>
   );
 };
