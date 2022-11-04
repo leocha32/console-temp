@@ -1,9 +1,9 @@
-import { IResearchReportFile } from 'types/common';
-
+import { IResearchReportFile } from '$types/common';
+import { HalfYear } from '$constants/enum';
 /** 시장 점유율 요약 요청 필드 */
 export interface IExecutiveSummaryRequestField {
   year: string;
-  half: string;
+  half: HalfYear;
 }
 
 export interface IExecutiveSummaryResponseDto {

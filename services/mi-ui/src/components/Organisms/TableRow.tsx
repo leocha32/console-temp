@@ -1,78 +1,89 @@
-import React, { Fragment } from 'react';
-import {
-  TableRow as MuiTableRow,
-  TableRowProps as MuiTableRowProps,
-} from '@mui/material';
-import { Cell } from '../Atoms';
+import React from 'react';
+import { TableRow as MuiTableRow } from '@mui/material';
 
-export interface ITableRowProps extends MuiTableRowProps {
-  rowData: TRowData;
-  columns?: string[];
+import { Cell, ICellOptions } from '../Atoms';
+
+export interface ITableRowProps {
+  rowData: TRowProps;
+  columns: TColumnProps[];
 }
 
-export type TColumnOptions = {
-  nameStandart: string[];
-  valueStandart: string[];
+export type TColumnProps = {
+  name: string;
+  label?: string;
+  options?: ICellOptions;
+};
+
+export type TRowProps = {
+  name: string;
+  data: TRowData[] | TRowData[][];
+  label?: string;
+  options?: ICellOptions;
+  detail?: string[] | number[];
 };
 
 export type TRowData = {
-  [key: string]: string | number | any;
+  colName: string;
+  value: string | number | TRowData[];
 };
 
-export const TableRow = ({ tabIndex, columns, rowData, ...props }: ITableRowProps) => {
-  console.log(rowData);
+export const TableRow = ({ columns, rowData }: ITableRowProps) => {
+  const { name: rowName, data, label, options: rowOptions }: TRowProps = rowData;
+  const rowSpan = rowOptions?.rowSpan || 0;
+  const colOptions = columns.find(({ name }) => 'rowHeader' === name)?.options;
+
+  /**
+   * todo column option 추가
+   */
   return (
-    <MuiTableRow>
-      {rowData.map((row, i) => {
-        return <Cell key={i} name={row} value={row}></Cell>;
-      })}
-    </MuiTableRow>
+    <>
+      <MuiTableRow>
+        {label ? (
+          <Cell
+            options={{ ...colOptions }}
+            rowSpan={rowSpan + 1}
+            name={'rowHeader'}
+            value={label}
+          ></Cell>
+        ) : null}
+        {rowSpan < 1
+          ? data.map((data, i) => {
+              const colOptions = columns.find(
+                ({ name }) => name === data.colName,
+              )?.options;
+              const sumOptions = {
+                ...rowOptions,
+                ...(rowName === 'label' ? {} : colOptions),
+              };
+
+              return (
+                <Cell
+                  options={sumOptions}
+                  key={rowName + i}
+                  name={data.colName}
+                  value={data.value}
+                ></Cell>
+              );
+            })
+          : null}
+      </MuiTableRow>
+      {rowSpan > 1
+        ? data?.map((row, i) => (
+            <MuiTableRow key={i}>
+              {row.map(({ colName, value }, j) => {
+                const colOptions = columns.find(({ name }) => name === colName)?.options;
+                const sumOptions = {
+                  ...rowOptions,
+                  ...(rowName === 'label' ? {} : colOptions),
+                };
+
+                return (
+                  <Cell options={sumOptions} key={j} name={colName} value={value}></Cell>
+                );
+              })}
+            </MuiTableRow>
+          ))
+        : null}
+    </>
   );
 };
-
-// import React, { Fragment } from 'react';
-// import {
-//   TableRow as MuiTableRow,
-//   TableRowProps as MuiTableRowProps,
-// } from '@mui/material';
-// import { Cell, TCellRenderOptions } from '../Atoms';
-
-// export interface ITableRowProps extends MuiTableRowProps {
-//   rowData: TRowData;
-//   columns: TCellRenderOptions[];
-// }
-
-// export type TRowData = {
-//   [key: string]: string | number | any;
-// };
-
-// export const TableRow = ({ tabIndex, columns, rowData, ...props }: ITableRowProps) => {
-//   const keys = Object.keys(rowData);
-
-//   return (
-//     <MuiTableRow key={tabIndex} {...props}>
-//       {keys.map((key, i) => {
-//         const renderOptions = columns.find(({ name }) => name === key);
-//         const isArray = Array.isArray(rowData[key]);
-
-//         return !isArray ? (
-//           <Cell
-//             key={tabIndex + '' + i}
-//             name={key}
-//             renderOptions={renderOptions}
-//             value={rowData[key]}
-//           ></Cell>
-//         ) : (
-//           <Fragment>
-//             <Cell key={key} rowSpan={3} name={'e'} value={'z'}></Cell>
-//             {rowData[key].map((data, j) => (
-//               <MuiTableRow key={data + j}>
-//                 <Cell key={data + '' + i} name={data} value={data}></Cell>
-//               </MuiTableRow>
-//             ))}
-//           </Fragment>
-//         );
-//       })}
-//     </MuiTableRow>
-//   );
-// };

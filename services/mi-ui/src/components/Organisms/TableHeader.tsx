@@ -3,11 +3,11 @@ import {
   TableRow as MuiTableRow,
   TableHead as MuiTableHead,
   TableHeadProps as MuiTableHeadProps,
+  TableCell as MuiTableCell,
 } from '@mui/material';
-import { Cell } from '../Atoms';
 import { css } from '@emotion/react';
 
-export interface ITableRowProps extends MuiTableHeadProps {
+export interface ITableHeaderProps extends MuiTableHeadProps {
   headers: IColumn[];
 }
 
@@ -78,7 +78,7 @@ const getHeaders = (columns: IColumn[]) => {
 
   return result;
 };
-export const TableHeader = ({ headers, ...props }: ITableRowProps) => {
+export const TableHeader = ({ headers, ...props }: ITableHeaderProps) => {
   return (
     <MuiTableHead {...props}>
       {getHeaders(headers).map((headerRow, headerRowIndex) => (
@@ -86,16 +86,16 @@ export const TableHeader = ({ headers, ...props }: ITableRowProps) => {
           {headerRow &&
             headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0 }) => {
               return (
-                <Cell
+                <MuiTableCell
                   css={css`
                     text-align: center;
                   `}
                   key={`header-cell-${name}`}
-                  name={name}
-                  value={name}
                   colSpan={colSpan + colSpanOffset}
                   rowSpan={rowSpan}
-                ></Cell>
+                >
+                  {name}
+                </MuiTableCell>
               );
             })}
         </MuiTableRow>

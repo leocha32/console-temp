@@ -8,9 +8,7 @@
   "scripts": {
     "start:tp": "yarn workspace template start",
     "start:mi": "yarn workspace mi start",
-    "storybook": "yarn workspace mi-ui storybook",
-    "build:mui": "yarn workspace mi-ui build",
-    "build:mi": "yarn workspace mi build"
+    "storybook": "yarn workspace mi-ui storybook"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.9.1",

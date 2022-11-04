@@ -1,9 +1,17 @@
 import React from 'react';
-import { IMarketShareByBrand } from 'modules/MarketConditions';
+import { IMarketShareByBrand } from 'modules/report/marketConditions';
 import _ from 'lodash';
 import { IStackBarChartProps, StackChart } from 'mi-ui';
 import { ChartLeft, ChartOrient, ChartTop } from 'mi-ui/src/constants/enum';
-import { ChartWrap, ChartWrapTitle, ContentWrap, Wrap } from './commonStyled';
+
+import {
+  ChartWrap,
+  CardTitle,
+  Card,
+  Section,
+  ContentWrap,
+  ContentTitle,
+} from '$pages/Report/MarketConditions/components/commonStyled';
 
 export interface IMarketShareByBrandProps {
   data: IMarketShareByBrand[];
@@ -54,7 +62,8 @@ const legendOption = {
 };
 
 const gridOption = {
-  height: '75%',
+  height: '70%',
+  top: '10%',
 };
 const yAxisOption = {
   name: '[단위: %]',
@@ -63,31 +72,34 @@ export const MarketShareByBrand = ({ data }: IMarketShareByBrandProps) => {
   const { xAixData, valueData, volumeData } = makeChartData(data);
 
   return (
-    <Wrap>
-      <ContentWrap>
-        <ChartWrapTitle>판매량 기준</ChartWrapTitle>
-        <ChartWrap>
-          <StackChart
-            data={volumeData}
-            xAixData={xAixData}
-            legend={legendOption}
-            grid={gridOption}
-            yAxis={yAxisOption}
-          />
-        </ChartWrap>
-      </ContentWrap>
-      <ContentWrap>
-        <ChartWrapTitle>매출액 기준</ChartWrapTitle>
-        <ChartWrap>
-          <StackChart
-            data={valueData}
-            xAixData={xAixData}
-            legend={legendOption}
-            grid={gridOption}
-            yAxis={yAxisOption}
-          />
-        </ChartWrap>
-      </ContentWrap>
-    </Wrap>
+    <Card>
+      <CardTitle>브랜드 점유율</CardTitle>{' '}
+      <Section>
+        <ContentWrap>
+          <ContentTitle>판매량 기준</ContentTitle>
+          <ChartWrap>
+            <StackChart
+              data={volumeData}
+              xAixData={xAixData}
+              legend={legendOption}
+              grid={gridOption}
+              yAxis={yAxisOption}
+            />
+          </ChartWrap>
+        </ContentWrap>
+        <ContentWrap>
+          <ContentTitle>매출액 기준</ContentTitle>
+          <ChartWrap>
+            <StackChart
+              data={valueData}
+              xAixData={xAixData}
+              legend={legendOption}
+              grid={gridOption}
+              yAxis={yAxisOption}
+            />
+          </ChartWrap>
+        </ContentWrap>
+      </Section>
+    </Card>
   );
 };

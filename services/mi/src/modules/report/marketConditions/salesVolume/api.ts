@@ -1,4 +1,4 @@
-import api from 'utils/api';
+import api from '$utils/api';
 import { ISalesVolumeParams, ISalesVolume } from './types';
 
 export async function getSalesVolume(params: ISalesVolumeParams): Promise<ISalesVolume> {

@@ -1,4 +1,4 @@
-import { IResearchReportFile } from 'types/common';
+import { IResearchReportFile } from '$types/common';
 
 export interface ISalesVolumeParams {
   year: string;

@@ -102,7 +102,7 @@ const rowData = [
 
 Table.args = {
   rowData: rowData,
-  columns: columns,
+  columns: [],
   headers: headers,
   sx: {
     maxWidth: '500px',

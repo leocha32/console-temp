@@ -59,10 +59,31 @@ module.exports = {
 
     return devServerConfig;
   },
-
   webpack: {
-    alias: {},
-    plugins: [],
+    module: 'production',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: '[name].js',
+      chunkFilename: '[name].js',
+      publicPath: '/',
+    },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: true,
+          minify: TerserPlugin.uglifyJsMinify,
+          terserOptions: {
+            compress: {
+              drop_console: true,
+            },
+          },
+        }),
+      ],
+      splitChunks: {
+        chunks: 'all',
+      },
+    },
     alias: {
       $components: posixPath.resolve(__dirname, 'src/components'),
       $constants: posixPath.resolve(__dirname, 'src/constants'),
@@ -72,6 +93,7 @@ module.exports = {
       $types: posixPath.resolve(__dirname, 'src/types'),
       $utils: posixPath.resolve(__dirname, 'src/utils'),
     },
+    plugins: [],
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(webpackConfig, loaderByName('babel-loader'));
       if (isFound) {

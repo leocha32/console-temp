@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React, { ForwardedRef, forwardRef, PropsWithChildren } from 'react';
 import styled from '@emotion/styled';
 import { IBreadcrumbsProps, Breadcrumbs } from '../Atoms';
 
@@ -30,9 +30,13 @@ export const Body = styled.div`
   display: flex;
   flex-direction: column;
 `;
-export const PageLayout = ({ children, headerName, crumbs = [] }: IPageLayoutProps) => {
+
+export const PageLayout = forwardRef(function PageLayout(
+  { children, headerName, crumbs = [] }: IPageLayoutProps,
+  ref: ForwardedRef<HTMLDivElement>,
+) {
   return (
-    <Wrap>
+    <Wrap ref={ref}>
       <Header>
         <HeaderTitle>{headerName}</HeaderTitle>
         <Breadcrumbs crumbs={crumbs}></Breadcrumbs>
@@ -40,4 +44,4 @@ export const PageLayout = ({ children, headerName, crumbs = [] }: IPageLayoutPro
       <Body>{children}</Body>
     </Wrap>
   );
-};
+});

@@ -20,7 +20,7 @@ const Header = (
         font-weight: 500;
       `}
     >
-      {`${' Platform'}`}
+      {`${' MI Platform'}`}
     </span>
   </div>
 );

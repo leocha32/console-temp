@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { IApiError } from 'types/api-error';
+import { IApiError } from '$types/api-error';
 import { getSalesVolume } from '../api';
 import { SALES_VOLUME_KEY } from '../key';
 import { MARKET_CONDITION_KEY } from '../../key';

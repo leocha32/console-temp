@@ -39,3 +39,7 @@ export const dashToCamelCase = (myStr) => {
     return g[1].toUpperCase();
   });
 };
+
+export const downloadFile = (data, fileName): void => {
+  fileDownload(data, decodeURIComponent(fileName));
+};

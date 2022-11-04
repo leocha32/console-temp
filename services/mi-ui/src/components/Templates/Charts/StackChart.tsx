@@ -17,7 +17,7 @@ import {
   ChartLeft,
   ChartPosition,
 } from '../../../constants/enum';
-import { EmptyContent } from './EmptyContent';
+import { EmptyContent } from '../EmptyContent';
 
 use([EBarChart]);
 
@@ -84,6 +84,7 @@ export const StackChart = ({
       series.push({
         data: total,
         barGap: '-100%',
+        barMaxWidth: 80,
         stack: '',
         z: -1,
         color: 'transparent',

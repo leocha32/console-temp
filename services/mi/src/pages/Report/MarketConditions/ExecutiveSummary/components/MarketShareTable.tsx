@@ -1,67 +1,164 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
-import { Table } from 'mi-ui/src';
-import { IExecutiveMarketShare, IMarketShareByBrand } from '$modules/MarketConditions';
-import { IMarketShareByBrandProps } from '$pages/Report/MarketConditions/SalesVolume/components';
-const Contents = styled.div`
-  display: grid;
-  grid-template-rows: auto;
-  height: fit-content;
-`;
+import React, { useMemo, useCallback } from 'react';
+import { Table, Button, TRowProps } from 'mi-ui';
+import { ROW_OPTIONS, VALUE_ORDER, COLUMN } from './MarketShareTableConfigs';
+import { IExecutiveMarketShare, useDownloadReport } from '$modules/report';
+import { Contents, Title } from './commonStyled';
+
+export type TMarketShareTableProps = IExecutiveMarketShare;
+
+const PRODUCT_ORDER = COLUMN.filter((col) => col.name !== 'rowHeader');
 
 /**
- * 당사 점유율(순위)cowayMarketShare.marketShareRank
- * 당사 점유율(퍼센트)cowayMarketShare.marketShareValue
- * 당사 직전 반기 대비 차이 cowayMarketShare.hohDiff
- * 브랜드 점유율 : marketShareRank.marketShareValue
- * 제품보급률 : productPenetration.productPenetrationValue
- * @param data
+ *
+ * @param marketShareRank
+ * 브랜드 점유율 데이터
+ *
  */
-export interface IMarketShareTableProps {
-  data: IExecutiveMarketShare;
-}
+const getBrandTops = (marketShareRank) => {
+  const ranks = [
+    ...new Set(marketShareRank.map(({ marketShareRank }) => marketShareRank)),
+  ];
 
-const makeTableData = (data: IExecutiveMarketShare) => {
-  const { cowayMarketShare, marketShareRank, productPenetration } = data;
-
-  const headers = productPenetration.map((prod) => {
-    return {
-      name: prod.productGroup,
-    };
+  /**
+   * 제품 별로 데이터 정렬 후 순위 별 Row 데이터로 정렬
+   */
+  return ranks.map((rank) => {
+    const divisionRanks = marketShareRank.filter(
+      ({ marketShareRank }) => marketShareRank === rank,
+    );
+    return PRODUCT_ORDER.map(({ name }) => {
+      return divisionRanks.find(({ productGroup }) => productGroup === name);
+    }).map((product) => {
+      const { brand, marketShareValue, marketShareRank } = product;
+      return {
+        colName: product.productGroup,
+        value: `${marketShareRank},${brand},${marketShareValue}`,
+      };
+    });
   });
-  const rowData = cowayMarketShare.map((marketShare) => {
-    const productPenetrationValue = productPenetration.find(
-      (prod) => prod.productGroup === marketShare.productGroup,
-    )?.productPenetrationValue;
-
-    const row = {
-      ...marketShare,
-    };
-    row['productPenetrationValue'] = productPenetrationValue;
-    return row;
-  });
-
-  return { headers, rowData };
 };
 
-const MarketShareTable = ({ data }: any) => {
-  const { headers, rowData } = makeTableData(data);
-  // [
-  //   {
-  //     division: '당사시장점유율 순위',
-  //     mat: '232',
-  //   },
-  // ]
+/**
+ * 제품 보급률 데이터
+ * @param productPenetration
+ * @param productName
+ */
+const getProductPenetration = ({ productPenetration, productName }) => {
+  const findByProdName = productPenetration.find(
+    ({ productGroup }) => productGroup === productName,
+  );
+  return findByProdName.productPenetrationValue;
+};
+
+/**
+ * API 데이터를 Column 기준에서 Row 기준으로 변경
+ * @param cowayMarketShare
+ * @param marketShareRank
+ * @param productPenetration
+ */
+const makeRowData = ({
+  cowayMarketShare,
+  marketShareRank,
+  productPenetration,
+}: IExecutiveMarketShare) => {
+  if (
+    marketShareRank.length === 0 ||
+    cowayMarketShare.length === 0 ||
+    productPenetration.length === 0
+  )
+    return [];
+  /**
+   * SB 기준으로 데이터 순서 정렬
+   * Row 기준으로 데이터 정렬
+   */
+  const orderedData = PRODUCT_ORDER.map(({ name }) => {
+    const productPenetrationValue = getProductPenetration({
+      productPenetration,
+      productName: name,
+    });
+
+    for (const market of cowayMarketShare) {
+      const { productGroup, marketShareRank, marketShareValue, hohDiff } = market;
+      if (productGroup === name) {
+        return {
+          marketShareRank: `${marketShareValue},${marketShareRank}`,
+          hohDiff: hohDiff,
+          productGroup: productGroup,
+          productPenetration: productPenetrationValue,
+        };
+      }
+    }
+  });
+
+  /**
+   * Row Option 추가
+   */
+  return VALUE_ORDER.map((key) => {
+    const option = ROW_OPTIONS.find(({ name }) => key === name);
+    const row: TRowProps = {
+      name: key,
+      data: orderedData.map((s) => {
+        return {
+          colName: s ? s.productGroup : '',
+          value: s ? s[key] : '',
+        };
+      }),
+      label: '',
+    };
+    if (option?.options) row['options'] = option.options;
+    if (key === 'brandShare') row['data'] = getBrandTops(marketShareRank);
+    if (option?.label) row['label'] = option.label;
+    return row;
+  });
+};
+
+const MarketShareTable = ({
+  researchReportFile,
+  cowayMarketShare,
+  productPenetration,
+  marketShareRank,
+}: TMarketShareTableProps) => {
+  const downloadReport = useDownloadReport();
+
+  const handleDownloadReport = useCallback(() => {
+    if (researchReportFile) {
+      const { half, category, filePath, year, originalFileName } = researchReportFile;
+      downloadReport.mutate({
+        half,
+        category,
+        filePath,
+        year,
+        fileName: originalFileName,
+      });
+    }
+  }, [researchReportFile, downloadReport]);
+
+  const rowData = useMemo(() => {
+    return makeRowData({
+      cowayMarketShare,
+      marketShareRank,
+      productPenetration,
+    } as TMarketShareTableProps);
+  }, [cowayMarketShare, productPenetration, marketShareRank]);
+
   return (
     <Contents>
-      <label>시장 점유율(M/S)</label>
-      <Table showHeader={false} headers={headers} rowData={rowData} columns={[]}></Table>
+      <Title>시장 점유율(M/S)</Title>
+      <Button
+        onClick={handleDownloadReport}
+        sx={{ width: 'fit-content', placeSelf: 'end' }}
+      >
+        보고서 다운로드
+      </Button>
+      <Table
+        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
+        showHeader={false}
+        row={rowData}
+        columns={COLUMN}
+        emptyHeight={'300px'}
+      ></Table>
     </Contents>
   );
 };
 
-MarketShareTable.prototype = {
-  data: PropTypes.node.isRequired,
-};
 export default MarketShareTable;

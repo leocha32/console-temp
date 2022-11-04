@@ -17,17 +17,14 @@ import {
   ChartType,
   ChartLeft,
 } from '../../../constants/enum';
-import { EmptyContent } from './EmptyContent';
+import { EmptyContent } from '../EmptyContent';
 
 use([EBarChart]);
 
-interface IDataProps {
-  data: number[];
-  name?: string;
-}
 export interface IBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
-  data: IDataProps[];
+  data: BarSeriesOption[];
   xAixData: string[];
+  useAccumulate?: boolean;
   useTooltip?: boolean;
   useLabel?: boolean;
   useFocus?: boolean;
@@ -35,7 +32,6 @@ export interface IBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   tooltip?: TooltipOption;
   title?: TitleOption;
   legend?: LegendOption;
-  seriesOption?: BarSeriesOption;
   grid?: GridOption;
   yAxis?: YAXisOption;
 }
@@ -49,27 +45,28 @@ export const BarChart = ({
   useFocus = true,
   useLegend = true,
   useLabel = true,
+  useAccumulate = false,
   legend,
-  seriesOption,
   grid,
   yAxis,
   ...props
 }: IBarChartProps) => {
   const option = useMemo(() => {
     const series = data.map((d, index) => ({
-      ...d,
+      barMaxWidth: 80,
       type: ChartType.BAR as BarSeriesOption['type'],
       color: BACKGROUND_COLOR[index % BACKGROUND_COLOR.length],
+      barGap: useAccumulate ? '-100%' : '0',
+      ...d,
       label: {
-        position: ChartPosition.TOP,
+        position: useAccumulate ? ChartPosition.INSIDE_TOP : ChartPosition.TOP,
         show: useLabel,
-        ...seriesOption?.label,
+        ...d?.label,
       },
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
+        ...d?.emphasis,
       },
-      barMaxWidth: 80,
-      ...seriesOption,
     }));
     return {
       title,
@@ -96,7 +93,6 @@ export const BarChart = ({
     };
   }, [
     data,
-    seriesOption,
     legend,
     grid,
     useFocus,
@@ -107,6 +103,7 @@ export const BarChart = ({
     useTooltip,
     xAixData,
     yAxis,
+    useAccumulate,
   ]);
   return data.length ? <BaseEChart {...props} option={option} /> : <EmptyContent />;
 };
