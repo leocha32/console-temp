@@ -4,6 +4,7 @@ import { ButtonsWrap, Header as CHeader } from './commonStyled';
 import { useDownloadReport } from '$modules/report';
 import { IResearchReportFile } from '$types/common';
 import { saveImage } from '$utils/utils';
+import { css } from '@emotion/react';
 
 export interface IHeaderProps {
   researchReportFile?: IResearchReportFile;
@@ -32,44 +33,54 @@ export const Header = ({
     const fileName = `${title}(${selectYear}).png`;
     saveImage(element, fileName);
   }, [selectYear, element, title]);
-  console.log(downloadReport);
   const handleDownloadReport = useCallback(() => {
     if (researchReportFile) {
-      // setBtnLoading(true)
+      setBtnLoading(true);
 
       const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate({
-        half,
-        category,
-        filePath,
-        year,
-        fileName: originalFileName,
-      });
-      console.log(downloadReport);
+
+      downloadReport.mutate(
+        {
+          half,
+          category,
+          filePath,
+          year,
+          fileName: originalFileName,
+        },
+        {
+          onSettled: () => {
+            setBtnLoading(false);
+          },
+        },
+      );
     }
   }, [researchReportFile, downloadReport]);
 
   return (
-    <CHeader>
+    <CHeader id={'component-header'}>
       <Select
+        css={css`
+          place-self: center;
+        `}
         options={selectOptions}
         onChange={onChangeSelect}
         defaultValue={selectOptions![0]}
       />
 
       <ButtonsWrap>
-        <Button
-          data-html2canvas-ignore
-          onClick={handleDownloadScreen}
-          sx={{ display: `${hiddenCaptureButton ? 'none' : 'block'}` }}
-          label={'화면 다운로드'}
-          showLoading={btnLoading}
-        ></Button>
+        {!hiddenCaptureButton && (
+          <Button
+            data-html2canvas-ignore
+            onClick={handleDownloadScreen}
+            label={'화면 다운로드'}
+          ></Button>
+        )}
         {!hiddenReportButton && (
           <Button
             data-html2canvas-ignore
             onClick={handleDownloadReport}
             disabled={!researchReportFile}
+            showLoading={btnLoading}
             label={'보고서 다운로드'}
           ></Button>
         )}

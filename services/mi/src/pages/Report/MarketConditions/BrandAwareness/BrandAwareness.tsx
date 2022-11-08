@@ -28,25 +28,18 @@ const tabItems = [
 ];
 
 const currentYear = dayjs().year();
+
 const selectOption = () => {
-  const currentMonth = dayjs().month();
   const lastYear = 2020;
   const options: { value: string; label: string }[] = [];
 
   for (let i = currentYear; i >= lastYear; i--) {
-    if (currentMonth < 6 && i === currentYear) continue;
-    if (i === currentYear) {
-      options.push(
-        ...[{ value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` }],
-      );
-    } else {
-      options.push(
-        ...[
-          { value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` },
-          { value: `${String(i)}-${HalfYear.Second}`, label: `${i}년 하반기` },
-        ],
-      );
-    }
+    options.push(
+      ...[
+        { value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` },
+        { value: `${String(i)}-${HalfYear.Second}`, label: `${i}년 하반기` },
+      ],
+    );
   }
   return options;
 };
@@ -95,8 +88,8 @@ const BrandAwareness = () => {
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
       <Wrap>
-        {isLoading ? <Spinner /> : null}
         <ContentsWrap direction={'column'}>
+          {isLoading ? <Spinner /> : null}
           <CowayBrandAwareness data={data?.cowayBrandAwareness || []} />
           <MajorBrandAwareness data={data?.majorBrandAwareness || []} />
         </ContentsWrap>

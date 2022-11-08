@@ -7,6 +7,7 @@ import { getCrumbs } from '$utils/utils';
 import { MarketSpread, MarketShareByBrand } from './components';
 import { Wrap, ContentsWrap, Tabs } from '../components/commonStyled';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
+import { css } from '@emotion/react';
 
 const tabItems = [
   {
@@ -30,7 +31,6 @@ const tabItems = [
 const Footer = styled.div`
   color: rgba(0, 0, 0, 0.6);
   font-size: 13px;
-  padding: ;
 `;
 
 const currentYear = dayjs().year();
@@ -90,8 +90,12 @@ const SalesVolume = () => {
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
       <Wrap>
-        {isLoading ? <Spinner /> : null}
-        <ContentsWrap>
+        <ContentsWrap
+          css={css`
+            height: calc(100% - 50px);
+          `}
+        >
+          {isLoading ? <Spinner /> : null}
           <MarketSpread data={data?.marketSpread || []} year={selectYear} />
           <MarketShareByBrand data={data?.marketShareByBrand || []} />
         </ContentsWrap>

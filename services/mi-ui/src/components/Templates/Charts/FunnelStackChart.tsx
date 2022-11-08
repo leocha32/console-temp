@@ -34,45 +34,40 @@ export interface IFunnelStackChartProps extends Omit<IBaseEChartsProps, 'option'
 }
 
 const makeFunnel = (data, xAixDataLength) => {
-  const sumValues = Array(xAixDataLength).fill(0);
   return {
     type: 'custom' as const,
-    renderItem: function (params, api) {
-      const currentSeriesIndices = api.currentSeriesIndices(); // 범례 수(data 수)
-      const { dataIndex } = params;
+    renderItem: function ({ coordSys, seriesIndex }, api) {
+      const currentSeriesIndices = api.currentSeriesIndices();
 
       const barLayout = api.barLayout({
-        count: currentSeriesIndices.length - 1,
+        width: 50,
+        barMinWidth: 50,
+        count: seriesIndex,
       });
-
       const points: [number, number][] = [];
-      // 누적 차트 좌표([차트 중심, 차트 높이])
-      const point = api.coord([dataIndex, sumValues[dataIndex]]);
-      const nextBarCoors = api.coord([dataIndex, sumValues[dataIndex + 1]]);
 
-      if (dataIndex !== params.seriesIndex) {
-        for (let i = 0; i < xAixDataLength; i++) {
-          sumValues[i] += api.value(i, dataIndex);
-        }
-        console.log(sumValues);
+      const barWidth = barLayout[0].width;
+      for (let i = 0; i < xAixDataLength; i++) {
+        const sum = currentSeriesIndices.reduce((pre, cur, idx) => {
+          if (idx === currentSeriesIndices.length - 1) {
+            return pre;
+          }
+          const value = api.value(i, cur);
+          return value + pre;
+        }, 0);
 
+        const point = api.coord([i, sum]);
+        // 우측 상단 포인트
+        points.splice(points.length, 0, [point[0] - barWidth, point[1]]);
         //x축 중심에서 우측 끝으로 이동
-        point[0] += Math.round(barLayout[dataIndex].width);
+        point[0] += Math.round(barWidth);
 
         //좌측 상단 포인트
         points.push([point[0], point[1]]);
+
+        //좌측 하단 포인트
+        points.unshift([point[0], coordSys.height + coordSys.y]);
       }
-      //좌측 하단 포인트
-      points.unshift([point[0], params.coordSys.height + params.coordSys.y]);
-
-      //우측 상단 포인트
-      points.push([points[dataIndex][0] + barLayout[dataIndex].width, nextBarCoors[1]]);
-
-      //우측 하단 포인트
-      points.push([
-        points[dataIndex][0] + barLayout[dataIndex].width,
-        params.coordSys.height + params.coordSys.y,
-      ]);
 
       return {
         type: 'polygon' as const,

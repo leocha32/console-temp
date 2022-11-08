@@ -58,12 +58,12 @@ const legendOption = {
   orient: ChartOrient.HORIZONTAL,
   left: ChartLeft.CENTER,
   top: ChartTop.BOTTOM,
-  padding: 10,
+  padding: [10, 0, 20, 0],
 };
 
 const gridOption = {
-  height: '70%',
   top: '10%',
+  bottom: '20%',
 };
 const yAxisOption = {
   name: '[단위: %]',

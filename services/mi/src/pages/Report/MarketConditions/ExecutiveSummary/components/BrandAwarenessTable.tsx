@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
-import { Table, Button } from 'mi-ui';
+import React, { useCallback, useState } from 'react';
+import { Table, Button, JustifyContent } from 'mi-ui';
 import { IBrandAwarenessSummary } from '$modules/report';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './BrandAwarenessTableConfig';
 import { Contents, Title } from './commonStyled';
 import { useDownloadReport } from '$modules/report';
 
-import { CircularProgress } from '@mui/material';
+type TBrandAwarenessTable = Partial<IBrandAwarenessSummary>;
+
 const cowayBrandAwarenessToRowData = (data, orderStandard) => {
   const brandShareRanks: any = [];
   const orderedData = orderStandard.map(
@@ -75,33 +76,42 @@ const BrandAwarenessTable = ({
   cowayBrandAwareness,
   topOfMindRank,
   researchReportFile,
-}: IBrandAwarenessSummary) => {
+}: TBrandAwarenessTable) => {
+  const [btnLoading, setBtnLoading] = useState(false);
   const downloadReport = useDownloadReport();
 
   const handleDownloadReport = useCallback(() => {
     if (researchReportFile) {
+      setBtnLoading(true);
       const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate({
-        half,
-        category,
-        filePath,
-        year,
-        fileName: originalFileName,
-      });
+      downloadReport.mutate(
+        {
+          half,
+          category,
+          filePath,
+          year,
+          fileName: originalFileName,
+        },
+        {
+          onSettled: () => {
+            setBtnLoading(false);
+          },
+        },
+      );
     }
   }, [researchReportFile, downloadReport]);
-
   const rowData = makeRowData(cowayBrandAwareness, topOfMindRank);
 
   return (
     <Contents>
       <Title>브랜드 인지도</Title>
       <Button
+        label={'보고서 다운로드'}
         onClick={handleDownloadReport}
-        sx={{ width: 'fit-content', placeSelf: 'end' }}
-      >
-        보고서 다운로드
-      </Button>
+        showLoading={btnLoading}
+        justifyContent={JustifyContent.RIGHT}
+        disabled={!researchReportFile}
+      ></Button>
       <Table
         sx={{ gridRowStart: 2, gridColumn: '1/3' }}
         showHeader={false}

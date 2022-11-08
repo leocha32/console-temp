@@ -51,7 +51,6 @@ const columnConfig: TColumnProps[] = [
     options: {
       sx: {
         backgroundColor: 'aliceblue',
-        height: '10px',
       },
     },
   },
@@ -70,9 +69,13 @@ const columnConfig: TColumnProps[] = [
     name: 'gapWithCoway',
     label: '경쟁사 대비',
     options: {
-      textFormat: (value) => `${value > 0 ? '▲' : '▼'} ${Math.abs(+value)}%`,
+      textFormat: (value) => {
+        const [a, b] = String(value).split(',');
+        return a === '코웨이' ? '-' : `${+b > 0 ? '▲' : '▼'} ${Math.abs(+b)}%`;
+      },
       colorFormat: (value) => {
-        return value > 0 ? 'red' : 'blue';
+        const [a, b] = String(value).split(',');
+        return a === '코웨이' ? 'black' : +b > 0 ? 'red' : 'blue';
       },
     },
   },
@@ -94,16 +97,17 @@ const makeRowData = (data) => {
     const rowData = orderStandard.map((orderName) => {
       return {
         colName: orderName,
-        value: orderName === 'gapWithCoway' ? data[orderName] * -1 : data[orderName],
+        value:
+          orderName === 'gapWithCoway'
+            ? `${data.brand},${data[orderName] * -1}`
+            : data[orderName],
       };
     });
     return {
       name: i + 1 + '', //row 번호
       data: rowData,
       options: {
-        sx: {
-          height: '30px',
-        },
+        height: 'inherit',
       },
     };
   });

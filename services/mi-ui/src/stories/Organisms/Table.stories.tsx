@@ -12,7 +12,7 @@ export const Table: ComponentStory<typeof CTable> = (args: ITableContainerProps)
 );
 const headers = [
   {
-    name: '제품군',
+    name: '순위',
   },
   {
     name: '재 렌탈 개요',
@@ -32,11 +32,6 @@ const headers = [
             name: '동일 제품군',
             header: '동일 제품군',
           },
-          {
-            name: '타 제품군',
-            header: '동일 제품군',
-            colSpanOffset: 2,
-          },
         ],
       },
     ],
@@ -45,65 +40,146 @@ const headers = [
 
 const columns = [
   {
-    name: 'division',
-    renderer: 'text',
-    colSpan: 2,
+    name: 'marketShareRank',
+    label: '순위',
+    options: {
+      sx: {
+        backgroundColor: 'aliceblue',
+      },
+    },
   },
   {
-    name: 'apr',
-    renderer: 'number',
+    name: 'brand',
+    label: '회사',
   },
   {
-    name: 'may',
-    renderer: 'number',
+    name: 'marketShareValue',
+    label: '시장 점유율',
+    options: {
+      textFormat: (value) => `${value}%`,
+    },
   },
   {
-    name: 'june',
-    renderer: 'number',
+    name: 'gapWithCoway',
+    label: '경쟁사 대비',
+    options: {
+      textFormat: (value) => {
+        const [a, b] = String(value).split(',');
+        return a === '코웨이' ? '-' : `${+b > 0 ? '▲' : '▼'} ${Math.abs(+b)}%`;
+      },
+      colorFormat: (value) => {
+        const [a, b] = String(value).split(',');
+        return a === '코웨이' ? 'black' : +b > 0 ? 'red' : 'blue';
+      },
+    },
   },
 ];
 const rowData = [
   {
-    value: '정수기',
-    subValues: [
+    name: 'label',
+    options: {
+      sx: {
+        backgroundColor: 'aliceblue',
+      },
+    },
+    data: [
       {
-        division_2: '전반기',
-        apr: '12,000',
-        may: '32,000',
-        june: '42,000',
+        colName: 'marketShareRank',
+        value: '순위',
       },
       {
-        division_2: '후반기',
-        apr: '9,000',
-        may: '12,000',
-        june: '10,000',
+        colName: 'brand',
+        value: '회사',
+      },
+      {
+        colName: 'marketShareValue',
+        value: '시장 점유율',
+      },
+      {
+        colName: 'gapWithCoway',
+        value: '경쟁사 대비',
       },
     ],
   },
   {
-    division: '청정기',
-    apr: '53,000',
-    may: '19,000',
-    june: '71,000',
+    name: '1',
+    data: [
+      {
+        colName: 'marketShareRank',
+        value: 1,
+      },
+      {
+        colName: 'brand',
+        value: '코웨이',
+      },
+      {
+        colName: 'marketShareValue',
+        value: 26.2,
+      },
+      {
+        colName: 'gapWithCoway',
+        value: '코웨이,0',
+      },
+    ],
+    options: {
+      height: 'inherit',
+    },
   },
   {
-    division: '비데',
-    apr: '8,010',
-    may: '9,200',
-    june: '52,900',
+    name: '2',
+    data: [
+      {
+        colName: 'marketShareRank',
+        value: 2,
+      },
+      {
+        colName: 'brand',
+        value: 'LG전자',
+      },
+      {
+        colName: 'marketShareValue',
+        value: 23.3,
+      },
+      {
+        colName: 'gapWithCoway',
+        value: 'LG전자,2.9',
+      },
+    ],
+    options: {
+      height: 'inherit',
+    },
   },
   {
-    division: '매트릭스',
-    apr: '22,550',
-    may: '21,040',
-    june: '18,000',
+    name: '3',
+    data: [
+      {
+        colName: 'marketShareRank',
+        value: 3,
+      },
+      {
+        colName: 'brand',
+        value: 'SK매직',
+      },
+      {
+        colName: 'marketShareValue',
+        value: 16.4,
+      },
+      {
+        colName: 'gapWithCoway',
+        value: 'SK매직,9.8',
+      },
+    ],
+    options: {
+      height: 'inherit',
+    },
   },
 ];
 
 Table.args = {
-  rowData: rowData,
-  columns: [],
+  row: rowData,
+  columns: columns,
   headers: headers,
+  showHeader: false,
   sx: {
     maxWidth: '500px',
   },

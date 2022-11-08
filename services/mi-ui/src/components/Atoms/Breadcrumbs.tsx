@@ -29,10 +29,6 @@ const Crumb = ({ icon, name }: IMuiTypographyProps) => {
 };
 
 export const Breadcrumbs = ({ separator = '›', ...props }: IBreadcrumbsProps) => {
-  /**
-   * Todo: Icon 추가 및 viewBox 부분 수정 필요
-   */
-
   return (
     <MuiBreadcrumbs separator={separator} {...props}>
       {props.crumbs.map((crumb, index) => (

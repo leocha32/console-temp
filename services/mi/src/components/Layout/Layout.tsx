@@ -8,6 +8,7 @@ import { recentMenuSelector } from 'recoils/recentMenu';
 
 const Header = (
   <div
+    id={'layout-header'}
     css={css`
       font-size: 24px;
       font-weight: 700;

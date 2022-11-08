@@ -32,13 +32,13 @@ FunnelStackChart.args = {
     {
       name: 'organic',
       stack: 'UV',
-      data: [60, 30, 10, 10],
+      data: [60, 30, 10, 10, 2],
     },
     {
       name: 'paid',
       stack: 'UV',
-      data: [20, 16, 30, 10],
+      data: [20, 16, 30, 10, 1],
     },
   ],
-  xAixData: ['UV', '주문신청', '주문완료', '1주문완료'],
+  xAixData: ['UV', '주문신청', '주문완료'],
 };

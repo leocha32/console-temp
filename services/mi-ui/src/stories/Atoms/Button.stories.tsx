@@ -9,14 +9,18 @@ export default {
   component: Button,
 } as ComponentMeta<typeof Button>;
 
-export const PrimaryButton: ComponentStory<typeof Button> = (args: TButtonProps) => <Button {...args} />;
+export const PrimaryButton: ComponentStory<typeof Button> = (args: TButtonProps) => (
+  <Button {...args} />
+);
 
 PrimaryButton.args = {
-  children: 'Button',
+  children: 'Buttontesgt',
   color: 'primary',
 };
 
-export const DisabledButton: ComponentStory<typeof Button> = (args: TButtonProps) => <Button {...args} />;
+export const DisabledButton: ComponentStory<typeof Button> = (args: TButtonProps) => (
+  <Button {...args} />
+);
 
 DisabledButton.args = {
   children: 'Button',

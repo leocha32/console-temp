@@ -16,29 +16,46 @@ export interface ICellOptions extends MuiTableCellProps {
   rowSpan?: number;
   textFormat?: (value: string | number) => string;
   colorFormat?: (value: string | number) => string;
+  height?: number | string;
+  fontSize?: number;
 }
+const defaultCellOption: ICellOptions = {
+  rowSpan: 0,
+  textFormat: (value) => String(value),
+  colorFormat: (value) => String(value),
+  height: 'inherit',
+  fontSize: 15,
+};
 
-export const Cell = ({
-  value,
-  rowSpan,
-  options = { rowSpan: 0, sx: {} },
-  ...props
-}: ICellProps) => {
-  const { sx, textFormat, colorFormat } = options;
+const calPaddingByFontSize = (fontSize) => {
+  const defaultFontSize = 15;
+  const defaultPadding = 15;
+  return fontSize <= defaultFontSize
+    ? defaultPadding + 'px'
+    : defaultPadding - fontSize - defaultFontSize + 'px';
+};
+
+export const Cell = ({ value, rowSpan, options, ...props }: ICellProps) => {
+  const { sx, textFormat, colorFormat, height, fontSize } = {
+    ...defaultCellOption,
+    ...options,
+  };
 
   const defaultSx = {
-    fontSize: 15,
     textAlign: 'center',
   } as MuiTableCellProps;
-
   return (
     <MuiTableCell
       rowSpan={rowSpan ? rowSpan : 1}
       sx={{
-        color: colorFormat ? colorFormat(value) : 'black',
         ...defaultSx,
         ...sx,
-        height: '1rem',
+        [`&.MuiTableCell-root`]: {
+          lineHeight: height,
+          fontSize: fontSize,
+          padding: calPaddingByFontSize(fontSize),
+        },
+        color: colorFormat ? colorFormat(value) : 'black',
       }}
       {...props}
     >

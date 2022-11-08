@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import {
   DateRangePicker as CDateRangePicker,
-  IDateRangePrickerProps,
+  TDateRangePickerProps,
 } from 'components/Atoms';
 
 export default {
@@ -11,9 +11,9 @@ export default {
 } as ComponentMeta<typeof CDateRangePicker>;
 
 export const DateRangePicker: ComponentStory<typeof CDateRangePicker> = (
-  args: IDateRangePrickerProps,
+  args: TDateRangePickerProps,
 ) => {
-  return <CDateRangePicker {...args} onChange={console.log} />;
+  return <CDateRangePicker {...args} />;
 };
 
 DateRangePicker.args = {};

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import _ from 'lodash';
 import { IMajorBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
-import { BarChart, ChartLeft, ChartOrient, ChartTop } from 'mi-ui';
+import { BarChart, ChartOrient, ChartTop } from 'mi-ui';
 import {
   Card,
   Section,
@@ -49,13 +49,13 @@ const makeChartData = (data: IMajorBrandAwareness[]) => {
 
 const legendOption = {
   orient: ChartOrient.HORIZONTAL,
-  left: ChartLeft.CENTER,
   top: ChartTop.BOTTOM,
-  padding: 10,
+  padding: [10, 0, 10, 0],
 };
 const gridOption = {
   left: '15%',
   top: '10%',
+  bottom: '18%',
 };
 const yAxisOption = {
   max: 100,

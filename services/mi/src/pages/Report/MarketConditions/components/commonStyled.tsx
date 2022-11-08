@@ -8,23 +8,22 @@ export const Header = styled.div`
 `;
 
 export const Wrap = styled.div`
-  padding: 15px 0px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 30px);
+  height: 100%;
+  margin: 0 10px;
   justify-content: space-between;
-  position: relative;
 `;
 
 export const ContentsWrap = styled.div`
   display: flex;
   height: 100%;
-  margin-bottom: 20px;
+  position: relative;
   flex-direction: ${({ direction = 'row' }: { direction?: string }) => direction};
 `;
 
 export const Tabs = styled(CTabs)`
-  margin-top: 10px;
+  margin: 10px 0 15px;
 `;
 
 export const ButtonsWrap = styled.div`
@@ -77,6 +76,7 @@ export const ContentWrap = styled.div`
 
 export const ChartWrap = styled.div`
   height: 100%;
+  min-height: 300px;
 `;
 
 export const CardTitle = styled.h3`

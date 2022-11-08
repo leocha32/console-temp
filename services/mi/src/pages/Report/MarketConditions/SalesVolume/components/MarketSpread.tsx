@@ -61,6 +61,7 @@ const makeChartData = (
 };
 const gridOption = {
   left: '15%',
+  bottom: '5%',
 };
 const legendOption = {
   show: false,

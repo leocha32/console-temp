@@ -20,7 +20,8 @@ const ContentsWrap = styled.div`
   grid-template-rows: repeat(2, 1fr);
   grid-gap: 20px;
   height: calc(100% - 30px);
-  padding: 15px 0px;
+  margin: 15px 10px;
+  position: relative;
 `;
 const Footer = styled.div`
   color: rgba(0, 0, 0, 0.6);
@@ -50,7 +51,7 @@ const tabItems = [
   },
 ];
 
-const TITLE = '시판 판매량';
+const TITLE = '시장 점유율(M/S)';
 const currentMonth = dayjs().month();
 const currentYear = dayjs().year();
 

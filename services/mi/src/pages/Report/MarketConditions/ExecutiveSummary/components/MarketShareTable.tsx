@@ -1,10 +1,10 @@
-import React, { useMemo, useCallback } from 'react';
-import { Table, Button, TRowProps } from 'mi-ui';
+import React, { useMemo, useCallback, useState } from 'react';
+import { Table, Button, TRowProps, JustifyContent } from 'mi-ui';
 import { ROW_OPTIONS, VALUE_ORDER, COLUMN } from './MarketShareTableConfigs';
 import { IExecutiveMarketShare, useDownloadReport } from '$modules/report';
 import { Contents, Title } from './commonStyled';
 
-export type TMarketShareTableProps = IExecutiveMarketShare;
+export type TMarketShareTableProps = Partial<IExecutiveMarketShare>;
 
 const PRODUCT_ORDER = COLUMN.filter((col) => col.name !== 'rowHeader');
 
@@ -56,11 +56,7 @@ const getProductPenetration = ({ productPenetration, productName }) => {
  * @param marketShareRank
  * @param productPenetration
  */
-const makeRowData = ({
-  cowayMarketShare,
-  marketShareRank,
-  productPenetration,
-}: IExecutiveMarketShare) => {
+const makeRowData = ({ cowayMarketShare, marketShareRank, productPenetration }) => {
   if (
     marketShareRank.length === 0 ||
     cowayMarketShare.length === 0 ||
@@ -118,18 +114,27 @@ const MarketShareTable = ({
   productPenetration,
   marketShareRank,
 }: TMarketShareTableProps) => {
+  const [btnLoading, setBtnLoading] = useState(false);
   const downloadReport = useDownloadReport();
 
   const handleDownloadReport = useCallback(() => {
     if (researchReportFile) {
+      setBtnLoading(true);
       const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate({
-        half,
-        category,
-        filePath,
-        year,
-        fileName: originalFileName,
-      });
+      downloadReport.mutate(
+        {
+          half,
+          category,
+          filePath,
+          year,
+          fileName: originalFileName,
+        },
+        {
+          onSettled: () => {
+            setBtnLoading(false);
+          },
+        },
+      );
     }
   }, [researchReportFile, downloadReport]);
 
@@ -138,7 +143,7 @@ const MarketShareTable = ({
       cowayMarketShare,
       marketShareRank,
       productPenetration,
-    } as TMarketShareTableProps);
+    });
   }, [cowayMarketShare, productPenetration, marketShareRank]);
 
   return (
@@ -146,12 +151,13 @@ const MarketShareTable = ({
       <Title>시장 점유율(M/S)</Title>
       <Button
         onClick={handleDownloadReport}
-        sx={{ width: 'fit-content', placeSelf: 'end' }}
-      >
-        보고서 다운로드
-      </Button>
+        label={'보고서 다운로드'}
+        showLoading={btnLoading}
+        justifyContent={JustifyContent.RIGHT}
+        disabled={!researchReportFile}
+      ></Button>
       <Table
-        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
+        sx={{ height: '100%', gridRowStart: 2, gridColumn: '1/3' }}
         showHeader={false}
         row={rowData}
         columns={COLUMN}

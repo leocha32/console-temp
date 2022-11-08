@@ -6,9 +6,8 @@ import styled from '@emotion/styled';
 import MarketShareTable from './components/MarketShareTable';
 import BrandAwarenessTable from './components/BrandAwarenessTable';
 import SalesVolumeTable from './components/SalesVolumeTable';
-import { useExecutiveSummary, useMarketShare } from '$modules/report';
+import { useExecutiveSummary } from '$modules/report';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
-import { Wrap } from '../components/commonStyled';
 import { HalfYear } from '$constants/enum';
 
 const TableContainer = styled.div`
@@ -17,7 +16,14 @@ const TableContainer = styled.div`
   overflow-y: auto;
   grid-gap: 20px;
 `;
-
+const ContentsWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0 10px;
+  justify-content: space-between;
+  position: relative;
+`;
 const Footer = styled.div`
   color: rgba(0, 0, 0, 0.6);
   font-size: 13px;
@@ -84,14 +90,14 @@ const ExecutiveSummary = () => {
         element={contentRef.current as HTMLElement}
         title={TITLE}
       />
-      <Wrap>
+      <ContentsWrap>
         {isLoading ? (
           <Spinner />
         ) : (
-          <TableContainer>
-            <MarketShareTable {...data!.marketShareSummary} />
-            <SalesVolumeTable {...data!.salesVolumeSummary} />
-            <BrandAwarenessTable {...data!.brandAwarenessSummary} />
+          <TableContainer id={'table-container'}>
+            <MarketShareTable {...data?.marketShareSummary} />
+            <SalesVolumeTable {...data?.salesVolumeSummary} />
+            <BrandAwarenessTable {...data?.brandAwarenessSummary} />
           </TableContainer>
         )}
         <Footer>
@@ -99,7 +105,8 @@ const ExecutiveSummary = () => {
           <br />
           1) 시장 점유율 조사 : 매년 상 · 하반기 조사, 전국(제주 제외), 만 25~59세 여성
           가구 패널 (가구주 or 가구주 부인), 통계청 가구 정보 근거하여 6개 변인 할당
-          (지역/연령/도시 규모/가구소득/가구 규모/자녀 연령), n=5000명, 온라인 조사
+          (지역/연령/도시 규모/가구소득/가구 규모/자녀 연령)
+          <br /> n=5000명 온라인 조사
           <br />
           2) 시판 판매량(POS) : 오프라인(양판점, 백화점, 할인점), 온라인(인터넷 종합몰,
           오픈마켓, 소셜커머스, TV홈쇼핑) 채널 판매량 및 매출액 데이터
@@ -107,7 +114,7 @@ const ExecutiveSummary = () => {
           3) 매년 상·하반기 조사, 서울, 경기/인천 및 4대 광역시 거주, 25-59남 여성, 통계청
           가구 정보 근거 가구주 연령, 가구원수, 가구 소득 할당, n=1600명, 온라인 조사
         </Footer>
-      </Wrap>
+      </ContentsWrap>
     </PageLayout>
   );
 };

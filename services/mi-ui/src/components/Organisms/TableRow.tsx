@@ -1,6 +1,5 @@
 import React from 'react';
 import { TableRow as MuiTableRow } from '@mui/material';
-
 import { Cell, ICellOptions } from '../Atoms';
 
 export interface ITableRowProps {

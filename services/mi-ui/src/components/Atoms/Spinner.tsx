@@ -17,7 +17,7 @@ const Wrap = styled.div`
   z-index: 100;
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0);
+  background-color: rgba(255, 255, 255, 0.6);
 `;
 
 export const Spinner = ({ color, ...props }: ISpinnerProps) => {

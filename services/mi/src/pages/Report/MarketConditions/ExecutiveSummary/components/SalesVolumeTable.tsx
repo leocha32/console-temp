@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
-import { Button, Table } from 'mi-ui/src';
+import React, { useCallback, useState } from 'react';
+import { Button, JustifyContent, Table } from 'mi-ui/src';
 import { ISalesVolumeSummary, useDownloadReport } from '$modules/report';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './SalesVolumeTableConfigs';
 import { Contents, Title } from './commonStyled';
 
-export type TSalesVolumeTableProps = ISalesVolumeSummary;
+export type TSalesVolumeTableProps = Partial<ISalesVolumeSummary>;
 
 const columnDataToRowData = (data, orderStandard) => {
   const orderedData = orderStandard.map(
@@ -71,18 +71,27 @@ const SalesVolumeTable = ({
   brandShareRank,
   researchReportFile,
 }: TSalesVolumeTableProps) => {
+  const [btnLoading, setBtnLoading] = useState(false);
   const downloadReport = useDownloadReport();
 
   const handleDownloadReport = useCallback(() => {
     if (researchReportFile) {
+      setBtnLoading(true);
       const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate({
-        half,
-        category,
-        filePath,
-        year,
-        fileName: originalFileName,
-      });
+      downloadReport.mutate(
+        {
+          half,
+          category,
+          filePath,
+          year,
+          fileName: originalFileName,
+        },
+        {
+          onSettled: () => {
+            setBtnLoading(false);
+          },
+        },
+      );
     }
   }, [researchReportFile, downloadReport]);
 
@@ -93,10 +102,11 @@ const SalesVolumeTable = ({
       <Title>시판 판매량(PoS)</Title>
       <Button
         onClick={handleDownloadReport}
-        sx={{ width: 'fit-content', placeSelf: 'end' }}
-      >
-        보고서 다운로드
-      </Button>
+        label={'보고서 다운로드'}
+        showLoading={btnLoading}
+        justifyContent={JustifyContent.RIGHT}
+        disabled={!researchReportFile}
+      ></Button>
       <Table
         sx={{ gridRowStart: 2, gridColumn: '1/3' }}
         showHeader={false}
