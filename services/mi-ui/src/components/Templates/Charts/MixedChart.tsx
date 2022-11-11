@@ -25,7 +25,7 @@ type TMixedChartProps = Omit<IBaseEChartsProps, 'option'>;
 
 export interface IMixedChartProps extends TMixedChartProps {
   data: IDataProps[];
-  option: LineSeriesOption | BarSeriesOption;
+  // option: LineSeriesOption | BarSeriesOption;
   xAixData: string[];
   yAxis?: YAXisOption[];
   showLegendBottom?: boolean;

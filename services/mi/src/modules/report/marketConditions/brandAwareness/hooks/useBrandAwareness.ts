@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { IApiError } from '$types/api-error';
 import { getBrandAwareness } from '../api';
 import { BRAND_AWARENESS_KEY } from '../key';
-import { MARKET_CONDITION_KEY } from '../../key';
+import { MARKET_CONDITION_KEY } from '$modules/report/key';
 import { IBrandAwarenessParams, IBrandAwareness } from '../types';
 
 export const useBrandAwareness = (

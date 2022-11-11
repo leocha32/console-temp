@@ -24,6 +24,7 @@ export const PrimaryColor = {
 } as const;
 
 export const GrayColor = {
+  GRAY_1000: '#191f28',
   GRAY_900: '#616469',
   GRAY_800: '#888D92',
   GRAY_700: '#9BA1A7',

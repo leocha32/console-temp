@@ -29,7 +29,7 @@ const Section = styled.div`
 `;
 
 const Wrap = styled.div`
-  padding: 20px 30px;
+  padding: 20px 30px 40px;
   flex: 1;
 `;
 export const Layout = ({

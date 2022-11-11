@@ -11,7 +11,7 @@ import {
   Section,
   ContentWrap,
   ContentTitle,
-} from '$pages/Report/MarketConditions/components/commonStyled';
+} from '$pages/Report/commonStyled';
 
 export interface IMarketShareByBrandProps {
   data: IMarketShareByBrand[];

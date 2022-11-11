@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { IApiError } from '$types/api-error';
 import { getSalesVolume } from '../api';
 import { SALES_VOLUME_KEY } from '../key';
-import { MARKET_CONDITION_KEY } from '../../key';
+import { MARKET_CONDITION_KEY } from '$modules/report/key';
 import { ISalesVolumeParams, ISalesVolume } from '../types';
 
 export const useSalesVolume = (

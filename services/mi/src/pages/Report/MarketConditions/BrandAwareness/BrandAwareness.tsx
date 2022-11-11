@@ -4,7 +4,7 @@ import { PageLayout, Spinner } from 'mi-ui';
 import { getCrumbs } from '$utils/utils';
 import { CowayBrandAwareness, MajorBrandAwareness } from './components';
 import { HalfYear } from '$constants/enum';
-import { Wrap, ContentsWrap, Tabs } from '../components/commonStyled';
+import { Wrap, ContentsWrap, Tabs } from '$pages/Report/commonStyled';
 import { useBrandAwareness } from '$modules/report';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
 
@@ -71,7 +71,7 @@ const BrandAwareness = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value.value);
+      setSelectYear(value);
     },
     [setSelectYear],
   );

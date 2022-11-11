@@ -6,4 +6,13 @@ export default {
   share: '시장 점유율(M/S)',
   sales: '시판 판매량',
   awareness: '브랜드 인지도',
+  accountsSales: '계정 및 판매',
+  account: '계정',
+  customer: '고객',
+  warriorSales: '전사 판매',
+  salesOrganization: '조직별 판매',
+  marketing: '마케팅',
+  marketingCostsEfficiency: '마케팅 비용 및 효율',
+  atl: 'ATL',
+  digital: 'Digital',
 };

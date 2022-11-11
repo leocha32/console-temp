@@ -4,6 +4,7 @@ import {
   DateRangePicker as CDateRangePicker,
   TDateRangePickerProps,
 } from 'components/Atoms';
+import dayjs from 'dayjs';
 
 export default {
   title: 'Atoms/DateRangePicker',
@@ -16,4 +17,9 @@ export const DateRangePicker: ComponentStory<typeof CDateRangePicker> = (
   return <CDateRangePicker {...args} />;
 };
 
-DateRangePicker.args = {};
+DateRangePicker.args = {
+  startDate: dayjs(new Date()).subtract(1, 'month').toDate(),
+  endDate: new Date(),
+  size: 'small',
+  onChange: (startDate, endDate) => console.log(startDate, endDate),
+};

@@ -15,6 +15,9 @@ const TableContainer = styled.div`
   max-height: 70vh;
   overflow-y: auto;
   grid-gap: 20px;
+  border-left: none;
+  box-shadow: 2px 2px 1px -1px rgb(0 0 0 / 20%), 2px 1px 1px -1px rgb(0 0 0 / 14%),
+    2px 1px 3px -1px rgb(0 0 0 / 12%);
 `;
 const ContentsWrap = styled.div`
   display: flex;
@@ -61,7 +64,6 @@ const ExecutiveSummary = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [selectYear, setSelectYear] = useState<string>(selectOption()[0]?.value);
   const [year, half] = selectYear.split('-');
-
   const { data, isLoading, refetch } = useExecutiveSummary(
     {
       year: year,
@@ -76,7 +78,7 @@ const ExecutiveSummary = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value.value);
+      setSelectYear(value);
     },
     [setSelectYear],
   );
@@ -105,8 +107,7 @@ const ExecutiveSummary = () => {
           <br />
           1) 시장 점유율 조사 : 매년 상 · 하반기 조사, 전국(제주 제외), 만 25~59세 여성
           가구 패널 (가구주 or 가구주 부인), 통계청 가구 정보 근거하여 6개 변인 할당
-          (지역/연령/도시 규모/가구소득/가구 규모/자녀 연령)
-          <br /> n=5000명 온라인 조사
+          (지역/연령/도시 규모/가구소득/가구 규모/자녀 연령) n=5000명 온라인 조사
           <br />
           2) 시판 판매량(POS) : 오프라인(양판점, 백화점, 할인점), 온라인(인터넷 종합몰,
           오픈마켓, 소셜커머스, TV홈쇼핑) 채널 판매량 및 매출액 데이터

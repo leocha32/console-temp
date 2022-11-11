@@ -1,56 +1,44 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 // Components
-import {
-  SingleSelect as CSelect,
-  ISingleSelectProps,
-  MultiSelect as CMultiSelect,
-  IMultiSelectProps,
-} from 'components/Atoms';
+import { Select as CSelect, ISelectProps } from 'components/Atoms';
 
 export default {
   title: 'Atoms/Select',
-  components: [CSelect, CMultiSelect],
+  component: CSelect,
 } as ComponentMeta<typeof CSelect>;
 
-export const Select: ComponentStory<typeof CSelect> = (args: ISingleSelectProps) => (
-  <CSelect {...args} />
-);
+export const Select: ComponentStory<typeof CSelect> = (args: ISelectProps) => {
+  const [selected, setSelected] = useState('');
+
+  const handleChange = useCallback((value) => {
+    setSelected(value);
+  }, []);
+  return <CSelect {...args} onChange={handleChange} value={selected} />;
+};
 
 Select.args = {
-  isMulti: false,
   options: [
-    {
-      label: '2021',
-      value: '2021',
-    },
-    {
-      label: '2022',
-      value: '2022',
-    },
-    {
-      label: '2023',
-      value: '2023',
-    },
+    { value: 'test1', label: 'test1' },
+    { value: 'test2', label: 'test2' },
   ],
 };
 
-export const MultiSelect: ComponentStory<typeof CMultiSelect> = (
-  args: IMultiSelectProps,
-) => {
-  const [selected, setSelected] = useState<any>([]);
-  return <CMultiSelect {...args} value={selected} onChange={setSelected} />;
+export const MultiSelect: ComponentStory<typeof CSelect> = (args: ISelectProps) => {
+  const [selected, setSelected] = useState([]);
+
+  const handleChange = useCallback((value) => {
+    setSelected(value);
+  }, []);
+  return <CSelect {...args} onChange={handleChange} value={selected} />;
 };
 
 MultiSelect.args = {
-  width: '300px',
+  multiple: true,
+  useSearch: true,
   options: [
-    { value: '1', label: 'Jimmy' },
-    { value: '2', label: 'Laura' },
-    { value: '3', label: 'Tommy' },
-    { value: '4', label: 'Jane' },
-    { value: '5', label: 'Mike' },
+    { value: 'test1', label: 'test1' },
+    { value: 'test2', label: 'test2' },
   ],
-  selectAllLabel: '모두선택',
 };

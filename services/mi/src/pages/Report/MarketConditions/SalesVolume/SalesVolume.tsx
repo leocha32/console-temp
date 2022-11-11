@@ -5,7 +5,7 @@ import { PageLayout, Spinner } from 'mi-ui';
 import { useSalesVolume } from '$modules/report';
 import { getCrumbs } from '$utils/utils';
 import { MarketSpread, MarketShareByBrand } from './components';
-import { Wrap, ContentsWrap, Tabs } from '../components/commonStyled';
+import { Wrap, ContentsWrap, Tabs } from '$pages/Report/commonStyled';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
 import { css } from '@emotion/react';
 
@@ -73,7 +73,7 @@ const SalesVolume = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value.value);
+      setSelectYear(value);
     },
     [setSelectYear],
   );

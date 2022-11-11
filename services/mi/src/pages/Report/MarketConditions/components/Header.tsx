@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { Button, ISingleSelectProps, SingleSelect as Select } from 'mi-ui/src';
-import { ButtonsWrap, Header as CHeader } from './commonStyled';
+import { Button, ISelectProps, Select } from 'mi-ui';
+import { ButtonsWrap, Header as CHeader } from '$pages/Report/commonStyled';
 import { useDownloadReport } from '$modules/report';
 import { IResearchReportFile } from '$types/common';
 import { saveImage } from '$utils/utils';
@@ -9,8 +9,8 @@ import { css } from '@emotion/react';
 export interface IHeaderProps {
   researchReportFile?: IResearchReportFile;
   selectYear: string;
-  selectOptions: ISingleSelectProps['options'];
-  onChangeSelect: (value: unknown) => void;
+  selectOptions: ISelectProps['options'];
+  onChangeSelect: ISelectProps['onChange'];
   element: HTMLElement;
   title: string;
   hiddenCaptureButton?: boolean;
@@ -64,7 +64,8 @@ export const Header = ({
         `}
         options={selectOptions}
         onChange={onChangeSelect}
-        defaultValue={selectOptions![0]}
+        value={selectYear}
+        title={'조회 시기'}
       />
 
       <ButtonsWrap>

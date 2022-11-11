@@ -8,6 +8,9 @@ import {
   ToolboxComponent,
   TitleComponent,
   DataZoomComponent,
+  MarkPointComponent,
+  MarkLineComponent,
+  MarkAreaComponent,
 } from 'echarts/components';
 import type { ECharts, ComposeOption, SetOptionOpts } from 'echarts/core';
 import type {
@@ -17,7 +20,13 @@ import type {
   CustomSeriesOption,
   PieSeriesOption,
 } from 'echarts/charts';
-import type { TitleComponentOption, GridComponentOption } from 'echarts/components';
+import type {
+  TitleComponentOption,
+  GridComponentOption,
+  MarkPointComponentOption,
+  MarkLineComponentOption,
+  MarkAreaComponentOption,
+} from 'echarts/components';
 import { ChartColor } from '../../../constants/color';
 
 // Register the required components
@@ -26,6 +35,10 @@ use([
   GridComponent,
   TooltipComponent,
   TitleComponent,
+  MarkPointComponent,
+
+  MarkLineComponent,
+  MarkAreaComponent,
   ToolboxComponent, // 내보내기, 데이터보기 등 유틸리티 도구.
   DataZoomComponent, // Line 차트에 사용
   CanvasRenderer, // 캔버스 렌더링 모드에만 사용.
@@ -40,6 +53,9 @@ export type TBaseEChartsOption = ComposeOption<
   | ScatterSeriesOption
   | PieSeriesOption
   | CustomSeriesOption
+  | MarkLineComponentOption
+  | MarkPointComponentOption
+  | MarkAreaComponentOption
 >;
 
 export interface IBaseEChartsProps {

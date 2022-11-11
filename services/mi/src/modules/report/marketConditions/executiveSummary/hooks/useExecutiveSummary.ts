@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { IApiError } from '$types/api-error';
 import { getExecutiveSummary } from '../api';
 import { EXECUTIVE_SUMMARY } from '../key';
-import { MARKET_CONDITION_KEY } from '../../key';
+import { MARKET_CONDITION_KEY } from '$modules/report/key';
 import { IExecutiveSummaryRequestField, IExecutiveSummaryResponseDto } from '../types';
 
 export const useExecutiveSummary = (

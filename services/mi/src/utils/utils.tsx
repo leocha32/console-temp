@@ -73,11 +73,13 @@ const changeCssFitCanvas = (element) => {
 
     tableContainer['style'].overflowY = 'visible';
     tableContainer['style'].height = tableContainer.clientHeight;
+    tableContainer['style'].boxShadow = 'none';
 
     for (const child of tableContainer.children) {
       const length = tableContainer.children.length;
       child['style'].height = tableContainer.clientHeight / length;
       child.getElementsByTagName('button')[0].style.display = 'none';
+      child['style'].boxShadow = 'none';
     }
 
     element.style.height =
@@ -110,7 +112,9 @@ const changeCsstoInit = (element) => {
     for (const child of tableContainer.children) {
       child.getElementsByTagName('button')[0].style.display = '';
       child['style'].height = '';
+      child['style'].boxShadow = '';
     }
+    tableContainer['style'].boxShadow = '';
     tableContainer['style'].overflowY = 'auto';
     element.style.height = '';
   }

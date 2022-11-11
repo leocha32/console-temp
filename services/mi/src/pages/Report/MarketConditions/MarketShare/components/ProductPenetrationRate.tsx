@@ -1,7 +1,7 @@
 import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import styled from '@emotion/styled';
-import { CardTitle } from '$pages/Report/MarketConditions/components/commonStyled';
+import { CardTitle } from '$pages/Report/commonStyled';
 import { Card as MiCard } from 'mi-ui/src';
 import { IProductPenetration } from '$modules/report';
 

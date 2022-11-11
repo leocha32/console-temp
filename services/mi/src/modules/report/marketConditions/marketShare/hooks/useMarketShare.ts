@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { IApiError } from '$types/api-error';
 import { getMarketShare } from '../api';
 import { MARKET_SHARE_KEY } from '../key';
-import { MARKET_CONDITION_KEY } from '../../key';
+import { MARKET_CONDITION_KEY } from '$modules/report/key';
 import { TMarketShareParams, IMarketShare } from '../types';
 
 export const useMarketShare = (

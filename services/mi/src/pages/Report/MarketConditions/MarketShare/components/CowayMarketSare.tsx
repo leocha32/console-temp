@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { ICowayMarketShare } from '$modules/report';
-import { CardTitle } from '$pages/Report/MarketConditions/components/commonStyled';
+import { CardTitle } from '$pages/Report/commonStyled';
 import { Card as MiCard } from 'mi-ui/src';
 
 export interface ICowayBrandAwarenessProps {

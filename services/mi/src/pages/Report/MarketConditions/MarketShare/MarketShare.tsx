@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { PageLayout, Spinner } from 'mi-ui';
 import { useMarketShare } from '$modules/report';
 import { getCrumbs } from '$utils/utils';
-import { Tabs } from '../components/commonStyled';
+import { Tabs } from '$pages/Report/commonStyled';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
 import { HalfYear } from '$constants/enum';
 import {
@@ -104,7 +104,7 @@ const MarketShare = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value.value);
+      setSelectYear(value);
     },
     [setSelectYear],
   );

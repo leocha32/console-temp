@@ -33,7 +33,7 @@ export interface IBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   title?: TitleOption;
   legend?: LegendOption;
   grid?: GridOption;
-  yAxis?: YAXisOption;
+  yAxis?: YAXisOption | YAXisOption[];
 }
 
 export const BarChart = ({
@@ -83,6 +83,8 @@ export const BarChart = ({
         show: useLegend,
         orient: ChartOrient.HORIZONTAL,
         left: ChartLeft.CENTER,
+        itemHeight: 10,
+        itemWidth: 12,
         ...legend,
       },
       yAxis: {

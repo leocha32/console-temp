@@ -10,7 +10,7 @@ import {
   CardTitle,
   ContentWrap,
   ContentTitle,
-} from '$pages/Report/MarketConditions/components/commonStyled';
+} from '$pages/Report/commonStyled';
 export interface IMajorBrandAwarenessProps {
   data: IMajorBrandAwareness[];
 }
@@ -73,7 +73,7 @@ export const MajorBrandAwareness = ({ data }: IMajorBrandAwarenessProps) => {
   }, [chartData]);
 
   return (
-    <Card flex={2} direction={'column'}>
+    <Card flex={2}>
       <CardTitle>주요 브랜드 인지도</CardTitle>
       {data?.length ? (
         <Section>

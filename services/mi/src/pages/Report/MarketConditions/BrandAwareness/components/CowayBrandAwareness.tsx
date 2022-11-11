@@ -11,7 +11,7 @@ import {
   ContentWrap,
   CardTitle,
   ContentTitle,
-} from '$pages/Report/MarketConditions/components/commonStyled';
+} from '$pages/Report/commonStyled';
 
 export interface ICowayBrandAwarenessProps {
   data: ICowayBrandAwareness[];
@@ -97,7 +97,7 @@ const DataCard = ({
 
 export const CowayBrandAwareness = ({ data }: ICowayBrandAwarenessProps) => {
   return (
-    <Card direction={'column'}>
+    <Card>
       <CardTitle>코웨이 브랜드 인지도</CardTitle>
       {data?.length ? (
         <Section>

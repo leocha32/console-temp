@@ -5,25 +5,28 @@ export const Header = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 `;
 
 export const Wrap = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  margin: 0 10px;
+  margin-top: 15px;
   justify-content: space-between;
 `;
 
 export const ContentsWrap = styled.div`
   display: flex;
   height: 100%;
+  min-height: 600px;
   position: relative;
+  gap: 20px;
   flex-direction: ${({ direction = 'row' }: { direction?: string }) => direction};
 `;
 
 export const Tabs = styled(CTabs)`
-  margin: 10px 0 15px;
+  margin: 10px 0 0;
 `;
 
 export const ButtonsWrap = styled.div`
@@ -41,20 +44,6 @@ export const Card = styled(MiCard)`
   background-color: #fafafa;
   padding: 20px;
   flex: ${({ flex = 1 }: { flex?: number }) => flex};
-  :not(:last-of-type){
-    margin-bottom: ${({
-      direction = 'row',
-    }: {
-      direction?: 'row' | 'column';
-      flex?: number;
-    }) => (direction === 'row' ? '0' : '20px')};
-    margin-right:  ${({
-      direction = 'row',
-    }: {
-      direction?: 'row' | 'column';
-      flex?: number;
-    }) => (direction === 'row' ? '20px' : '0px')};
-  },
 `;
 
 export const Section = styled.div`
@@ -66,7 +55,7 @@ export const Section = styled.div`
 export const ContentWrap = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: ${({ flex = 1 }: { flex?: number }) => flex};
   height: 100%;
   :not(:last-of-type) {
     border-right: ${({ theme }) => `1px solid ${theme.palettes.gray.GRAY_300}`};
@@ -76,7 +65,6 @@ export const ContentWrap = styled.div`
 
 export const ChartWrap = styled.div`
   height: 100%;
-  min-height: 300px;
 `;
 
 export const CardTitle = styled.h3`

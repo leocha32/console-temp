@@ -40,8 +40,7 @@ const makeFunnel = (data, xAixDataLength) => {
       const currentSeriesIndices = api.currentSeriesIndices();
 
       const barLayout = api.barLayout({
-        width: 50,
-        barMinWidth: 50,
+        barCategoryGap: '60%',
         count: seriesIndex,
       });
       const points: [number, number][] = [];
@@ -108,6 +107,7 @@ export const FunnelStackChart = ({
         show: useLabel,
         ...label,
       },
+      barCategoryGap: '60%',
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
       },

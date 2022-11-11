@@ -50,7 +50,7 @@ module.exports = {
       allowedHosts: 'all',
       proxy: {
         '/v2/*': {
-          target: 'https://mi-console-api-dev-dkptan5aba-du.a.run.app',
+          target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
           changeOrigin: true,
           secure: false,
         },

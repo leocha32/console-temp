@@ -3,7 +3,7 @@ import { uniqBy } from 'lodash';
 import { IMajorBrandMarketShare } from '$modules/report/marketConditions/marketShare';
 import { IStackBarChartProps, StackChart, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
 import styled from '@emotion/styled';
-import { CardTitle } from '$pages/Report/MarketConditions/components/commonStyled';
+import { CardTitle } from '$pages/Report/commonStyled';
 import { Card as MiCard } from 'mi-ui/src';
 
 const Card = styled(MiCard)`

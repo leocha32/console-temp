@@ -10,7 +10,7 @@ import {
   Section,
   CardTitle,
   ContentTitle,
-} from '$pages/Report/MarketConditions/components/commonStyled';
+} from '$pages/Report/commonStyled';
 
 export interface IMarketSpreadProps {
   data: IMarketSpread[];
