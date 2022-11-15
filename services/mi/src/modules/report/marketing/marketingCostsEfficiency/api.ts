@@ -1,13 +1,16 @@
 import api from '$utils/api';
-import { IBrandAwareness, IBrandAwarenessParams } from './types';
+import {
+  IMarketingCostAndEfficiencyStatusResponseDto,
+  IMarketingCostsEfficiencyParams,
+} from './types';
 
-export async function getBrandAwareness(
-  params: IBrandAwarenessParams,
-): Promise<IBrandAwareness> {
+export async function getMarketingCostsEfficiency(
+  params: IMarketingCostsEfficiencyParams,
+): Promise<IMarketingCostAndEfficiencyStatusResponseDto> {
   const { data } = await api({
-    url: `/v2/api/console/report/research/brand-awareness`,
+    url: `/v2/api/console/report/marketing/cost-efficiency`,
     method: 'get',
     params,
   });
-  return data.brandAwareness;
+  return data;
 }

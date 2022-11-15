@@ -115,7 +115,6 @@ export const StackChart = ({
         selectedMode: !useAccumulate,
         itemHeight: 10,
         itemWidth: 12,
-
         ...legend,
       },
       xAxis: {

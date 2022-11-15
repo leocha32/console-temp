@@ -15,6 +15,9 @@ const MarketShare = lazy(() => import('pages/Report/MarketConditions/MarketShare
 // 계정 및 판매
 const AccountsSales = lazy(() => import('pages/Report/AccountsSales'));
 const Account = lazy(() => import('pages/Report/AccountsSales/Account'));
+const AccountHoldingCombine = lazy(
+  () => import('pages/Report/AccountsSales/AccountHoldingCombine'),
+);
 const WarriorSales = lazy(() => import('pages/Report/AccountsSales/WarriorSales'));
 const SalesOrganization = lazy(
   () => import('pages/Report/AccountsSales/SalesOrganization'),
@@ -86,6 +89,11 @@ export const routes: TMenu[] = [
                 path: 'account',
                 label: '계정',
                 element: <Account />,
+              },
+              {
+                path: 'account-holding-combine',
+                label: '계정 보유 조합',
+                element: <AccountHoldingCombine />,
               },
               {
                 path: 'customer',

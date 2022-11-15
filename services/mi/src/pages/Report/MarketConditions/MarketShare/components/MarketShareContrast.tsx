@@ -119,7 +119,7 @@ export const MarketShareContrast = ({ data }: IMarketShareContrastProps) => {
 
   return (
     <Card>
-      <Table row={rowData} columns={columnConfig}></Table>
+      <Table sx={{ width: '100%' }} rows={rowData} columns={columnConfig}></Table>
     </Card>
   );
 };

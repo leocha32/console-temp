@@ -12,21 +12,27 @@ function App() {
       const result = data.reduce(
         (pre, { category1, category2, category3, functionalGroup }) => {
           if (!Object.prototype.hasOwnProperty.call(pre, category1)) {
+            //category 제품 | 제품외
             pre[category1] = {};
           }
           if (!Object.prototype.hasOwnProperty.call(pre[category1], category2)) {
-            pre[category1][category2] = {};
-          }
-          if (
-            !Object.prototype.hasOwnProperty.call(pre[category1][category2], category3)
-          ) {
-            pre[category1][category2][category3] = [];
+            // family 제품군
+            pre[category1][category2] = {
+              functionalGroup: [],
+              product: [],
+            };
           }
 
+          const newProduct = new Set([...pre[category1][category2].product]);
+          newProduct.add(category3);
+          pre[category1][category2].product = [...newProduct];
+
           if (functionalGroup) {
-            const newFunctionGroup = new Set([...pre[category1][category2][category3]]);
+            const newFunctionGroup = new Set([
+              ...pre[category1][category2].functionalGroup,
+            ]);
             newFunctionGroup.add(functionalGroup);
-            pre[category1][category2][category3] = [...newFunctionGroup];
+            pre[category1][category2].functionalGroup = [...newFunctionGroup];
           }
 
           return pre;

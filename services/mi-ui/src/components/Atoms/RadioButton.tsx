@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   RadioGroupProps as MuiRadioGroupProps,
   RadioGroup as MuiRadioGroup,
@@ -8,14 +8,9 @@ import {
 import { css } from '@emotion/react';
 
 export interface IRadioGroupProps extends MuiRadioGroupProps {
-  options: TRadioOptions[];
+  options: string[];
   flexDirection?: FlexDirection;
 }
-
-export type TRadioOptions = {
-  key: string;
-  value: string;
-};
 
 export enum FlexDirection {
   COLUMN = 'column',
@@ -27,9 +22,17 @@ export enum FlexDirection {
 export const RadioButton = ({
   options,
   flexDirection = FlexDirection.ROW,
-  value = '',
+  onChange,
   ...props
 }: IRadioGroupProps) => {
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>, value: string) => {
+      if (onChange instanceof Function) {
+        onChange(event, value);
+      }
+    },
+    [onChange],
+  );
   return (
     <MuiRadioGroup
       {...props}
@@ -37,12 +40,13 @@ export const RadioButton = ({
         display: flex;
         flex-direction: ${flexDirection};
       `}
-      defaultValue={value ? value : ''}
+      defaultValue={options ? options[0] : ''}
       name="radio-buttons-group"
+      onChange={handleChange}
     >
-      {options.map(({ key, value }) => (
+      {options.map((value) => (
         <MuiFormControlLabel
-          key={key}
+          key={value}
           value={value}
           control={<MuiRadio />}
           label={value}

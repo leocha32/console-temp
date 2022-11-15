@@ -13,6 +13,7 @@ import {
 import { LineChart as ELineChart, BarChart as EBarChart } from 'echarts/charts';
 import { use } from 'echarts/core';
 import { ChartPosition } from '../../../constants/enum';
+import { EmptyContent } from '../EmptyContent';
 
 use([ELineChart, EBarChart]);
 
@@ -61,6 +62,7 @@ export const MixedChart = ({
   const option = useMemo(() => {
     const series = data.map((d, index) => ({
       ...d,
+      barMaxWidth: 80,
       type: d.type as BarSeriesOption['type'] & LineSeriesOption['type'],
       color: BACKGROUND_COLOR[index % BACKGROUND_COLOR.length],
       label: {
@@ -119,5 +121,9 @@ export const MixedChart = ({
     showLegendBottom,
     useYAxis,
   ]);
-  return <BaseEChart {...props} option={option} />;
+  return data.some(({ data }) => data?.length) ? (
+    <BaseEChart {...props} option={option} />
+  ) : (
+    <EmptyContent />
+  );
 };

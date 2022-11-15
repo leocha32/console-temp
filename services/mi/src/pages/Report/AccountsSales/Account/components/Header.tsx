@@ -10,14 +10,13 @@ import {
   FlexDirection,
   RadioButton,
   JustifyContent,
-} from 'mi-ui';
+} from 'mi-ui/src';
 import dayjs from 'dayjs';
 
 const CHeader = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-template-columns: auto auto;
-  height: fit-content;
 `;
 const RadioWrap = styled.div`
   display: flex;
@@ -30,19 +29,9 @@ const SelectWrap = styled.div`
   grid-row: 2/3;
 `;
 
-const STANDARD_OPTIONS = [
-  { key: 'total', value: '전체 고객' },
-  { key: 'individual', value: '개인' },
-  { key: 'individualBusiness', value: '개인 사업자' },
-  { key: 'corporateBusiness', value: '법인 사업자' },
-];
+const CUSTOMER_OPTIONS = ['전체 고객', '개인', '개인 사업자', '법인 사업자'];
+const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 const Button = styled(MuiButton)``;
-
-const PURCHASE_METHOD = [
-  { key: 'total', value: '전체' },
-  { key: 'rent', value: '렌탈' },
-  { key: 'payAll', value: '일시불' },
-];
 
 export interface IHeaderProps {
   selects: ISelectProps[];
@@ -59,7 +48,7 @@ export const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) =>
       <RadioWrap>
         <RadioButton
           flexDirection={FlexDirection.ROW}
-          options={STANDARD_OPTIONS}
+          options={CUSTOMER_OPTIONS}
           value={'전체 고객'}
         ></RadioButton>
         <RadioButton
@@ -69,16 +58,19 @@ export const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) =>
         ></RadioButton>
       </RadioWrap>
       <SelectWrap>
-        {selects?.map(({ title, onChange, value, options, multiple = false }, index) => (
-          <Select
-            key={index}
-            multiple={multiple}
-            title={title}
-            options={options}
-            onChange={onChange}
-            value={value}
-          />
-        ))}
+        {selects?.map(
+          ({ title, onChange, value, options, multiple = false, ...props }, index) => (
+            <Select
+              key={index}
+              multiple={multiple}
+              title={title}
+              options={options}
+              onChange={onChange}
+              value={value}
+              {...props}
+            />
+          ),
+        )}
         <DatePicker
           onChange={onChangeDate}
           value={selectedDate}

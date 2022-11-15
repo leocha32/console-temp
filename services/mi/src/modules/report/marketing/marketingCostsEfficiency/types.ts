@@ -1,109 +1,135 @@
-import { IResearchReportFile } from '$types/common';
-import { HalfYear } from '$constants/enum';
-
-export interface IBrandAwarenessParams {
-  year: string;
-  half: HalfYear;
-  'product-groups'?: string;
+export interface IMarketingCostAndEfficiencyStatusResponseDto {
+  /**
+   * 마케팅 비용 현황
+   */
+  marketingCostStatus: IMarketingCostStatus;
+  /**
+   * 마케팅 효율
+   */
+  marketingEfficiencyStatus: IMarketingEfficiencyStatus;
 }
 
-export interface IResearchBrandAwarenessResponseDto {
+export interface IMarketingCostStatus {
   /**
-   * 브랜드 인지도
+   * 마케팅 비용 (전체)
    */
-  brandAwareness: IBrandAwareness;
+  marketingCosts: IMarketingCostByMedia[];
+  /**
+   * 제품군 별 마케팅 비용
+   */
+  marketingCostBySelectedItems: IMarketingCostBySelectedItem[];
+  /**
+   * 월별 마케팅 비용
+   */
+  marketingCostByMonths: IMarketingCostByMonth[];
+  /**
+   * 전년 동월, 전월 비교
+   */
+  marketingCostCompare?: IMarketingCostCompare;
 }
 
-export interface IBrandAwareness {
-  description: string;
+export interface IMarketingEfficiencyStatus {
   /**
-   * 코웨이 브랜드 인지도
+   * 마케팅 효율 | CPP 및 PLT 매출 대비 비중 | 전체
    */
-  cowayBrandAwareness: ICowayBrandAwareness[];
+  marketingEfficiency: IMarketingEfficiency;
   /**
-   * 주요 브랜드 인지도
+   * 마케팅 효율 | CPP 및 PLT 매출 대비 비중 | 제품군 별
    */
-  majorBrandAwareness: IMajorBrandAwareness[];
+  marketingEfficiencyByProductGroups: IMarketingEfficiencyByCategory[];
   /**
-   * 리포트 파일
+   * 마케팅 효율 | CPP 및 PLT 매출 대비 비중 | 제품 별
    */
-  researchReportFile: IResearchReportFile;
+  marketingEfficiencyByProducts: IMarketingEfficiencyByCategory[];
+  /**
+   * 마케팅 효율 | CPP 및 PLT 매출 대비 비중 | 전월, 전년 동월 비교
+   */
+  marketingEfficiencyCompares: IMarketingEfficiencyCompare[];
+  /**
+   * 마케팅 효율 | CPP 및 PLT 매출 대비 비중 | 월 별
+   */
+  marketingEfficiencyByMonths: IMarketingEfficiencyByMonth[];
 }
 
-export interface ICowayBrandAwareness {
+export interface IMarketingCostByMedia {
   /**
-   * 제품군
+   * 매체
    */
-  productGroup: string;
+  media: string;
   /**
-   * 최초 상기도
+   * 비용
    */
-  topOfMind: number;
-  /**
-   * 직전 반기 최초 상기도
-   */
-  topOfMindHoh: number;
-  /**
-   * 직전 반기 최초 상기도 차이
-   */
-  topOfMindHohDiff: number;
-  /**
-   * 최초 상기도 순위
-   */
-  topOfMindRank: number;
-  /**
-   * 비보조 인지도
-   */
-  unaidedAwareness: number;
-  /**
-   * 직전 반기 비보조 인지도
-   */
-  unaidedAwarenessHoh: number;
-  /**
-   * 직전 반기 비보조 인지도 차이
-   */
-  unaidedAwarenessHohDiff: number;
-  /**
-   * 보조 인지도
-   */
-  aidedAwareness: number;
-  /**
-   * 직전 반기 보조 인지도
-   */
-  aidedAwarenessHoh: number;
-  /**
-   * 직전 반기 보조 인지도 차이
-   */
-  aidedAwarenessHohDiff: number;
+  cost: number;
 }
 
-export interface IMajorBrandAwareness {
+export interface IMarketingCostBySelectedItem extends IMarketingCostByMedia {
   /**
-   * 제품군
+   * 선택된 항목
    */
-  productGroup: string;
+  selectedItem: string;
+}
+
+export interface IMarketingCostByMonth extends IMarketingCostByMedia {
   /**
-   * 년도
+   * 년월
    */
-  year: string;
+  yearMonth: string;
+}
+
+export interface IMarketingCostCompare {
   /**
-   * 반기
+   * 전월 대비
    */
-  half: string;
+  mom: number;
   /**
-   * 브랜드
+   * 전년 동월 대비
    */
-  brand: string;
+  yoy: number;
+}
+
+export interface IMarketingEfficiency {
   /**
-   * 최초 상기도
+   * 마케팅 빙용
    */
-  topOfMind: number;
+  cpp: number;
   /**
-   * 비보조 인지도
+   * PLT 매출 대비 비중
    */
-  unaidedAwareness: number;
+  percentOfSales: number;
+}
+
+export interface IMarketingEfficiencyByCategory extends IMarketingEfficiency {
   /**
-   * 보조 인지도
+   * 카테고리
    */
-  aidedAwareness: number;
+  category: string;
+}
+
+export interface IMarketingEfficiencyCompare {
+  /**
+   * 타이틀
+   */
+  title: string;
+  /**
+   * 전월 대비
+   */
+  mom: number;
+  /**
+   * 전년 동월 대비
+   */
+  yoy: number;
+}
+
+export interface IMarketingEfficiencyByMonth extends IMarketingEfficiency {
+  /**
+   * 년월
+   */
+  yearMonth: string;
+}
+
+export interface IMarketingCostsEfficiencyParams {
+  category2?: string;
+  category3?: string;
+  year: number;
+  month: number;
 }

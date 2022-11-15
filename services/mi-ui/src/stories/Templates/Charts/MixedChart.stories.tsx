@@ -26,7 +26,7 @@ export const MixedChart: ComponentStory<typeof CMixedChart> = (
 MixedChart.args = {
   data: [
     {
-      name: 'CCP',
+      name: 'CPP',
       type: 'bar',
       data: [
         150550, 150550, 102105, 200305, 183020, 142060, 167291, 90820, 192038, 178291,
@@ -70,7 +70,7 @@ MixedChart.args = {
     },
   ],
   legend: {
-    data: ['CCP', '매출 비중'],
+    data: ['CPP', '매출 비중'],
   },
   showLegendBottom: false,
   useYAxis: true,

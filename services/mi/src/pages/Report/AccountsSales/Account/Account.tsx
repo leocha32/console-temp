@@ -1,46 +1,69 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { PageLayout, Spinner, Card, BarChart } from 'mi-ui/src';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { PageLayout } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
-import Header from '../components/Header';
+import Header from './components/Header';
 import styled from '@emotion/styled';
 import { AccountChart, RentTable } from './components';
+import dayjs from 'dayjs';
+import { familySector, productAndFunctionalGroupSelector } from '$recoils/categories';
 
 const Wrap = styled.div`
-  height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr 30%;
+  grid-template-rows: 15% 50% auto;
+  height: calc(100% - 30px);
+  grid-gap: 20px;
   margin: 0 10px;
-  grid-gap: 10px;
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
 `;
 
 const TITLE = '계정 및 판매 계정';
-const familyOptions = [
-  { value: '정수기', label: '정수기' },
-  { value: '정수기1', label: '정수기' },
-  { value: '정수기2', label: '정수기' },
-  { value: '정수기3', label: '정수기' },
-  { value: '정수기4', label: '정수기' },
-  { value: '정수기5', label: '정수기' },
-  { value: '정수기6', label: '정수기' },
-];
-const productOptions = [{ value: '얼음정수기', label: '얼음정수기' }];
+
+const setAllFunctional = (options) => {
+  return options.map(({ value }) => value);
+};
+
 const Account = () => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [selectedFamily, setSelectedFamily] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const handleDateChange = useCallback((value) => {
+    setSelectedDate(value);
+  }, []);
+
+  const familyOptions = useRecoilValue(familySector({ category: '제품' }));
+  const [selectedFamily, setSelectedFamily] = useState(
+    familyOptions.map(({ value }) => value),
+  );
+  const { functionalGroup: functionalOptions, product: productOptions } = useRecoilValue(
+    productAndFunctionalGroupSelector({ category: '제품', family: selectedFamily }),
+  );
+  const [selectedFunctional, setSelectedFunctional] = useState(
+    setAllFunctional(functionalOptions),
+  );
+
+  const [selectedProduct, setSelectedProduct] = useState(
+    setAllFunctional(productOptions),
+  );
 
   const handleFamilyChange = useCallback((value) => {
     setSelectedFamily(value);
   }, []);
+
+  const handleFunctionalChange = useCallback((value) => {
+    setSelectedFunctional(value);
+  }, []);
+
   const handleProductChange = useCallback((value) => {
     setSelectedProduct(value);
   }, []);
 
-  const handleDateChange = useCallback((value) => {
-    setSelectedDate(value);
-  }, []);
+  useEffect(() => {
+    setSelectedFunctional(setAllFunctional(functionalOptions));
+  }, [functionalOptions]);
+  useEffect(() => {
+    setSelectedProduct(setAllFunctional(productOptions));
+  }, [selectedFunctional]);
+
   const selects = [
     {
       title: '제품군',
@@ -50,11 +73,20 @@ const Account = () => {
       options: familyOptions,
     },
     {
+      title: '기능군',
+      multiple: true,
+      value: selectedFunctional,
+      onChange: handleFunctionalChange,
+      options: functionalOptions,
+      disabled: !functionalOptions.length,
+    },
+    {
       title: '제품',
       multiple: true,
       value: selectedProduct,
       onChange: handleProductChange,
       options: productOptions,
+      disabled: !productOptions.length,
     },
   ];
   return (

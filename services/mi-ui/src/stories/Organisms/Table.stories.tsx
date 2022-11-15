@@ -175,11 +175,33 @@ const rowData = [
   },
 ];
 
+const summary = {
+  label: '평균',
+  options: {
+    sx: {
+      backgroundColor: 'lightgray',
+      borderRight: 'solid 1px black',
+    },
+  },
+  summaryInfo: [
+    {
+      colName: 'gapWithCoway', //column 이름이 있을경우 없으면 맨 마지막 컬럼에 정의
+      value: '6.35%',
+      options: {
+        sx: {
+          backgroundColor: 'lightgray',
+          textAlign: 'center',
+        },
+      },
+    },
+  ],
+};
 Table.args = {
-  row: rowData,
+  rows: rowData,
   columns: columns,
   headers: headers,
   showHeader: false,
+  summary: summary,
   sx: {
     maxWidth: '500px',
   },

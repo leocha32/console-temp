@@ -3,6 +3,8 @@ import styled from '@emotion/styled';
 export const Contents = styled.div`
   display: grid;
   grid-template-rows: 10% 90%;
+  grid-template-columns: 50% 50%;
+
   grid-gap: 10px;
   background-color: #fafafa;
   padding: 20px;

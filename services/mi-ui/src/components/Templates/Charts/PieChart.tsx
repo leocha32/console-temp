@@ -9,16 +9,12 @@ import {
   TooltipOption,
   GridOption,
 } from 'echarts/types/dist/shared';
-import { ChartOrient, ChartType, ChartLeft } from '../../../constants/enum';
+import { ChartOrient, ChartLeft } from '../../../constants/enum';
+import { EmptyContent } from '../EmptyContent';
 use([EPieChart]);
 
-interface IDataProps {
-  value: number;
-  name: string;
-}
 export interface IPieChartProps extends Omit<IBaseEChartsProps, 'option'> {
-  name?: string;
-  data: IDataProps[];
+  data: PieSeriesOption;
   useTooltip?: boolean;
   useFocus?: boolean;
   useLegend?: boolean;
@@ -26,12 +22,10 @@ export interface IPieChartProps extends Omit<IBaseEChartsProps, 'option'> {
   tooltip?: TooltipOption;
   title?: TitleOption;
   legend?: LegendOption;
-  label?: PieSeriesOption['label'];
   grid?: GridOption;
 }
 
 export const PieChart = ({
-  name,
   data,
   title,
   tooltip,
@@ -40,11 +34,11 @@ export const PieChart = ({
   useFocus = true,
   useLabel = true,
   legend,
-  label,
   grid,
   ...props
 }: IPieChartProps) => {
   const option = useMemo(() => {
+    const { label, labelLine, emphasis, ...d } = data;
     return {
       title,
       grid,
@@ -56,41 +50,36 @@ export const PieChart = ({
         show: useLegend,
         orient: ChartOrient.HORIZONTAL,
         left: ChartLeft.CENTER,
+        itemHeight: 10,
+        itemWidth: 12,
         ...legend,
       },
       series: [
         {
+          type: 'pie' as const,
+          emphasis: {
+            focus: useFocus ? ('self' as const) : ('none' as const),
+            ...emphasis,
+          },
+          radius: '50%',
+          color: BACKGROUND_COLOR,
           label: {
             alignTo: 'edge' as const,
-            formatter: '{c}',
-            minMargin: 5,
-            lineHeight: 15,
             show: useLabel,
             ...label,
           },
-          emphasis: {
-            focus: useFocus ? ('self' as const) : ('none' as const),
+          labelLine: {
+            show: true,
+            ...labelLine,
           },
-          color: BACKGROUND_COLOR,
-          type: ChartType.PIE as PieSeriesOption['type'],
-          radius: '50%',
-          data,
-          name,
+          ...d,
         },
       ],
     };
-  }, [
-    data,
-    label,
-    legend,
-    grid,
-    useFocus,
-    useLegend,
-    useLabel,
-    name,
-    title,
-    tooltip,
-    useTooltip,
-  ]);
-  return <BaseEChart {...props} option={option} />;
+  }, [data, legend, grid, useFocus, useLegend, useLabel, title, tooltip, useTooltip]);
+  return data?.data?.length ? (
+    <BaseEChart {...props} option={option} />
+  ) : (
+    <EmptyContent />
+  );
 };

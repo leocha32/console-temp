@@ -21523,7 +21523,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/js-cookie", "npm:3.0.2"],\
             ["@types/lodash", "npm:4.14.186"],\
             ["@types/node", "npm:18.11.4"],\
-            ["@types/prop-types", "npm:15.7.5"],\
             ["@types/react", "npm:18.0.21"],\
             ["@types/react-dom", "npm:18.0.6"],\
             ["axios", "npm:1.1.3"],\
@@ -21532,7 +21531,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["js-file-download", "npm:0.4.12"],\
             ["lodash", "npm:4.17.21"],\
             ["mi-ui", "workspace:services/mi-ui"],\
-            ["prop-types", "npm:15.8.1"],\
             ["react", "npm:18.2.0"],\
             ["react-dev-utils", "virtual:76d39d97bdabfe607c9e4ef3096788efab7f99e58236ca063df4303fee4247d2ecff8b7616b8a4e6a6c6d23eac4b636d1100f1ab907ac216f7ca269f3af2f43b#npm:12.0.1"],\
             ["react-dom", "virtual:b2f251f4f51ba70f2e5fb8cfabaa268dced41ec7af0ec535cca74c92ce030911627504ceb2afc8c1b6ca6013c4c2324fd94b033b1e20b3bc7046ff76400ccaa8#npm:18.2.0"],\

@@ -41,13 +41,13 @@ export const DiffBox = styled.div`
 `;
 
 export const Card = styled(MiCard)`
-  background-color: #fafafa;
+  min-height: 180px;
   padding: 20px;
   flex: ${({ flex = 1 }: { flex?: number }) => flex};
 `;
 
 export const Section = styled.div`
-  height: calc(100% - 30px);
+  height: calc(100% - 35px);
   display: flex;
   flex-direction: row;
 `;

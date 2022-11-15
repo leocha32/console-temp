@@ -156,12 +156,12 @@ const MarketShareTable = ({
         justifyContent={JustifyContent.RIGHT}
         disabled={!researchReportFile}
       ></Button>
+
       <Table
-        sx={{ height: '100%', gridRowStart: 2, gridColumn: '1/3' }}
+        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
         showHeader={false}
-        row={rowData}
+        rows={rowData}
         columns={COLUMN}
-        emptyHeight={'300px'}
       ></Table>
     </Contents>
   );

@@ -8,6 +8,7 @@ module.exports = {
   ignorePatterns: ['.eslintrc.js'],
   rules: {
     'react/no-unknown-property': ['off', { ignore: ['css'] }],
+    'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/naming-convention': [
       'warn',

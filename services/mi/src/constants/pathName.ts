@@ -8,6 +8,7 @@ export default {
   awareness: '브랜드 인지도',
   accountsSales: '계정 및 판매',
   account: '계정',
+  accountHoldingCombine: '계정 보유 조합',
   customer: '고객',
   warriorSales: '전사 판매',
   salesOrganization: '조직별 판매',

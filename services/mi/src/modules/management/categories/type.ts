@@ -25,5 +25,10 @@ export interface ICategorySummary extends ICategory {
 }
 
 export interface ICategories {
-  [key: string]: any;
+  [key: string]: {
+    [key: string]: {
+      functionalGroup: string[];
+      product: string[];
+    };
+  };
 }

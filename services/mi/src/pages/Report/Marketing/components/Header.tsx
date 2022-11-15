@@ -22,16 +22,19 @@ const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) => {
   return (
     <CHeader>
       <FilterWrap>
-        {selects?.map(({ title, onChange, value, options, multiple = false }, index) => (
-          <Select
-            key={index}
-            multiple={multiple}
-            title={title}
-            options={options}
-            onChange={onChange}
-            value={value}
-          />
-        ))}
+        {selects?.map(
+          ({ title, onChange, value, options, multiple = false, ...props }, index) => (
+            <Select
+              key={index}
+              multiple={multiple}
+              title={title}
+              options={options}
+              onChange={onChange}
+              value={value}
+              {...props}
+            />
+          ),
+        )}
         <DatePicker
           onChange={onChangeDate}
           value={selectedDate}

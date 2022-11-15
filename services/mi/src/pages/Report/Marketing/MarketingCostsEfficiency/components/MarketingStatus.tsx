@@ -1,7 +1,5 @@
-import React from 'react';
-import { ICowayBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
-
-import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
+import React, { useMemo } from 'react';
+import _ from 'lodash';
 import {
   Card,
   Section,
@@ -10,68 +8,132 @@ import {
   ContentTitle,
   ChartWrap,
 } from '$pages/Report/commonStyled';
-import { DataValue, DataCardWrap, DiffWrap, DiffInfo } from '../components/commonStyled';
-import { BarChart } from 'mi-ui/src';
+import { DataCardWrap, DiffWrap, Cost, DiffInfo } from '../components/commonStyled';
+import { StackChart, IStackBarChartProps } from 'mi-ui/src';
+import {
+  IMarketingCostByMedia,
+  IMarketingCostByMonth,
+  IMarketingCostStatus,
+} from '$modules/report/marketing/marketingCostsEfficiency';
+import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 
-export interface ICowayBrandAwarenessProps {
-  data: ICowayBrandAwareness[];
+export interface IMarketingStatusProps {
+  data?: IMarketingCostStatus;
 }
 
-const MarketingStatus = ({ data }: ICowayBrandAwarenessProps) => {
+const makeChartData = (
+  originData: IMarketingCostByMonth[],
+): {
+  xAixData: string[];
+  data: IStackBarChartProps['data'];
+} => {
+  const data = {};
+  const xAixData = _.uniqBy(originData, 'yearMonth').map(({ yearMonth }) => yearMonth);
+
+  originData.forEach(({ media, cost, yearMonth }) => {
+    const xAixDataIdx = xAixData.indexOf(yearMonth);
+    if (!data[media]) {
+      data[media] = {
+        name: media,
+        stack: 'brand',
+        data: Array(xAixData.length),
+      };
+    }
+    data[media].data[xAixDataIdx] = cost;
+  });
+  return {
+    xAixData: xAixData.map((yearMonth) => {
+      const year = yearMonth.substr(2, 2);
+      const month = yearMonth.substr(-2);
+      return `${year}년 ${month}월`;
+    }),
+    data: Object.values(data),
+  };
+};
+
+const gridOption = {
+  left: 30,
+  right: 20,
+  bottom: 20,
+};
+const yAxisOption = {
+  name: '[단위: 억원]',
+};
+
+const makeCostDescription = (data: IMarketingCostByMedia[]) => {
+  return `( ${data.map(({ cost, media }) => `${media} ${cost}억`).join(' | ')} )`;
+};
+
+const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
+  const { data, xAixData } = makeChartData(originData?.marketingCostByMonths || []);
+  const allMarketingCosts = useMemo(
+    () =>
+      originData?.marketingCosts?.reduce((pre, cur) => {
+        return pre + cur.cost;
+      }, 0),
+    [originData],
+  );
+  const allMarketingCostBySelectedItems = useMemo(
+    () =>
+      originData?.marketingCostBySelectedItems?.reduce((pre, cur) => {
+        return pre + cur.cost;
+      }, 0),
+    [originData],
+  );
+
   return (
     <Card>
       <CardTitle>마케팅비 현황</CardTitle>
-      {/*{data?.length ? (*/}
       <Section>
         <ContentWrap>
           <ContentTitle>{`마케팅비`}</ContentTitle>
-          <DataCardWrap>
-            <DataValue
-              value={'50억'}
-              title={'전체'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DataValue
-              value={'30억'}
-              title={'정수기'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DiffWrap>
-              <DiffInfo value={23.5} title={'전월 比'} valueDiff={10} />
-              <DiffInfo value={23.5} title={'전년 동일 比'} valueDiff={-10} />
-            </DiffWrap>
-          </DataCardWrap>
+          {originData?.marketingCostCompare ? (
+            <DataCardWrap>
+              <div>
+                <Cost
+                  title={'전체'}
+                  value={`${allMarketingCosts}억`}
+                  description={makeCostDescription(originData?.marketingCosts)}
+                />
+                {originData?.marketingCostBySelectedItems.length ? (
+                  <Cost
+                    title={'선택한 제품군'}
+                    value={`${allMarketingCostBySelectedItems}억`}
+                    description={makeCostDescription(
+                      originData?.marketingCostBySelectedItems,
+                    )}
+                  />
+                ) : null}
+              </div>
+
+              <DiffWrap>
+                <div>
+                  <DiffInfo
+                    title={'전월 比'}
+                    value={originData?.marketingCostCompare.mom}
+                  />
+                  <DiffInfo
+                    title={'전년 동월 比'}
+                    value={originData?.marketingCostCompare.yoy}
+                  />
+                </div>
+              </DiffWrap>
+            </DataCardWrap>
+          ) : (
+            <EmptyContent />
+          )}
         </ContentWrap>
-        <ContentWrap flex={2}>
+        <ContentWrap flex={4}>
           <ChartWrap>
-            <BarChart
-              data={[
-                {
-                  name: '마케팅비 (억원)',
-                  data: [20, 20, 30, 15, 45, 50, 10, 5, 70, 62, 43, 22],
-                },
-              ]}
-              xAixData={[
-                '1월',
-                '2월',
-                '3월',
-                '4월',
-                '5월',
-                '6월',
-                '7월',
-                '8월',
-                '9월',
-                '10월',
-                '11월',
-                '12월',
-              ]}
+            <StackChart
+              data={data}
+              xAixData={xAixData}
+              grid={gridOption}
+              yAxis={yAxisOption}
             />
           </ChartWrap>
         </ContentWrap>
       </Section>
-      {/*) : (*/}
-      {/*  <EmptyContent />*/}
-      {/*)}*/}
     </Card>
   );
 };

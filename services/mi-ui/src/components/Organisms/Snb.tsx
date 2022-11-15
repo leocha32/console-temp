@@ -187,7 +187,10 @@ const makeList = ({
         const subMenu = children?.filter((child) => !child.index && !child.hidden);
         const hasChildren = !!subMenu.length;
         const path = `${parentPath}/${originPath}`;
-        const active = pathname?.startsWith(path) && ((open && !hasChildren) || !open);
+        const active =
+          pathname?.startsWith(path) &&
+          pathname.endsWith(originPath) &&
+          ((open && !hasChildren) || !open);
         return (
           <ListItem
             disablePadding

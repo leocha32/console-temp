@@ -1,28 +1,70 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import dayjs from 'dayjs';
 import { PageLayout, Spinner } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
 import Header from '$pages/Report/Marketing/components/Header';
+import { ContentsWrap, Wrap } from '$pages/Report/commonStyled';
+import MediaCostStatus from './components/MediaCostStatus';
+import MediaPerformance from './components/MediaPerformance';
+import CompetitorExecutionStatus from './components/CompetitorExecutionStatus';
+import {
+  familySector,
+  productAndFunctionalGroupSelector,
+  categorySector,
+} from '$recoils/categories';
+import { useRecoilValue } from 'recoil';
+import { useAtl } from '$modules/report/marketing/atl';
 
 const TITLE = 'ATL';
 
-const familyOptions = [
-  { value: '정수기', label: '정수기' },
-  { value: '정수기1', label: '정수기' },
-  { value: '정수기2', label: '정수기' },
-  { value: '정수기3', label: '정수기' },
-  { value: '정수기4', label: '정수기' },
-  { value: '정수기5', label: '정수기' },
-  { value: '정수기6', label: '정수기' },
-];
-const productOptions = [{ value: '얼음정수기', label: '얼음정수기' }];
-
-const categoryOptions = [{ value: '제품', label: '제품' }];
-
 const Atl = () => {
-  const [selectedFamily, setSelectedFamily] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedDate, setSelectedDate] = useState(null);
+  const categoryOptions = useRecoilValue(categorySector);
+  const [selectedCategory, setSelectedCategory] = useState(categoryOptions[0]?.value);
+  const familyOptions = useRecoilValue(familySector({ category: selectedCategory }));
+  const [selectedFamily, setSelectedFamily] = useState(
+    familyOptions.map(({ value }) => value),
+  );
+
+  const { product: productOptions } = useRecoilValue(
+    productAndFunctionalGroupSelector({
+      category: selectedCategory,
+      family: selectedFamily,
+    }),
+  );
+  const [selectedProduct, setSelectedProduct] = useState(
+    productOptions.map(({ value }) => value),
+  );
+  const isFamilyAllCheck = useMemo(
+    () => selectedFamily.length === familyOptions.length,
+    [selectedFamily, familyOptions],
+  );
+
+  const [selectedDate, setSelectedDate] = useState(dayjs().add(-2, 'M'));
+
+  const { data, isFetching, refetch } = useAtl(
+    {
+      category1: selectedCategory,
+      category2: selectedFamily.join(','),
+      category3: selectedProduct.join(','),
+      year: selectedDate.get('y'),
+      month: selectedDate.get('M') + 1,
+    },
+    {
+      enabled: false,
+    },
+  );
+
+  useEffect(() => {
+    setSelectedFamily(familyOptions.map(({ value }) => value));
+  }, [familyOptions]);
+
+  useEffect(() => {
+    setSelectedProduct(productOptions.map(({ value }) => value));
+  }, [productOptions]);
+
+  useEffect(() => {
+    refetch();
+  }, [selectedCategory, selectedProduct, selectedDate, selectedFamily]);
 
   const handleFamilyChange = useCallback((value) => {
     setSelectedFamily(value);
@@ -53,6 +95,7 @@ const Atl = () => {
       value: selectedFamily,
       onChange: handleFamilyChange,
       options: familyOptions,
+      disabled: !selectedCategory,
     },
     {
       title: '제품',
@@ -60,6 +103,7 @@ const Atl = () => {
       value: selectedProduct,
       onChange: handleProductChange,
       options: productOptions,
+      disabled: !selectedFamily.length || isFamilyAllCheck,
     },
   ];
   return (
@@ -69,6 +113,14 @@ const Atl = () => {
         onChangeDate={handleDateChange}
         selectedDate={selectedDate}
       />
+      <Wrap>
+        <ContentsWrap direction={'column'}>
+          {isFetching ? <Spinner /> : null}
+          <MediaCostStatus data={data?.atlMediaCostStatus} />
+          <MediaPerformance data={data?.atlMediaPerformanceStatus} />
+          <CompetitorExecutionStatus data={data?.atlMediaCostByCompanyStatus} />
+        </ContentsWrap>
+      </Wrap>
     </PageLayout>
   );
 };

@@ -4,14 +4,16 @@ import {
   TableHead as MuiTableHead,
   TableHeadProps as MuiTableHeadProps,
   TableCell as MuiTableCell,
+  TableCellProps,
 } from '@mui/material';
+
 import { css } from '@emotion/react';
 
 export interface ITableHeaderProps extends MuiTableHeadProps {
   headers: IColumn[];
 }
 
-export interface IColumn<TData = any> {
+export interface IColumn<TData = any> extends TableCellProps {
   name: string;
   columns?: IColumn<TData>[];
   colSpan?: number;
@@ -78,15 +80,17 @@ const getHeaders = (columns: IColumn[]) => {
 
   return result;
 };
+
 export const TableHeader = ({ headers, ...props }: ITableHeaderProps) => {
   return (
     <MuiTableHead {...props}>
       {getHeaders(headers).map((headerRow, headerRowIndex) => (
-        <MuiTableRow key={`header-row-${headerRowIndex}`}>
+        <MuiTableRow className={'MuiTableRow-head'} key={`header-row-${headerRowIndex}`}>
           {headerRow &&
-            headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0 }) => {
+            headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0, sx }) => {
               return (
                 <MuiTableCell
+                  sx={sx}
                   css={css`
                     text-align: center;
                   `}

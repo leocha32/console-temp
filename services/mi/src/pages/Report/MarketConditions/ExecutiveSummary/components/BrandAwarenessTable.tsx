@@ -115,9 +115,8 @@ const BrandAwarenessTable = ({
       <Table
         sx={{ gridRowStart: 2, gridColumn: '1/3' }}
         showHeader={false}
-        row={rowData}
+        rows={rowData}
         columns={COLUMN}
-        emptyHeight={'300px'}
       ></Table>
     </Contents>
   );

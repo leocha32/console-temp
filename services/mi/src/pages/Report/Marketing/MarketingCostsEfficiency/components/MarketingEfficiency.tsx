@@ -1,7 +1,5 @@
-import React from 'react';
-import { ICowayBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
-
-import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
+import { useMemo } from 'react';
+import _ from 'lodash';
 import {
   Card,
   Section,
@@ -10,121 +8,192 @@ import {
   ContentTitle,
   ChartWrap,
 } from '$pages/Report/commonStyled';
-import { MixedChart } from 'mi-ui';
-import { DataCardWrap, DiffWrap, DiffInfo, DataValue } from '../components/commonStyled';
+import { IMixedChartProps, MixedChart } from 'mi-ui';
+import { DataCardWrap, Cost, DiffWrap, DiffInfo } from '../components/commonStyled';
+import {
+  IMarketingEfficiencyByMonth,
+  IMarketingEfficiencyStatus,
+} from '$modules/report/marketing/marketingCostsEfficiency';
+import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 
-export interface ICowayBrandAwarenessProps {
-  data: ICowayBrandAwareness[];
+export interface IMarketingEfficiencyProps {
+  data?: IMarketingEfficiencyStatus;
 }
+const gridOption = {
+  left: 70,
+  right: 40,
+  bottom: 20,
+};
 
-const MarketingEfficiency = ({ data }: ICowayBrandAwarenessProps) => {
+const makeChartData = (
+  originData: IMarketingEfficiencyByMonth[],
+): {
+  xAixData: string[];
+  data: IMixedChartProps['data'];
+} => {
+  const data = {};
+  const xAixData = _.uniqBy(originData, 'yearMonth').map(({ yearMonth }) => yearMonth);
+
+  originData.forEach(({ cpp, percentOfSales, yearMonth }) => {
+    const xAixDataIdx = xAixData.indexOf(yearMonth);
+    if (!data['cpp']) {
+      data['cpp'] = Array(xAixData.length);
+    }
+    if (!data['percentOfSales']) {
+      data['percentOfSales'] = Array(xAixData.length);
+    }
+    data['cpp'][xAixDataIdx] = cpp;
+    data['percentOfSales'][xAixDataIdx] = percentOfSales;
+  });
+  const result = chartData.map(({ name, type, key }) => ({
+    name,
+    type,
+    data: data[key],
+  }));
+  return {
+    xAixData: xAixData.map((yearMonth) => {
+      const year = yearMonth.substr(2, 2);
+      const month = yearMonth.substr(-2);
+      return `${year}년 ${month}월`;
+    }),
+    data: result,
+  };
+};
+
+const chartData = [
+  {
+    name: 'CPP(원)',
+    type: 'bar' as const,
+    key: 'cpp',
+    axisLabel: {
+      formatter: '{value}원',
+    },
+  },
+  {
+    name: '매출 비중(%)',
+    type: 'line' as const,
+    key: 'percentOfSales',
+    axisLabel: {
+      formatter: '{value}%',
+    },
+  },
+];
+
+const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) => {
+  const { xAixData, data } = makeChartData(originData?.marketingEfficiencyByMonths || []);
+
+  const cppCompare = useMemo(
+    () => originData?.marketingEfficiencyCompares?.find(({ title }) => title === 'cpp'),
+    [originData?.marketingEfficiencyCompares],
+  );
+  const pltCompare = useMemo(
+    () => originData?.marketingEfficiencyCompares?.find(({ title }) => title === 'plt'),
+    [originData?.marketingEfficiencyCompares],
+  );
   return (
     <Card>
       <CardTitle>마케팅비 효율</CardTitle>
-      {/*{data?.length ? (*/}
       <Section>
         <ContentWrap>
           <ContentTitle>{`CPP`}</ContentTitle>
-          <DataCardWrap>
-            <DataValue
-              value={'50억'}
-              title={'전체'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DataValue
-              value={'30억'}
-              title={'정수기'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DiffWrap>
-              <DiffInfo value={23.5} title={'전월 比'} valueDiff={10} />
-              <DiffInfo value={23.5} title={'전년 동일 比'} valueDiff={-10} />
-            </DiffWrap>
-          </DataCardWrap>
+          {originData?.marketingEfficiency?.cpp ? (
+            <DataCardWrap>
+              <div>
+                <Cost
+                  title={'전체'}
+                  value={`₩ ${Number(
+                    originData?.marketingEfficiency.cpp,
+                  ).toLocaleString()}`}
+                />
+                {originData?.marketingEfficiencyByProductGroups.length ? (
+                  <Cost
+                    title={'선택한 제품군'}
+                    value={`₩ ${Number(
+                      originData?.marketingEfficiencyByProductGroups[0]?.cpp,
+                    ).toLocaleString()}`}
+                  />
+                ) : null}
+                {originData?.marketingEfficiencyByProducts.length ? (
+                  <Cost
+                    title={'선택한 제품'}
+                    value={`₩ ${Number(
+                      originData?.marketingEfficiencyByProducts[0]?.cpp,
+                    ).toLocaleString()}`}
+                  />
+                ) : null}
+              </div>
+              <DiffWrap>
+                <div>
+                  <DiffInfo title={'전월 比'} value={cppCompare?.mom} />
+                  <DiffInfo title={'전년 동월 比'} value={pltCompare?.yoy} />
+                </div>
+              </DiffWrap>
+            </DataCardWrap>
+          ) : (
+            <EmptyContent />
+          )}
         </ContentWrap>
 
         <ContentWrap>
-          {' '}
-          <ContentTitle>PLT매출比 비중</ContentTitle>
-          <DataCardWrap>
-            <DataValue
-              value={'50억'}
-              title={'전체'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DataValue
-              value={'30억'}
-              title={'정수기'}
-              description={'(TV 30억 / 온라인 10억 / 기타 10억)'}
-            />
-            <DiffWrap>
-              <DiffInfo value={23.5} title={'전월 比'} valueDiff={10} />
-              <DiffInfo value={23.5} title={'전년 동일 比'} valueDiff={-10} />
-            </DiffWrap>
-          </DataCardWrap>
+          <ContentTitle>PLT매출 比 비중</ContentTitle>
+          {originData?.marketingEfficiency?.percentOfSales ? (
+            <DataCardWrap>
+              <div>
+                <Cost
+                  title={'전체'}
+                  value={`₩ ${Number(
+                    originData?.marketingEfficiency.percentOfSales,
+                  ).toLocaleString()}`}
+                />
+                {originData?.marketingEfficiencyByProductGroups.length ? (
+                  <Cost
+                    title={'선택한 제품군'}
+                    value={`₩ ${Number(
+                      originData?.marketingEfficiencyByProductGroups[0]?.percentOfSales,
+                    ).toLocaleString()}`}
+                  />
+                ) : null}
+                {originData?.marketingEfficiencyByProducts.length ? (
+                  <Cost
+                    title={'선택한 제품'}
+                    value={`₩ ${Number(
+                      originData?.marketingEfficiencyByProducts[0]?.percentOfSales,
+                    ).toLocaleString()}`}
+                  />
+                ) : null}
+              </div>
+              <DiffWrap>
+                <div>
+                  <DiffInfo title={'전월 比'} value={pltCompare?.mom} unit={'p'} />
+                  <DiffInfo title={'전년 동월 比'} value={pltCompare?.yoy} unit={'p'} />
+                </div>
+              </DiffWrap>
+            </DataCardWrap>
+          ) : (
+            <EmptyContent />
+          )}
         </ContentWrap>
 
-        <ContentWrap flex={2}>
+        <ContentWrap flex={3}>
           <ChartWrap>
             <MixedChart
-              yAxis={[
-                {
-                  type: 'value',
-                  name: 'ccp',
-                  axisLabel: {
-                    formatter: '{value}(원)',
-                  },
-                },
-                {
-                  type: 'value',
-                  name: '매출 비중',
-                  axisLabel: {
-                    formatter: '{value}%',
-                  },
-                },
-              ]}
+              grid={gridOption}
+              yAxis={chartData.map(({ axisLabel }) => ({
+                type: 'value',
+                axisLabel,
+              }))}
               legend={{
-                data: ['CCP', '매출 비중'],
+                data: chartData.map(({ name }) => name),
               }}
               showLegendBottom={false}
               useYAxis
               useTooltip
-              data={[
-                {
-                  name: 'CCP',
-                  type: 'bar',
-                  data: [
-                    150550, 150550, 102105, 200305, 183020, 142060, 167291, 90820, 192038,
-                    178291, 164231, 182948,
-                  ],
-                },
-                {
-                  name: '매출 비중',
-                  type: 'line',
-                  data: [5, 5.2, 5.8, 3.2, 10.1, 8.8, 7.5, 6.8, 9.8, 7.9, 11.4, 8.2],
-                },
-              ]}
-              xAixData={[
-                '1월',
-                '2월',
-                '3월',
-                '4월',
-                '5월',
-                '6월',
-                '7월',
-                '8월',
-                '9월',
-                '10월',
-                '11월',
-                '12월',
-              ]}
+              data={data}
+              xAixData={xAixData}
             />
           </ChartWrap>
         </ContentWrap>
       </Section>
-      {/*) : (*/}
-      {/*  <EmptyContent />*/}
-      {/*)}*/}
     </Card>
   );
 };

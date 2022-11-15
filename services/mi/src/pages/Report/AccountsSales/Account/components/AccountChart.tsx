@@ -1,11 +1,23 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { BarChart, ChartPosition } from 'mi-ui/src';
+import React from 'react';
+import { BarChart, ChartOrient, ChartPosition, ChartTop } from 'mi-ui/src';
 import { CardTitle, Card } from '$pages/Report/commonStyled';
+const legendOption = {
+  orient: ChartOrient.HORIZONTAL,
+  top: ChartTop.TOP,
+  padding: [5, 0, 10, 0],
+};
+const gridOption = {
+  left: '0%',
+  top: '13%',
+  bottom: '10%',
+};
 export const AccountChart = () => {
   return (
     <Card>
       <CardTitle>계정 수</CardTitle>
       <BarChart
+        grid={gridOption}
+        legend={legendOption}
         data={[
           {
             name: '스탠드',
@@ -83,7 +95,7 @@ export const AccountChart = () => {
           {
             name: '',
             type: 'bar',
-            color: 'red',
+            color: 'none',
             barWidth: 1,
             tooltip: {
               show: false,
@@ -91,7 +103,7 @@ export const AccountChart = () => {
             label: {
               show: true,
               position: [-65, '-20%'],
-              formatter: ({ value, dataIndex }) => {
+              formatter: ({ value }) => {
                 return `${value.toLocaleString('ko-kr')}`;
               },
             },

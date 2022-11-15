@@ -8,6 +8,7 @@ export interface ICellProps {
   name: string;
   value: string | number;
   rowSpan?: number;
+  colSpan?: number;
   options?: ICellOptions;
   icon?: React.ReactElement;
 }
@@ -20,7 +21,8 @@ export interface ICellOptions extends MuiTableCellProps {
   fontSize?: number;
 }
 const defaultCellOption: ICellOptions = {
-  rowSpan: 0,
+  rowSpan: 1,
+  colSpan: 1,
   textFormat: (value) => String(value),
   colorFormat: (value) => String(value),
   height: 'inherit',
@@ -35,7 +37,7 @@ const calPaddingByFontSize = (fontSize) => {
     : defaultPadding - fontSize - defaultFontSize + 'px';
 };
 
-export const Cell = ({ value, rowSpan, options, ...props }: ICellProps) => {
+export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps) => {
   const { sx, textFormat, colorFormat, height, fontSize } = {
     ...defaultCellOption,
     ...options,
@@ -46,6 +48,7 @@ export const Cell = ({ value, rowSpan, options, ...props }: ICellProps) => {
   } as MuiTableCellProps;
   return (
     <MuiTableCell
+      colSpan={colSpan ? colSpan : 1}
       rowSpan={rowSpan ? rowSpan : 1}
       sx={{
         ...defaultSx,
