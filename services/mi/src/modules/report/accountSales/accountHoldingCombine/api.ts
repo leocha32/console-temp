@@ -1,11 +1,11 @@
 import api from '$utils/api';
-import { IAccountOwnershipResponseDto, IIAccountOwnershipParams } from './types';
+import { IAccountCombinationResponseDto, IIAccountOwnershipParams } from './types';
 
-export async function getMarketingCostsEfficiency(
+export async function getAccountStatusHoldingCombine(
   params: IIAccountOwnershipParams,
-): Promise<IAccountOwnershipResponseDto> {
+): Promise<IAccountCombinationResponseDto> {
   const { data } = await api({
-    url: `v2/api/console/report/account/ownership`,
+    url: `v2/api/console/report/account/combination`,
     method: 'get',
     params,
   });

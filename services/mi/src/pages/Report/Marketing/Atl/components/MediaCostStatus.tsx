@@ -108,8 +108,8 @@ const makeChartData = (
         label: {
           formatter: '{c}%',
         },
-        radius: '60%',
-        center: ['50%', '70%'],
+        radius: '50%',
+        center: ['50%', '50%'],
       },
     },
   };

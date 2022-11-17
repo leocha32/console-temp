@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'mi-ui';
 import { CardTitle, Card } from '$pages/Report/commonStyled';
-import { IProductCombinationRow } from '$modules/report/accountSales/accountHoldingCombine';
+import { IProductCombinationRow } from '$modules/report/accountSales';
 const Headers = [
   {
     name: '순위',

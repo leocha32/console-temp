@@ -64,7 +64,6 @@ export const PieChart = ({
           radius: '50%',
           color: BACKGROUND_COLOR,
           label: {
-            alignTo: 'edge' as const,
             show: useLabel,
             ...label,
           },

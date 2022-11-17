@@ -3,6 +3,7 @@ import {
   TableCell as MuiTableCell,
   TableCellProps as MuiTableCellProps,
 } from '@mui/material';
+import styled from '@emotion/styled';
 
 export interface ICellProps {
   name: string;
@@ -20,6 +21,12 @@ export interface ICellOptions extends MuiTableCellProps {
   height?: number | string;
   fontSize?: number;
 }
+const TableCell = styled(MuiTableCell)`
+  line-height: normal;
+  padding: 10px 15px;
+  height: 20px;
+`;
+
 const defaultCellOption: ICellOptions = {
   rowSpan: 1,
   colSpan: 1,
@@ -29,16 +36,8 @@ const defaultCellOption: ICellOptions = {
   fontSize: 15,
 };
 
-const calPaddingByFontSize = (fontSize) => {
-  const defaultFontSize = 15;
-  const defaultPadding = 15;
-  return fontSize <= defaultFontSize
-    ? defaultPadding + 'px'
-    : defaultPadding - fontSize - defaultFontSize + 'px';
-};
-
 export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps) => {
-  const { sx, textFormat, colorFormat, height, fontSize } = {
+  const { sx, textFormat, colorFormat } = {
     ...defaultCellOption,
     ...options,
   };
@@ -47,22 +46,17 @@ export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps)
     textAlign: 'center',
   } as MuiTableCellProps;
   return (
-    <MuiTableCell
-      colSpan={colSpan ? colSpan : 1}
+    <TableCell
+      colSpan={colSpan}
       rowSpan={rowSpan ? rowSpan : 1}
       sx={{
         ...defaultSx,
         ...sx,
-        [`&.MuiTableCell-root`]: {
-          lineHeight: height,
-          fontSize: fontSize,
-          padding: calPaddingByFontSize(fontSize),
-        },
         color: colorFormat ? colorFormat(value) : 'black',
       }}
       {...props}
     >
-      {textFormat ? textFormat(value) : value}
-    </MuiTableCell>
+      {typeof value === 'object' ? value : textFormat ? textFormat(value) : value}
+    </TableCell>
   );
 };

@@ -1,6 +1,7 @@
 import { CardTitle, Card } from '$pages/Report/commonStyled';
 import { Table, TRowProps } from 'mi-ui';
 import { sortBy, cloneDeep } from 'lodash';
+import { IRentalIndicator } from '$modules/report/accountSales';
 
 const COLUMN = [
   {
@@ -73,39 +74,8 @@ const ROW_DATA = [
   },
 ];
 
-const TestData = [
-  {
-    yearMonth: '202204',
-    rentalIndicatorRow: {
-      pltMonth: 38.5,
-      cancelRate: 8.09,
-      arpu: 34452,
-    },
-  },
-  {
-    yearMonth: '202202',
-    rentalIndicatorRow: {
-      pltMonth: 38.6,
-      cancelRate: 7.92,
-      arpu: 34444,
-    },
-  },
-  {
-    yearMonth: '202203',
-    rentalIndicatorRow: {
-      pltMonth: 38.5,
-      cancelRate: 8.01,
-      arpu: 34417,
-    },
-  },
-];
-const AverageData = {
-  pltMonth: 12.9,
-  cancelRate: 8.01,
-  arpu: 34437,
-};
-
 const columnDataToRowData = (data, avgData) => {
+  if (!data || !avgData) return [];
   const rowKeys = ROW_DATA.map((data) => data.name);
   const sortData = sortBy(data, 'yearMonth').map(({ yearMonth, rentalIndicatorRow }) => {
     return {
@@ -135,11 +105,18 @@ const columnDataToRowData = (data, avgData) => {
   }) as TRowProps[];
 };
 
-export const RentTable = () => {
-  const rowData = columnDataToRowData(TestData, AverageData);
+type TRendTableProps = {
+  data: IRentalIndicator | undefined;
+};
+
+export const RentTable = ({ data }: TRendTableProps) => {
+  const rowData = columnDataToRowData(
+    data?.monthlyRentalIndicatorRows,
+    data?.rentalIndicatorAverage,
+  );
 
   return (
-    <Card sx={{ display: 'grid', gridTemplateRows: '10% auto' }}>
+    <Card sx={{ display: 'grid', gridTemplateRows: '10% auto', gridGap: '20px' }}>
       <CardTitle>렌탈 지표</CardTitle>
       <Table rows={rowData} columns={COLUMN} showHeader={false}></Table>
     </Card>

@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { Header, TwoAccount, ThreeAccounts, FourAccounts } from './components';
 
 import dayjs from 'dayjs';
-import { useAccountHoldingCombine } from '$modules/report/accountSales/accountHoldingCombine';
+import { useAccountHoldingCombine } from '$modules/report/accountSales';
 
 export const Wrap = styled.div`
   display: grid;
@@ -77,7 +77,7 @@ const AccountHoldingCombine = () => {
 
   const getData = (name) => {
     if (data) {
-      const { productCombinationRows } = data.accountOwnership;
+      const { productCombinationRows } = data.accountCombination;
       return productCombinationRows.filter(
         ({ accountCountGroup }) => accountCountGroup === name,
       );

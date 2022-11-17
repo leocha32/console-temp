@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { TableRow as MuiTableRow } from '@mui/material';
 import { Cell, ICellOptions } from '../Atoms';
 
@@ -23,9 +23,35 @@ export type TRowProps = {
 
 export type TRowData = {
   colName: string;
-  value: string | number | TRowData[];
+  value: ReactNode | TRowData[];
 };
 
+const RenderRowCell = ({
+  rowData,
+  columns,
+}: {
+  rowData: TRowProps;
+  columns: TColumnProps[];
+}) => {
+  const { name, data, label, options: rowOptions }: TRowProps = rowData;
+  return data.map((data, i) => {
+    const colOptions = columns.find(({ name }) => name === data.colName)?.options;
+    const sumOptions = {
+      ...rowOptions,
+      ...(name === 'label' ? {} : colOptions),
+    };
+
+    return (
+      <Cell
+        options={sumOptions}
+        key={name + i}
+        colSpan={data.colSpan}
+        name={data.colName}
+        value={data.value}
+      ></Cell>
+    );
+  });
+};
 export const TableRow = ({ columns, rowData }: ITableRowProps) => {
   const { name: rowName, data, label, options: rowOptions }: TRowProps = rowData;
   const rowSpan = rowOptions?.rowSpan || 0;
@@ -36,53 +62,56 @@ export const TableRow = ({ columns, rowData }: ITableRowProps) => {
    */
   return (
     <>
-      <MuiTableRow>
-        {label ? (
-          <Cell
-            options={{ ...colOptions }}
-            rowSpan={rowSpan + 1}
-            name={'rowHeader'}
-            value={label}
-          ></Cell>
-        ) : null}
-        {rowSpan < 1
-          ? data.map((data, i) => {
-              const colOptions = columns.find(
-                ({ name }) => name === data.colName,
-              )?.options;
-              const sumOptions = {
-                ...rowOptions,
-                ...(rowName === 'label' ? {} : colOptions),
-              };
-
-              return (
+      {rowSpan > 1 ? (
+        <>
+          {data?.map((row, i) => (
+            <>
+              {i === 0 ? (
                 <Cell
-                  options={sumOptions}
-                  key={rowName + i}
-                  name={data.colName}
-                  value={data.value}
+                  options={{ ...colOptions }}
+                  rowSpan={rowSpan + 1}
+                  name={'rowHeader'}
+                  value={label || ''}
                 ></Cell>
-              );
-            })
-          : null}
-      </MuiTableRow>
-      {rowSpan > 1
-        ? data?.map((row, i) => (
-            <MuiTableRow key={i}>
-              {row.map(({ colName, value }, j) => {
-                const colOptions = columns.find(({ name }) => name === colName)?.options;
-                const sumOptions = {
-                  ...rowOptions,
-                  ...(rowName === 'label' ? {} : colOptions),
-                };
+              ) : null}
+              <MuiTableRow key={i}>
+                {row.map(({ colName, value }, j) => {
+                  const colOptions = columns.find(
+                    ({ name }) => name === colName,
+                  )?.options;
+                  const sumOptions = {
+                    ...rowOptions,
+                    ...(rowName === 'label' ? {} : colOptions),
+                  };
 
-                return (
-                  <Cell options={sumOptions} key={j} name={colName} value={value}></Cell>
-                );
-              })}
-            </MuiTableRow>
-          ))
-        : null}
+                  return (
+                    <Cell
+                      rowSpan={1}
+                      options={sumOptions}
+                      key={j}
+                      name={colName}
+                      value={value}
+                    ></Cell>
+                  );
+                })}
+              </MuiTableRow>
+            </>
+          ))}
+        </>
+      ) : (
+        <MuiTableRow sx={{ height: '40px' }}>
+          {label && (
+            <Cell
+              options={{ ...colOptions }}
+              rowSpan={rowSpan}
+              colSpan={rowOptions?.colSpan || 1}
+              name={'rowHeader'}
+              value={label || ''}
+            ></Cell>
+          )}
+          {RenderRowCell({ rowData, columns })}
+        </MuiTableRow>
+      )}
     </>
   );
 };

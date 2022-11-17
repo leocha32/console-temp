@@ -39,7 +39,7 @@ const Atl = () => {
     [selectedFamily, familyOptions],
   );
 
-  const [selectedDate, setSelectedDate] = useState(dayjs().add(-2, 'M'));
+  const [selectedDate, setSelectedDate] = useState(dayjs().add(-1, 'M'));
 
   const { data, isFetching, refetch } = useAtl(
     {

@@ -10,6 +10,7 @@ import {
   FlexDirection,
   RadioButton,
   JustifyContent,
+  IRadioGroupProps,
 } from 'mi-ui/src';
 import dayjs from 'dayjs';
 
@@ -29,16 +30,20 @@ const SelectWrap = styled.div`
   grid-row: 2/3;
 `;
 
-const CUSTOMER_OPTIONS = ['전체 고객', '개인', '개인 사업자', '법인 사업자'];
-const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 const Button = styled(MuiButton)``;
 
 export interface IHeaderProps {
   selects: ISelectProps[];
   onChangeDate: IDatePickerProps['onChange'];
   selectedDate: IDatePickerProps['value'];
+  radioButtonList: IRadioGroupProps[];
 }
-export const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) => {
+export const Header = ({
+  selects,
+  onChangeDate,
+  selectedDate,
+  radioButtonList,
+}: IHeaderProps) => {
   const handleRawDataDownload = useCallback(() => {
     console.log('down');
   }, []);
@@ -46,16 +51,15 @@ export const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) =>
   return (
     <CHeader>
       <RadioWrap>
-        <RadioButton
-          flexDirection={FlexDirection.ROW}
-          options={CUSTOMER_OPTIONS}
-          value={'전체 고객'}
-        ></RadioButton>
-        <RadioButton
-          sx={{ padding: '0 10px' }}
-          options={PURCHASE_METHOD}
-          value={'전체 고객'}
-        ></RadioButton>
+        {radioButtonList.map(({ options, value, onChange }, i) => (
+          <RadioButton
+            key={i}
+            flexDirection={FlexDirection.ROW}
+            options={options}
+            value={value}
+            onChange={onChange}
+          ></RadioButton>
+        ))}
       </RadioWrap>
       <SelectWrap>
         {selects?.map(

@@ -7,7 +7,7 @@ import {
   TableCellProps,
 } from '@mui/material';
 
-import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 
 export interface ITableHeaderProps extends MuiTableHeadProps {
   headers: IColumn[];
@@ -15,12 +15,23 @@ export interface ITableHeaderProps extends MuiTableHeadProps {
 
 export interface IColumn<TData = any> extends TableCellProps {
   name: string;
+  key?: string;
   columns?: IColumn<TData>[];
   colSpan?: number;
   colSpanOffset?: number;
   rowSpan?: number;
 }
 
+const Header = styled(MuiTableHead)`
+  height: 40px;
+  position: sticky;
+  top: 0;
+`;
+const Cell = styled(MuiTableCell)`
+  line-height: normal;
+  padding: 0;
+  text-align: center;
+`;
 const getDepth = (columns: IColumn[] | undefined) => {
   if (columns == null) {
     return 0;
@@ -83,27 +94,24 @@ const getHeaders = (columns: IColumn[]) => {
 
 export const TableHeader = ({ headers, ...props }: ITableHeaderProps) => {
   return (
-    <MuiTableHead {...props}>
+    <Header {...props}>
       {getHeaders(headers).map((headerRow, headerRowIndex) => (
         <MuiTableRow className={'MuiTableRow-head'} key={`header-row-${headerRowIndex}`}>
           {headerRow &&
             headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0, sx }) => {
               return (
-                <MuiTableCell
+                <Cell
                   sx={sx}
-                  css={css`
-                    text-align: center;
-                  `}
                   key={`header-cell-${name}`}
                   colSpan={colSpan + colSpanOffset}
                   rowSpan={rowSpan}
                 >
                   {name}
-                </MuiTableCell>
+                </Cell>
               );
             })}
         </MuiTableRow>
       ))}
-    </MuiTableHead>
+    </Header>
   );
 };

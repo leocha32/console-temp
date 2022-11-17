@@ -43,11 +43,13 @@ export const DiffBox = styled.div`
 export const Card = styled(MiCard)`
   min-height: 180px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
   flex: ${({ flex = 1 }: { flex?: number }) => flex};
 `;
 
 export const Section = styled.div`
-  height: calc(100% - 35px);
+  height: 100%;
   display: flex;
   flex-direction: row;
 `;

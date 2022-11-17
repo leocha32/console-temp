@@ -1,229 +1,163 @@
 import React from 'react';
-import { ICowayBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
 
 import { Card, Section, CardTitle } from '$pages/Report/commonStyled';
-import { Table } from 'mi-ui/src';
+import { ITableContainerProps, Table } from 'mi-ui/src';
+import {
+  IATLMediaCostByCompanyStatus,
+  IMediaCostByCompany,
+} from '$modules/report/marketing/atl';
+import { css } from '@emotion/react';
 
 export interface ICompetitorExecutionStatusProps {
-  data: ICowayBrandAwareness[];
+  data?: IATLMediaCostByCompanyStatus;
 }
+const TABLE_MAX_HEIGHT = 400;
 
 const columns = [
   {
-    name: 'sortation',
+    name: 'header',
     options: {
       sx: {
         backgroundColor: 'aliceblue',
+        width: '20%',
       },
     },
   },
   {
-    name: 'brand',
+    name: 'sum',
+    options: {},
   },
   {
-    name: 'marketShareValue',
+    name: 'ttv',
+    options: {},
   },
   {
-    name: 'marketShareValue',
-  },
-  {
-    name: 'gapWithCoway',
-    label: '광고 링크',
-    options: {
-      textFormat: (value) => {
-        const [a, b] = String(value).split(',');
-        return a === '코웨이' ? '-' : `${+b > 0 ? '▲' : '▼'} ${Math.abs(+b)}%`;
-      },
-      colorFormat: (value) => {
-        const [a, b] = String(value).split(',');
-        return a === '코웨이' ? 'black' : +b > 0 ? 'red' : 'blue';
-      },
-    },
-  },
-];
-const rowData = [
-  {
-    name: 'label',
-    options: {
-      sx: {
-        backgroundColor: 'aliceblue',
-      },
-    },
-    data: [
-      {
-        colName: 'sortation',
-        value: '구분',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: 'TV매체비계',
-      },
-      {
-        colName: 'terrestrial',
-        value: '지상파',
-      },
-      {
-        colName: 'catv',
-        value: 'CATV/종편',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-  },
-  {
-    name: '1',
-    data: [
-      {
-        colName: 'sortation',
-        value: '코웨이',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: '0',
-      },
-      {
-        colName: 'terrestrial',
-        value: 0,
-      },
-      {
-        colName: 'catv',
-        value: '0',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-    options: {
-      height: 'inherit',
+    name: 'ctv',
+    sx: {
+      width: '15%',
     },
   },
   {
-    name: '2',
-    data: [
-      {
-        colName: 'sortation',
-        value: '삼성전자',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: '0',
-      },
-      {
-        colName: 'terrestrial',
-        value: 0,
-      },
-      {
-        colName: 'catv',
-        value: '0',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-    options: {
-      height: 'inherit',
-    },
-  },
-  {
-    name: '3',
-    data: [
-      {
-        colName: 'sortation',
-        value: 'LG전자',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: '0',
-      },
-      {
-        colName: 'terrestrial',
-        value: 0,
-      },
-      {
-        colName: 'catv',
-        value: '0',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-    options: {
-      height: 'inherit',
-    },
-  },
-  {
-    name: '4',
-    data: [
-      {
-        colName: 'sortation',
-        value: '청호나이스',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: '0',
-      },
-      {
-        colName: 'terrestrial',
-        value: 0,
-      },
-      {
-        colName: 'catv',
-        value: '0',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-    options: {
-      height: 'inherit',
-    },
-  },
-  {
-    name: '5',
-    data: [
-      {
-        colName: 'sortation',
-        value: 'SK매직',
-      },
-      {
-        colName: 'mediaScaffolding',
-        value: '0',
-      },
-      {
-        colName: 'terrestrial',
-        value: 0,
-      },
-      {
-        colName: 'catv',
-        value: '0',
-      },
-      {
-        colName: 'advertisingLink',
-        value: '광고링크',
-      },
-    ],
-    options: {
-      height: 'inherit',
+    name: 'ad',
+    sx: {
+      width: '15%',
     },
   },
 ];
+
+const tableHeader = [
+  {
+    name: '구분',
+    key: 'company',
+    sx: {
+      backgroundColor: 'aliceblue',
+    },
+  },
+  {
+    name: 'TV매체비계',
+    key: 'sum',
+    sx: {
+      backgroundColor: 'aliceblue',
+    },
+  },
+  {
+    name: '지상파',
+    key: 'ttv',
+    sx: {
+      backgroundColor: 'aliceblue',
+    },
+  },
+  {
+    name: 'CATV/종편',
+    key: 'ctv',
+    sx: {
+      backgroundColor: 'aliceblue',
+    },
+  },
+  {
+    name: '광고링크',
+    key: 'ad',
+    sx: {
+      backgroundColor: 'aliceblue',
+      width: '500px',
+    },
+  },
+];
+
+const makeRowData = (originData: IMediaCostByCompany[]): ITableContainerProps['rows'] => {
+  return originData
+    .sort((a, b) => {
+      if (a.company === '코웨이' || b.company === '코웨이') {
+        return 0;
+      }
+      return b.sum - a.sum;
+    })
+    .map((item) => {
+      const data = tableHeader.map(({ key }) => {
+        let value = item[key];
+        if (key === 'ad') {
+          if (item.adUrl) {
+            const adUrls = item.adUrl.split('0x0b');
+            const adTitles = item.adTitle.split('0x0b');
+            value = adUrls.map((link, index) => (
+              <a
+                key={index}
+                css={css`
+                  color: #4285f4;
+                  display: flex;
+                `}
+                href={link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {adTitles[index]}
+              </a>
+            ));
+          } else value = '';
+        }
+
+        return {
+          colName: key,
+          value,
+        };
+      });
+      return {
+        name: item.company,
+        data,
+        options: {
+          height: 'inherit',
+        },
+      };
+    });
+};
+
 const CompetitorExecutionStatus = ({ data }: ICompetitorExecutionStatusProps) => {
+  const rowData = makeRowData(data?.mediaCostByCompanies || []);
   return (
     <Card>
       <CardTitle>경쟁사 집행 현황</CardTitle>
-      {/*{data?.length ? (*/}
+      {rowData.length ? (
+        <div
+          css={(theme) => `
+          display: flex;
+          font-size: 13px;
+          justify-content: end;          
+          color: ${theme.palettes.gray.GRAY_600};
+          margin-bottom:8px;
+        `}
+        >
+          (단위: 억원)
+        </div>
+      ) : null}
       <Section>
-        <Table showHeader={false} rows={rowData} columns={columns}></Table>
+        <Table
+          showHeader
+          headers={tableHeader}
+          rows={rowData}
+          columns={columns}
+          sx={{ maxHeight: `${TABLE_MAX_HEIGHT}px` }}
+        ></Table>
       </Section>
-      {/*) : (*/}
-      {/*  <EmptyContent />*/}
-      {/*)}*/}
     </Card>
   );
 };

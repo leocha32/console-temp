@@ -108,6 +108,16 @@ const DrawerHeader = styled.div`
 const MenuWrap = styled.div`
   min-height: 100px;
   overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar-thumb {
+    background: #d3d1cb;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: ${({ theme }) => theme?.color.primary.PRIMARY_700};
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
 `;
 
 const List = styled(MuiList)({

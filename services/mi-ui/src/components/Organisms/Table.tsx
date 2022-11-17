@@ -28,7 +28,7 @@ export const Table = ({
   ...props
 }: ITableContainerProps) => {
   return rows.length === 0 ? (
-    <Box sx={sx}>
+    <Box sx={{ width: '100%', height: '100%', ...sx }}>
       <EmptyContent></EmptyContent>
     </Box>
   ) : (

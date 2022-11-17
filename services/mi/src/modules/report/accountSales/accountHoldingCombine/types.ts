@@ -5,19 +5,20 @@ export interface IIAccountOwnershipParams {
   month: number;
 }
 
-export interface IAccountOwnershipResponseDto {
+export interface IAccountCombinationResponseDto {
   /**
    * 계정 보유 조합
    */
-  accountOwnership: IAccountOwnership;
+  accountCombination: IAccountCombination;
 }
 
-export interface IAccountOwnership {
+export interface IAccountCombination {
   /**
    * 계정 보유 조합 (2,3,4 계정)
    */
   productCombinationRows: IProductCombinationRow[];
 }
+
 export interface IProductCombinationRow {
   /**
    * 순번
