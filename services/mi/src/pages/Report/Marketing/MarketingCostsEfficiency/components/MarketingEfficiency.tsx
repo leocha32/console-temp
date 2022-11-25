@@ -2,22 +2,21 @@ import { useMemo } from 'react';
 import _ from 'lodash';
 import {
   Card,
-  Section,
-  ContentWrap,
+  Content,
   CardTitle,
   ContentTitle,
   ChartWrap,
+  ContentWrap,
 } from '$pages/Report/commonStyled';
 import { IMixedChartProps, MixedChart } from 'mi-ui';
 import { DataCardWrap, Cost, DiffWrap, DiffInfo } from '../components/commonStyled';
 import {
   IMarketingEfficiencyByMonth,
   IMarketingEfficiencyStatus,
-} from '$modules/report/marketing/marketingCostsEfficiency';
+} from '$modules/report/marketing';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
-
 export interface IMarketingEfficiencyProps {
-  data?: IMarketingEfficiencyStatus;
+  data: IMarketingEfficiencyStatus;
 }
 const gridOption = {
   left: 70,
@@ -91,10 +90,10 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
     [originData?.marketingEfficiencyCompares],
   );
   return (
-    <Card>
+    <Card flex={1}>
       <CardTitle>마케팅비 효율</CardTitle>
-      <Section>
-        <ContentWrap>
+      <ContentWrap>
+        <Content>
           <ContentTitle>{`CPP`}</ContentTitle>
           {originData?.marketingEfficiency?.cpp ? (
             <DataCardWrap>
@@ -132,9 +131,9 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
           ) : (
             <EmptyContent />
           )}
-        </ContentWrap>
+        </Content>
 
-        <ContentWrap>
+        <Content>
           <ContentTitle>PLT매출 比 비중</ContentTitle>
           {originData?.marketingEfficiency?.percentOfSales ? (
             <DataCardWrap>
@@ -172,9 +171,9 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
           ) : (
             <EmptyContent />
           )}
-        </ContentWrap>
+        </Content>
 
-        <ContentWrap flex={3}>
+        <Content flex={3}>
           <ChartWrap>
             <MixedChart
               grid={gridOption}
@@ -192,8 +191,8 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
               xAixData={xAixData}
             />
           </ChartWrap>
-        </ContentWrap>
-      </Section>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

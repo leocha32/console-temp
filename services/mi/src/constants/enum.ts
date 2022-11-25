@@ -10,3 +10,9 @@ export const enum ReportDownLoadCategoryType {
   MarketShare = 'MARKET_SHARE',
   SalesVolume = 'SALES_VOLUME',
 }
+
+export const enum ReportIndex {
+  reportBrandAwareness = 'report_brand_awareness',
+  reportMarketShare = 'report_market_share',
+  reportSalesVolume = 'report_sales_volume',
+}

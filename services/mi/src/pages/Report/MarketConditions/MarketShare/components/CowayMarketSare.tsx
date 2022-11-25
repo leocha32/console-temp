@@ -1,25 +1,14 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { ICowayMarketShare } from '$modules/report';
-import { CardTitle } from '$pages/Report/commonStyled';
-import { Card as MiCard } from 'mi-ui/src';
+import { ICompetitorComparison, ICowayMarketShare } from '$modules/report/research';
+import { CardTitle, Card, Content, ContentWrap } from '$pages/Report/commonStyled';
+import { MarketShareContrast } from './MarketShareContrast';
+import { css } from '@emotion/react';
 
 export interface ICowayBrandAwarenessProps {
-  data: ICowayMarketShare[];
+  cowayMarketShare: ICowayMarketShare[];
+  competitorComparison: ICompetitorComparison[];
 }
-
-const Card = styled(MiCard)`
-  background-color: #fafafa;
-  padding: 20px;
-`;
-
-const Div = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  justify-content: center;
-  align-items: center;
-`;
 
 const dataValueStyle = (theme) => ({
   color: theme.color.primary.PRIMARY_900,
@@ -44,7 +33,7 @@ const DiffInfo = ({ value, valueDiff }: { value: number; valueDiff: number }) =>
     <DiffInfoWrap>
       {value ? (
         <>
-          <span>{`직전 동기 ${value}% `}</span>(
+          <span>{`전년 동기 ${value}% `}</span>(
           {
             <>
               {valueDiff}% <DiffBox value={valueDiff}>▼</DiffBox>
@@ -59,15 +48,33 @@ const DiffInfo = ({ value, valueDiff }: { value: number; valueDiff: number }) =>
   );
 };
 
-export const CowayMarketSare = ({ data }: ICowayBrandAwarenessProps) => {
-  const { marketShareValue = 0, marketShareYoyValue = 0, yoyDiff } = data[0] || {};
+export const CowayMarketSare = ({
+  cowayMarketShare,
+  competitorComparison,
+}: ICowayBrandAwarenessProps) => {
+  const {
+    marketShareValue = 0,
+    marketShareYoyValue = 0,
+    yoyDiff,
+  } = cowayMarketShare[0] || {};
   return (
     <Card>
       <CardTitle>코웨이 시장점유율</CardTitle>
-      <Div>
-        <div css={dataValueStyle}>{marketShareValue}%</div>
-        <DiffInfo value={marketShareYoyValue} valueDiff={yoyDiff} />
-      </Div>
+      <ContentWrap direction={'column'}>
+        <Content
+          css={css`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <div css={dataValueStyle}>{marketShareValue}%</div>
+          <DiffInfo value={marketShareYoyValue} valueDiff={yoyDiff} />
+        </Content>
+        <Content flex={2}>
+          <MarketShareContrast data={competitorComparison}></MarketShareContrast>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

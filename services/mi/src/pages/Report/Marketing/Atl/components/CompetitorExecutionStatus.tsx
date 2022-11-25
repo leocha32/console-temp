@@ -1,15 +1,15 @@
 import React from 'react';
 
-import { Card, Section, CardTitle } from '$pages/Report/commonStyled';
+import { Card, CardTitle, ContentWrap, Content } from '$pages/Report/commonStyled';
 import { ITableContainerProps, Table } from 'mi-ui/src';
 import {
   IATLMediaCostByCompanyStatus,
   IMediaCostByCompany,
-} from '$modules/report/marketing/atl';
+} from '$modules/report/marketing';
 import { css } from '@emotion/react';
 
 export interface ICompetitorExecutionStatusProps {
-  data?: IATLMediaCostByCompanyStatus;
+  data: IATLMediaCostByCompanyStatus;
 }
 const TABLE_MAX_HEIGHT = 400;
 
@@ -88,7 +88,7 @@ const makeRowData = (originData: IMediaCostByCompany[]): ITableContainerProps['r
   return originData
     .sort((a, b) => {
       if (a.company === '코웨이' || b.company === '코웨이') {
-        return 0;
+        return 1;
       }
       return b.sum - a.sum;
     })
@@ -136,28 +136,30 @@ const CompetitorExecutionStatus = ({ data }: ICompetitorExecutionStatusProps) =>
   return (
     <Card>
       <CardTitle>경쟁사 집행 현황</CardTitle>
-      {rowData.length ? (
-        <div
-          css={(theme) => `
+      <ContentWrap>
+        <Content>
+          {rowData.length ? (
+            <div
+              css={(theme) => `
           display: flex;
           font-size: 13px;
           justify-content: end;          
           color: ${theme.palettes.gray.GRAY_600};
           margin-bottom:8px;
         `}
-        >
-          (단위: 억원)
-        </div>
-      ) : null}
-      <Section>
-        <Table
-          showHeader
-          headers={tableHeader}
-          rows={rowData}
-          columns={columns}
-          sx={{ maxHeight: `${TABLE_MAX_HEIGHT}px` }}
-        ></Table>
-      </Section>
+            >
+              (단위: 억원)
+            </div>
+          ) : null}
+          <Table
+            showHeader
+            headers={tableHeader}
+            rows={rowData}
+            columns={columns}
+            sx={{ maxHeight: `${TABLE_MAX_HEIGHT}px` }}
+          ></Table>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

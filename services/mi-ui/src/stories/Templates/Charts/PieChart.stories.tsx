@@ -23,15 +23,17 @@ export const PieChart: ComponentStory<typeof CPieChart> = (props: IPieChartProps
 };
 
 PieChart.args = {
-  data: [
-    { value: 39, name: '코웨이' },
-    { value: 26, name: '삼성전자' },
-    { value: 17, name: 'LG전자' },
-    { value: 12, name: '청호' },
-    { value: 5, name: 'SK매직' },
-  ],
-  label: {
-    formatter: '{c}%',
+  data: {
+    data: [
+      { value: 39, name: '코웨이' },
+      { value: 26, name: '삼성전자' },
+      { value: 17, name: 'LG전자' },
+      { value: 12, name: '청호' },
+      { value: 5, name: 'SK매직' },
+    ],
+    label: {
+      formatter: '{c}%',
+    },
   },
   tooltip: { valueFormatter: (value) => `${value}%` },
 };

@@ -1,17 +1,7 @@
 import React from 'react';
-import { ICompetitorComparison } from '$modules/report/marketConditions/marketShare';
+import { ICompetitorComparison } from '$modules/report/research';
 
-import styled from '@emotion/styled';
 import { Table, TRowProps, TColumnProps } from 'mi-ui';
-import { Card as MiCard } from 'mi-ui/src';
-
-const Card = styled(MiCard)`
-  display: flex;
-  grid-column: 1/2;
-  grid-row: 2/3;
-  background-color: #fafafa;
-  padding: 20px;
-`;
 
 export interface IMarketShareContrastProps {
   data: ICompetitorComparison[];
@@ -117,9 +107,5 @@ const makeRowData = (data) => {
 export const MarketShareContrast = ({ data }: IMarketShareContrastProps) => {
   const rowData = makeRowData(data);
 
-  return (
-    <Card>
-      <Table sx={{ width: '100%' }} rows={rowData} columns={columnConfig}></Table>
-    </Card>
-  );
+  return <Table sx={{ width: '100%' }} rows={rowData} columns={columnConfig}></Table>;
 };

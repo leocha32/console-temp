@@ -7,6 +7,7 @@ import {
   TooltipOption,
   GridOption,
   YAXisOption,
+  MarkPointOption,
 } from 'echarts/types/dist/shared';
 
 import { BarChart as EBarChart } from 'echarts/charts';
@@ -34,6 +35,7 @@ export interface IBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   legend?: LegendOption;
   grid?: GridOption;
   yAxis?: YAXisOption | YAXisOption[];
+  markPoint?: MarkPointOption;
 }
 
 export const BarChart = ({

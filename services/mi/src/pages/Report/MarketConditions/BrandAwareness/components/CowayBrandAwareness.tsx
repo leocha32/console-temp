@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICowayBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
+import { ICowayBrandAwareness } from '$modules/report/research';
 
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -7,10 +7,10 @@ import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 import {
   DiffBox,
   Card,
-  Section,
-  ContentWrap,
   CardTitle,
   ContentTitle,
+  Content,
+  ContentWrap,
 } from '$pages/Report/commonStyled';
 
 export interface ICowayBrandAwarenessProps {
@@ -100,8 +100,8 @@ export const CowayBrandAwareness = ({ data }: ICowayBrandAwarenessProps) => {
     <Card>
       <CardTitle>코웨이 브랜드 인지도</CardTitle>
       {data?.length ? (
-        <Section>
-          <ContentWrap>
+        <ContentWrap>
+          <Content>
             <ContentTitle>{`최초 상기도`}</ContentTitle>
             <div
               css={css`
@@ -118,24 +118,24 @@ export const CowayBrandAwareness = ({ data }: ICowayBrandAwarenessProps) => {
                 hohValueDiff={data[0]?.topOfMindHohDiff}
               ></DataCard>
             </div>
-          </ContentWrap>
-          <ContentWrap>
+          </Content>
+          <Content>
             <ContentTitle>비보조 인지도</ContentTitle>
             <DataCard
               value={data[0]?.unaidedAwareness}
               hohValue={data[0]?.unaidedAwarenessHoh}
               hohValueDiff={data[0]?.unaidedAwarenessHohDiff}
             ></DataCard>
-          </ContentWrap>
-          <ContentWrap>
+          </Content>
+          <Content>
             <ContentTitle>보조 인지도</ContentTitle>
             <DataCard
               value={data[0]?.aidedAwareness}
               hohValue={data[0]?.aidedAwarenessHoh}
               hohValueDiff={data[0]?.aidedAwarenessHohDiff}
             ></DataCard>
-          </ContentWrap>
-        </Section>
+          </Content>
+        </ContentWrap>
       ) : (
         <EmptyContent />
       )}

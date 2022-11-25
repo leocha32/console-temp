@@ -1,13 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Button, ISelectProps, Select } from 'mi-ui';
 import { ButtonsWrap, Header as CHeader } from '$pages/Report/commonStyled';
-import { useDownloadReport } from '$modules/report';
-import { IResearchReportFile } from '$types/common';
+import { IResearchReportFileUrl } from '$types/common';
 import { saveImage } from '$utils/utils';
 import { css } from '@emotion/react';
 
 export interface IHeaderProps {
-  researchReportFile?: IResearchReportFile;
+  researchReportFileUrl?: IResearchReportFileUrl;
   selectYear: string;
   selectOptions: ISelectProps['options'];
   onChangeSelect: ISelectProps['onChange'];
@@ -17,7 +16,7 @@ export interface IHeaderProps {
   hiddenReportButton?: boolean;
 }
 export const Header = ({
-  researchReportFile,
+  researchReportFileUrl,
   selectYear,
   onChangeSelect,
   selectOptions,
@@ -26,35 +25,14 @@ export const Header = ({
   hiddenCaptureButton = false,
   hiddenReportButton = false,
 }: IHeaderProps) => {
-  const downloadReport = useDownloadReport();
-  const [btnLoading, setBtnLoading] = useState(false);
-
   const handleDownloadScreen = useCallback(() => {
     const fileName = `${title}(${selectYear}).png`;
     saveImage(element, fileName);
   }, [selectYear, element, title]);
-  const handleDownloadReport = useCallback(() => {
-    if (researchReportFile) {
-      setBtnLoading(true);
 
-      const { half, category, filePath, year, originalFileName } = researchReportFile;
-
-      downloadReport.mutate(
-        {
-          half,
-          category,
-          filePath,
-          year,
-          fileName: originalFileName,
-        },
-        {
-          onSettled: () => {
-            setBtnLoading(false);
-          },
-        },
-      );
-    }
-  }, [researchReportFile, downloadReport]);
+  const downloadReport = useCallback(() => {
+    window.open(researchReportFileUrl?.fileUrl, '_blank');
+  }, [researchReportFileUrl]);
 
   return (
     <CHeader id={'component-header'}>
@@ -79,10 +57,9 @@ export const Header = ({
         {!hiddenReportButton && (
           <Button
             data-html2canvas-ignore
-            onClick={handleDownloadReport}
-            disabled={!researchReportFile}
-            showLoading={btnLoading}
+            disabled={!researchReportFileUrl}
             label={'보고서 다운로드'}
+            onClick={downloadReport}
           ></Button>
         )}
       </ButtonsWrap>

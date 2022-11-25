@@ -1,32 +1,14 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import dayjs from 'dayjs';
-import styled from '@emotion/styled';
+import React, { useCallback, useRef, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { PageLayout, Spinner } from 'mi-ui';
-import { useMarketShare } from '$modules/report';
+import { useMarketShare } from '$modules/report/research';
 import { getCrumbs } from '$utils/utils';
-import { Tabs } from '$pages/Report/commonStyled';
+import { Footer, Section, Tabs } from '$pages/Report/commonStyled';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
-import { HalfYear } from '$constants/enum';
-import {
-  CowayMarketSare,
-  MajorBrandShare,
-  MarketShareContrast,
-  ProductPenetrationRate,
-} from './components';
-
-const ContentsWrap = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  grid-gap: 20px;
-  height: calc(100% - 30px);
-  margin: 15px 10px;
-  position: relative;
-`;
-const Footer = styled.div`
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 13px;
-`;
+import { HalfYear, ReportIndex } from '$constants/enum';
+import { CowayMarketSare, MajorBrandShare, ProductPenetrationRate } from './components';
+import { researchMarketShare } from '$recoils/filter';
+import { selectableItemsSelector } from '$recoils/resarchSelectItem';
 
 const tabItems = [
   {
@@ -51,49 +33,26 @@ const tabItems = [
   },
 ];
 
-const TITLE = '시장 점유율(M/S)';
-const currentMonth = dayjs().month();
-const currentYear = dayjs().year();
-
-const selectOption = () => {
-  const lastYear = 2020;
-  const options: { value: string; label: string }[] = [];
-
-  for (let i = currentYear; i >= lastYear; i--) {
-    if (currentMonth < 6 && i === currentYear) continue;
-    if (i === currentYear) {
-      options.push(
-        ...[{ value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` }],
-      );
-    } else {
-      options.push(
-        ...[
-          { value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` },
-          { value: `${String(i)}-${HalfYear.Second}`, label: `${i}년 하반기` },
-        ],
-      );
-    }
-  }
-  return options;
-};
+const TITLE = '시장 점유율';
 
 const MarketShare = () => {
+  const [filter, setFilter] = useRecoilState(researchMarketShare);
+  const selectOption = useRecoilValue(
+    selectableItemsSelector(ReportIndex.reportMarketShare),
+  );
+  const { yyyyh } = filter;
+  const selectedItem = yyyyh || selectOption[0]?.value || '';
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
-  const [selectYear, setSelectYear] = useState<string>(selectOption()[0]?.value);
-  const [year, half] = selectYear.split('-');
-  const { data, isLoading, refetch } = useMarketShare(
+  const [year, half] = selectedItem.split('_');
+  const { data, isLoading } = useMarketShare(
     {
       year: year,
       half: half as HalfYear,
       'product-groups': activeTab,
     },
-    { enabled: false },
+    { enabled: !!selectedItem },
   );
-
-  useEffect(() => {
-    refetch();
-  }, [activeTab, selectYear]);
 
   const handleTabChange = useCallback(
     (e, value) => {
@@ -104,30 +63,34 @@ const MarketShare = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value);
+      setFilter({
+        yyyyh: value,
+      });
     },
-    [setSelectYear],
+    [setFilter],
   );
 
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()} ref={contentRef}>
       <Header
-        researchReportFile={data?.researchReportFile}
-        selectYear={selectYear}
-        selectOptions={selectOption()}
+        researchReportFileUrl={data?.researchReportFileUrl}
+        selectYear={selectedItem}
+        selectOptions={selectOption}
         onChangeSelect={handleSelectChange}
         element={contentRef.current as HTMLElement}
         title={TITLE}
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
 
-      <ContentsWrap>
+      <Section direction={'row'}>
         {isLoading ? <Spinner /> : null}
-        <CowayMarketSare data={data?.cowayMarketShare || []} />
-        <MarketShareContrast data={data?.competitorComparison || []} />
+        <CowayMarketSare
+          cowayMarketShare={data?.cowayMarketShare || []}
+          competitorComparison={data?.competitorComparison || []}
+        />
         <MajorBrandShare data={data?.majorBrandMarketShare || []} />
         <ProductPenetrationRate data={data?.productPenetration || []} />
-      </ContentsWrap>
+      </Section>
       <Footer>
         [출처]
         <br />

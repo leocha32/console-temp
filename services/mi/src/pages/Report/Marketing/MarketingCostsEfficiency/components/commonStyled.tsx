@@ -3,7 +3,7 @@ import { DiffBox } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 
 export const DataCardWrap = styled.div`
-  padding: 20px 30px 10px 0px;
+  padding: 20px 20px 10px 0px;
   line-height: 25px;
   display: flex;
   flex-direction: column;

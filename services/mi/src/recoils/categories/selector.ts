@@ -23,10 +23,10 @@ export const familySector = selectorFamily({
   get:
     ({ category }: { category: string }) =>
     ({ get }) => {
-      if (!category) {
+      const categoryList = get(categories);
+      if (!category || !Object.keys(categoryList)?.length) {
         return [];
       }
-      const categoryList = get(categories);
       const result = Object.keys(categoryList[category]);
       return makeResult(result);
     },
@@ -38,10 +38,10 @@ export const productAndFunctionalGroupSelector = selectorFamily({
   get:
     ({ category, family }: { category: string; family: string[] }) =>
     ({ get }) => {
-      if (!category) {
+      const categoryList = get(categories);
+      if (!Object.keys(categoryList)?.length || !category || !family) {
         return { functionalGroup: [], product: [] };
       }
-      const categoryList = get(categories);
       const familyObj = categoryList[category];
 
       const result = family.reduce(

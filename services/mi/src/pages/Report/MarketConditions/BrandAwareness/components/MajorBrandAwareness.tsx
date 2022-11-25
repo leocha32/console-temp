@@ -1,19 +1,21 @@
 import React, { useMemo } from 'react';
 import _ from 'lodash';
-import { IMajorBrandAwareness } from '$modules/report/marketConditions/brandAwareness';
+import { IMajorBrandAwareness } from '$modules/report/research';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 import { BarChart, ChartOrient, ChartTop } from 'mi-ui';
 import {
   Card,
-  Section,
   ChartWrap,
   CardTitle,
-  ContentWrap,
+  Content,
   ContentTitle,
+  ContentWrap,
 } from '$pages/Report/commonStyled';
 export interface IMajorBrandAwarenessProps {
   data: IMajorBrandAwareness[];
 }
+
+const BACKGROUND_COLOR = ['#5082ff', '#43d2d0', '#276781'];
 
 const makeChartData = (data: IMajorBrandAwareness[]) => {
   const items = {};
@@ -36,6 +38,7 @@ const makeChartData = (data: IMajorBrandAwareness[]) => {
     }
     names.forEach(({ key }, index) => {
       items[brand][index].data[xAixDataIdx] = item[key];
+      items[brand][index].color = BACKGROUND_COLOR[index];
     });
   });
   return {
@@ -73,12 +76,12 @@ export const MajorBrandAwareness = ({ data }: IMajorBrandAwarenessProps) => {
   }, [chartData]);
 
   return (
-    <Card flex={2}>
+    <Card flex={1}>
       <CardTitle>주요 브랜드 인지도</CardTitle>
       {data?.length ? (
-        <Section>
+        <ContentWrap>
           {chardDataKeys.map((key) => (
-            <ContentWrap key={key}>
+            <Content key={key}>
               <ContentTitle>{key}</ContentTitle>
               <ChartWrap>
                 <BarChart
@@ -90,9 +93,9 @@ export const MajorBrandAwareness = ({ data }: IMajorBrandAwarenessProps) => {
                   yAxis={yAxisOption}
                 />
               </ChartWrap>
-            </ContentWrap>
+            </Content>
           ))}
-        </Section>
+        </ContentWrap>
       ) : (
         <EmptyContent />
       )}

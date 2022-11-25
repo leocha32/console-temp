@@ -3,10 +3,18 @@ import './App.css';
 import { useRoutes, RouteObject } from 'react-router-dom';
 import routes from './App.route';
 import { useCategories } from '$modules/management/categories/hooks/useCategories';
+import { useSelectableItems } from '$modules/report/research/hooks/useSelectableItems';
 import { useSetRecoilState } from 'recoil';
 import categories from '$recoils/categories/atom';
+import selectableItems from '$recoils/resarchSelectItem/atom';
 function App() {
   const setCategories = useSetRecoilState(categories);
+  const setResearchSelectableItems = useSetRecoilState(selectableItems);
+  useSelectableItems({
+    onSuccess: (data) => {
+      setResearchSelectableItems(data);
+    },
+  });
   useCategories({
     onSuccess: (data) => {
       const result = data.reduce(

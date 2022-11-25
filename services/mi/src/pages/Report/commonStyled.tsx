@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Card as MiCard, Tabs as CTabs } from 'mi-ui/src';
+import { Theme } from '@emotion/react';
 
 export const Header = styled.div`
   display: flex;
@@ -8,21 +9,34 @@ export const Header = styled.div`
   align-items: center;
 `;
 
-export const Wrap = styled.div`
+export const Footer = styled.div`
+  padding-top: 10px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 13px;
+`;
+
+export const Card = styled(MiCard)`
+  min-height: 200px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  ${({ height }: { height?: number }) => (height ? `height: ${height}px` : '')};
+  ${({ flex }: { height?: number; flex?: number }) => (flex ? `flex: ${flex}` : '')};
+`;
+
+export const Section = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   margin-top: 15px;
-  justify-content: space-between;
-`;
-
-export const ContentsWrap = styled.div`
-  display: flex;
-  height: 100%;
-  min-height: 600px;
+  flex-direction: ${({ direction = 'column' }: { direction?: string }) => direction};
   position: relative;
   gap: 20px;
-  flex-direction: ${({ direction = 'row' }: { direction?: string }) => direction};
+  min-height: 550px;
+  ${Card} {
+    ${({ direction = 'column' }: { direction?: string }) =>
+      direction === 'row' ? ' flex: 1' : ''};
+  }
 `;
 
 export const Tabs = styled(CTabs)`
@@ -40,31 +54,6 @@ export const DiffBox = styled.div`
   margin-left: 3px;
 `;
 
-export const Card = styled(MiCard)`
-  min-height: 180px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex: ${({ flex = 1 }: { flex?: number }) => flex};
-`;
-
-export const Section = styled.div`
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-`;
-
-export const ContentWrap = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: ${({ flex = 1 }: { flex?: number }) => flex};
-  height: 100%;
-  :not(:last-of-type) {
-    border-right: ${({ theme }) => `1px solid ${theme.palettes.gray.GRAY_300}`};
-    margin-right: 20px;
-  }
-`;
-
 export const ChartWrap = styled.div`
   height: 100%;
 `;
@@ -76,4 +65,46 @@ export const CardTitle = styled.h3`
 
 export const ContentTitle = styled.h4`
   margin: 15px 0 5px;
+`;
+
+export const Content = styled.div`
+  flex: ${({ flex = 1 }: { flex?: number }) => flex};
+  height: auto;
+  display: flex;
+  flex-direction: column;
+`;
+export const ContentWrap = styled.div`
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: ${({ direction = 'row' }: { direction?: string }) => direction};
+  flex: 1;
+  ${Content} {
+    :not(:last-of-type) {
+      border-right: ${({
+        direction = 'row',
+        theme,
+      }: {
+        direction?: string;
+        theme?: Theme;
+      }) =>
+        direction === 'row' ? `1px solid ${theme?.palettes.gray.GRAY_300}` : 'none'};
+      border-bottom: ${({
+        direction = 'row',
+        theme,
+      }: {
+        direction?: string;
+        theme?: Theme;
+      }) =>
+        direction === 'column' ? `1px solid ${theme?.palettes.gray.GRAY_300}` : 'none'};
+      margin: ${({ direction = 'row' }: { direction?: string; theme?: Theme }) =>
+        direction === 'column' ? '0 0 20px 0' : '0 20px 0 0'};
+    }
+  }
+`;
+
+export const HeaderCard = styled(MiCard)`
+  margin-top: 15px;
+  padding: 15px 20px;
+  overflow: unset;
 `;

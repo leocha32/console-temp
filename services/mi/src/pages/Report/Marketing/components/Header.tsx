@@ -1,24 +1,32 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { Header as CHeader } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 import { Button, DatePicker, ISelectProps, Select, IDatePickerProps } from 'mi-ui';
 import dayjs from 'dayjs';
+import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
 
 const FilterWrap = styled.div`
   display: flex;
   gap: 15px;
+  align-items: center;
 `;
 
-export interface IHeaderProps {
+export interface IHeaderProps<T> {
   selects: ISelectProps[];
   onChangeDate: IDatePickerProps['onChange'];
   selectedDate: IDatePickerProps['value'];
+  onClickSearch: () => void;
+  downloadButtonProps: IDownloadButtonProp<T>;
+  isFetching?: boolean;
 }
-const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) => {
-  const handleRawDataDownload = useCallback(() => {
-    console.log('down');
-  }, []);
-
+const Header = <T extends object>({
+  selects,
+  onChangeDate,
+  selectedDate,
+  downloadButtonProps,
+  onClickSearch,
+  isFetching = false,
+}: IHeaderProps<T>) => {
   return (
     <CHeader>
       <FilterWrap>
@@ -42,8 +50,14 @@ const Header = ({ selects, onChangeDate, selectedDate }: IHeaderProps) => {
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
+        <Button
+          showLoading={isFetching}
+          label={'조회'}
+          onClick={onClickSearch}
+          variant="contained"
+        />
       </FilterWrap>
-      <Button onClick={handleRawDataDownload} label={'상세 데이터 다운로드'} />
+      <DownloadButton label={'상세 데이터 다운로드'} {...downloadButtonProps} />
     </CHeader>
   );
 };

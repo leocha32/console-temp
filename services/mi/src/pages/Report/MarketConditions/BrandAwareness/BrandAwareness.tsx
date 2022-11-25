@@ -1,12 +1,14 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import dayjs from 'dayjs';
+import React, { useCallback, useRef, useState } from 'react';
 import { PageLayout, Spinner } from 'mi-ui';
 import { getCrumbs } from '$utils/utils';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { CowayBrandAwareness, MajorBrandAwareness } from './components';
-import { HalfYear } from '$constants/enum';
-import { Wrap, ContentsWrap, Tabs } from '$pages/Report/commonStyled';
-import { useBrandAwareness } from '$modules/report';
+import { HalfYear, ReportIndex } from '$constants/enum';
+import { Section, Tabs } from '$pages/Report/commonStyled';
+import { useBrandAwareness } from '$modules/report/research';
 import { Header } from '$pages/Report/MarketConditions/components/Header';
+import { researchBrandAwareness } from '$recoils/filter';
+import { selectableItemsSelector } from '$recoils/resarchSelectItem';
 
 const tabItems = [
   {
@@ -27,40 +29,25 @@ const tabItems = [
   },
 ];
 
-const currentYear = dayjs().year();
-
-const selectOption = () => {
-  const lastYear = 2020;
-  const options: { value: string; label: string }[] = [];
-
-  for (let i = currentYear; i >= lastYear; i--) {
-    options.push(
-      ...[
-        { value: `${String(i)}-${HalfYear.First}`, label: `${i}년 상반기` },
-        { value: `${String(i)}-${HalfYear.Second}`, label: `${i}년 하반기` },
-      ],
-    );
-  }
-  return options;
-};
 const TITLE = '브랜드 인지도 ';
 const BrandAwareness = () => {
+  const [filter, setFilter] = useRecoilState(researchBrandAwareness);
+  const selectOption = useRecoilValue(
+    selectableItemsSelector(ReportIndex.reportBrandAwareness),
+  );
+  const { yyyyh } = filter;
+  const selectedItem = yyyyh || selectOption[0]?.value || '';
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
-  const [selectYear, setSelectYear] = useState<string>(selectOption()[0]?.value);
-  const [year, half] = selectYear.split('-');
-  const { data, isLoading, refetch } = useBrandAwareness(
+  const [year, half] = selectedItem.split('_');
+  const { data, isLoading } = useBrandAwareness(
     {
       year,
       half: half as HalfYear,
       'product-groups': activeTab,
     },
-    { enabled: false },
+    { enabled: !!selectedItem },
   );
-
-  useEffect(() => {
-    refetch();
-  }, [activeTab, selectYear]);
 
   const handleTabChange = useCallback(
     (e, value) => {
@@ -71,29 +58,29 @@ const BrandAwareness = () => {
 
   const handleSelectChange = useCallback(
     (value) => {
-      setSelectYear(value);
+      setFilter({
+        yyyyh: value,
+      });
     },
-    [setSelectYear],
+    [setFilter],
   );
 
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()} ref={contentRef}>
       <Header
-        researchReportFile={data?.researchReportFile}
-        selectYear={selectYear}
-        selectOptions={selectOption()}
+        researchReportFileUrl={data?.researchReportFileUrl}
+        selectYear={selectedItem}
+        selectOptions={selectOption}
         onChangeSelect={handleSelectChange}
         element={contentRef.current as HTMLElement}
         title={TITLE}
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
-      <Wrap>
-        <ContentsWrap direction={'column'}>
-          {isLoading ? <Spinner /> : null}
-          <CowayBrandAwareness data={data?.cowayBrandAwareness || []} />
-          <MajorBrandAwareness data={data?.majorBrandAwareness || []} />
-        </ContentsWrap>
-      </Wrap>
+      <Section>
+        {isLoading ? <Spinner /> : null}
+        <CowayBrandAwareness data={data?.cowayBrandAwareness || []} />
+        <MajorBrandAwareness data={data?.majorBrandAwareness || []} />
+      </Section>
     </PageLayout>
   );
 };

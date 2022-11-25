@@ -55,7 +55,10 @@ const RenderRowCell = ({
 export const TableRow = ({ columns, rowData }: ITableRowProps) => {
   const { name: rowName, data, label, options: rowOptions }: TRowProps = rowData;
   const rowSpan = rowOptions?.rowSpan || 0;
-  const colOptions = columns.find(({ name }) => 'rowHeader' === name)?.options;
+  const colOptions = {
+    sx: rowOptions?.sx,
+    ...columns.find(({ name }) => 'rowHeader' === name)?.options,
+  };
 
   /**
    * todo column option 추가

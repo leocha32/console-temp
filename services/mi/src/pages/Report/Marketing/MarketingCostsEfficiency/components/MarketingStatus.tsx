@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import _ from 'lodash';
 import {
   Card,
-  Section,
+  Content,
   ContentWrap,
   CardTitle,
   ContentTitle,
@@ -14,11 +14,11 @@ import {
   IMarketingCostByMedia,
   IMarketingCostByMonth,
   IMarketingCostStatus,
-} from '$modules/report/marketing/marketingCostsEfficiency';
+} from '$modules/report/marketing';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 
 export interface IMarketingStatusProps {
-  data?: IMarketingCostStatus;
+  data: IMarketingCostStatus;
 }
 
 const makeChartData = (
@@ -84,21 +84,21 @@ const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
   return (
     <Card>
       <CardTitle>마케팅비 현황</CardTitle>
-      <Section>
-        <ContentWrap>
+      <ContentWrap>
+        <Content>
           <ContentTitle>{`마케팅비`}</ContentTitle>
           {originData?.marketingCostCompare ? (
             <DataCardWrap>
               <div>
                 <Cost
                   title={'전체'}
-                  value={`${allMarketingCosts}억`}
+                  value={`${allMarketingCosts?.toFixed(1)}억`}
                   description={makeCostDescription(originData?.marketingCosts)}
                 />
                 {originData?.marketingCostBySelectedItems.length ? (
                   <Cost
                     title={'선택한 제품군'}
-                    value={`${allMarketingCostBySelectedItems}억`}
+                    value={`${allMarketingCostBySelectedItems?.toFixed(1)}억`}
                     description={makeCostDescription(
                       originData?.marketingCostBySelectedItems,
                     )}
@@ -122,8 +122,8 @@ const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
           ) : (
             <EmptyContent />
           )}
-        </ContentWrap>
-        <ContentWrap flex={4}>
+        </Content>
+        <Content flex={4}>
           <ChartWrap>
             <StackChart
               data={data}
@@ -132,8 +132,8 @@ const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
               yAxis={yAxisOption}
             />
           </ChartWrap>
-        </ContentWrap>
-      </Section>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

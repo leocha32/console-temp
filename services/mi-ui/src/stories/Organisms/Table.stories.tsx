@@ -76,13 +76,11 @@ const columns = [
 ];
 const rowData = [
   {
-    label: '232',
     name: 'label',
     options: {
       sx: {
         backgroundColor: 'aliceblue',
       },
-      colSpan: 2,
     },
     data: [
       {
@@ -161,7 +159,10 @@ const rowData = [
       {
         colName: 'brand',
         value: 'SK매직',
-        colSpan: '2',
+      },
+      {
+        colName: 'marketShareValue',
+        value: 16.4,
       },
       {
         colName: 'gapWithCoway',

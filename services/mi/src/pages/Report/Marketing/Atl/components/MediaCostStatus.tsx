@@ -1,10 +1,9 @@
 import {
   Card,
-  Section,
-  ContentWrap,
   CardTitle,
   ContentTitle,
-  ChartWrap,
+  ContentWrap,
+  Content,
 } from '$pages/Report/commonStyled';
 import _ from 'lodash';
 import {
@@ -15,10 +14,9 @@ import {
   PieChart,
   IPieChartProps,
 } from 'mi-ui';
-import { IATLMediaCostStatus } from '$modules/report/marketing/atl';
-
+import { IATLMediaCostStatus } from '$modules/report/marketing';
 export interface IMediaCostStatusProps {
-  data?: IATLMediaCostStatus;
+  data: IATLMediaCostStatus;
 }
 
 const gridOptions = {
@@ -42,7 +40,7 @@ const makeBarChartData = (
   isStack = false,
 ): IBarChartProps['data'] | IStackBarChartProps['data'] => {
   const data = {};
-  originData.forEach((d) => {
+  originData?.forEach((d) => {
     const xAixDataIdx = xAixData.indexOf(d.yearMonth);
     const name = d[nameKey];
     if (!data[name]) {
@@ -101,15 +99,22 @@ const makeChartData = (
     shareByCompanies: {
       data: {
         data:
-          originData.shareByCompanies?.map(({ company, shareValue }) => ({
-            value: shareValue,
-            name: company,
-          })) || [],
+          originData?.shareByCompanies
+            ?.sort((a, b) => {
+              if (a.company === '코웨이' || b.company === '코웨이') {
+                return 1;
+              }
+              return b.shareValue - a.shareValue;
+            })
+            .map(({ company, shareValue }) => ({
+              value: shareValue,
+              name: company,
+            })) || [],
         label: {
           formatter: '{c}%',
         },
         radius: '50%',
-        center: ['50%', '50%'],
+        center: ['50%', '60%'],
       },
     },
   };
@@ -119,45 +124,38 @@ const MediaCostStatus = ({ data }: IMediaCostStatusProps) => {
   const { monthlyCostByMedia, monthlyCostByProductGroup, shareByCompanies } =
     makeChartData(data || {});
   return (
-    <Card>
+    <Card height={350}>
       <CardTitle>ATL 매체비 현황</CardTitle>
-      <Section>
-        <ContentWrap>
+      <ContentWrap>
+        <Content>
           <ContentTitle>매체별 광고 추이</ContentTitle>
-          <ChartWrap>
-            <BarChart
-              data={monthlyCostByMedia.data}
-              grid={gridOptions}
-              xAixData={monthlyCostByMedia.xAixData}
-            />
-          </ChartWrap>
-        </ContentWrap>
-        <ContentWrap>
+          <BarChart
+            data={monthlyCostByMedia.data}
+            grid={gridOptions}
+            xAixData={monthlyCostByMedia.xAixData}
+          />
+        </Content>
+        <Content>
           <ContentTitle>제품군별 광고 추이</ContentTitle>
-          <ChartWrap>
-            <StackChart
-              grid={gridOptions}
-              data={monthlyCostByProductGroup.data}
-              xAixData={monthlyCostByProductGroup.xAixData}
-            />
-          </ChartWrap>
-        </ContentWrap>
-        <ContentWrap>
+          <StackChart
+            grid={gridOptions}
+            data={monthlyCostByProductGroup.data}
+            xAixData={monthlyCostByProductGroup.xAixData}
+          />
+        </Content>
+        <Content>
           <ContentTitle>SOS</ContentTitle>
-          <ChartWrap>
-            <PieChart
-              data={shareByCompanies.data}
-              tooltip={{
-                valueFormatter: (value) => `${value}%`,
-              }}
-              legend={{
-                type:
-                  (shareByCompanies?.data?.data || []).length > 13 ? 'scroll' : 'plain',
-              }}
-            />
-          </ChartWrap>
-        </ContentWrap>
-      </Section>
+          <PieChart
+            data={shareByCompanies.data}
+            tooltip={{
+              valueFormatter: (value) => `${value}%`,
+            }}
+            legend={{
+              type: (shareByCompanies?.data?.data || []).length > 13 ? 'scroll' : 'plain',
+            }}
+          />
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

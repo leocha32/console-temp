@@ -1,79 +1,66 @@
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback, useMemo, useState } from 'react';
 import { IRadioGroupProps, PageLayout, Spinner } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
-import styled from '@emotion/styled';
 import { Header, TwoAccount, ThreeAccounts, FourAccounts } from './components';
 
 import dayjs from 'dayjs';
-import { useAccountHoldingCombine } from '$modules/report/accountSales';
+import {
+  useAccountHoldingCombine,
+  useAccountHoldingCombineDownloadExcel,
+} from '$modules/report/accountSales';
+import { Section } from '$pages/Report/commonStyled';
+import { useRecoilState } from 'recoil';
+import { accountAccountCombine } from '$recoils/filter';
 
-export const Wrap = styled.div`
-  display: grid;
-  grid-template-rows: auto auto auto;
-  height: 'fit-content';
-  grid-gap: 15px;
-  position: relative;
-`;
-export const ContentsWrap = styled.div`
-  display: flex;
-  height: 100%;
-  min-height: 600px;
-  position: relative;
-  gap: 20px;
-  flex-direction: ${({ direction = 'row' }: { direction?: string }) => direction};
-`;
 const TITLE = '계정 보유 조합';
 
 const CUSTOMER_OPTIONS = ['전체', '개인', '개인사업자', '법인사업자'];
 const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 
 const AccountHoldingCombine = () => {
+  const [filter, setFilter] = useRecoilState(accountAccountCombine);
+  const { customerType, contractType, yyyymm } = filter;
+  const [selectedDate, setSelectedDate] = useState(yyyymm);
+  const [selectedContractType, setSelectedContractType] = useState(contractType);
+  const [selectedCustomerType, setSelectedCustomerType] = useState(customerType);
+  const year = dayjs(selectedDate).get('y');
+  const month = dayjs(selectedDate).get('M') + 1;
   const contentRef = useRef<HTMLDivElement>(null);
-  const [selectedDate, setSelectedDate] = useState(dayjs().add(-2, 'M'));
-
-  const [customerState, setCustomerState] = useState(CUSTOMER_OPTIONS[0]);
-  const [purchaseMethodState, setPurchaseMethodState] = useState(PURCHASE_METHOD[0]);
+  const downloadExcel = useAccountHoldingCombineDownloadExcel();
 
   const handleDateChange = useCallback((value) => {
     setSelectedDate(value);
   }, []);
 
   const handleCustomerChange = useCallback((target, value) => {
-    setCustomerState(value);
+    setSelectedCustomerType(value === '전체' ? null : value);
   }, []);
 
   const handlePurchaseChange = useCallback((target, value) => {
-    setPurchaseMethodState(value);
+    setSelectedContractType(value === '전체' ? null : value);
   }, []);
 
-  const { data, isFetching, refetch } = useAccountHoldingCombine(
-    {
-      'contract-type': purchaseMethodState === '전체' ? '' : purchaseMethodState,
-      'customer-type': customerState === '전체' ? '' : customerState,
-      year: selectedDate.get('y'),
-      month: selectedDate.get('M') + 1,
-    },
-    {
-      enabled: false,
-    },
-  );
+  const { data, isFetching, refetch } = useAccountHoldingCombine({
+    'contract-type': selectedContractType,
+    'customer-type': selectedCustomerType,
+    year,
+    month,
+  });
 
   const radioList: IRadioGroupProps[] = [
     {
+      label: '고객 유형',
       options: CUSTOMER_OPTIONS,
       onChange: handleCustomerChange,
-      value: customerState,
+      value: selectedCustomerType || CUSTOMER_OPTIONS[0],
     },
     {
+      label: '계약 유형',
       options: PURCHASE_METHOD,
       onChange: handlePurchaseChange,
-      value: purchaseMethodState,
+      value: selectedContractType || PURCHASE_METHOD[0],
     },
   ];
-
-  useEffect(() => {
-    refetch();
-  }, [selectedDate, customerState, purchaseMethodState]);
 
   const getData = (name) => {
     if (data) {
@@ -85,19 +72,43 @@ const AccountHoldingCombine = () => {
       return null;
     }
   };
+  const downloadButtonProps = useMemo(
+    () => ({
+      hook: downloadExcel,
+      params: {
+        'contract-type': selectedContractType,
+        year,
+        month,
+      },
+    }),
+    [downloadExcel, year, month, selectedContractType],
+  );
+
+  const handleSearch = useCallback(() => {
+    refetch();
+    setFilter({
+      yyyymm: selectedDate,
+      contractType: selectedContractType,
+      customerType: selectedCustomerType,
+    });
+  }, [refetch, selectedDate, selectedContractType, selectedCustomerType, setFilter]);
+
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()} ref={contentRef}>
       <Header
         radioButtonList={radioList}
         selectedDate={selectedDate}
         onChangeDate={handleDateChange}
+        downloadButtonProps={downloadButtonProps}
+        onClickSearch={handleSearch}
+        isFetching={isFetching}
       ></Header>
-      <Wrap>
+      <Section style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {isFetching ? <Spinner /> : null}
         <TwoAccount data={getData('2계정')} />
         <ThreeAccounts data={getData('3계정')} />
         <FourAccounts data={getData('4계정')} />
-      </Wrap>
+      </Section>
     </PageLayout>
   );
 };

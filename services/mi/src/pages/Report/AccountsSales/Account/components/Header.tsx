@@ -1,58 +1,60 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 // import { Header as CHeader } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 import {
-  Button as MuiButton,
   DatePicker,
   ISelectProps,
   Select,
   IDatePickerProps,
   FlexDirection,
   RadioButton,
-  JustifyContent,
   IRadioGroupProps,
+  Button,
 } from 'mi-ui/src';
 import dayjs from 'dayjs';
+import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
 
 const CHeader = styled.div`
   display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto 15%;
+  grid-gap: 15px;
 `;
 const RadioWrap = styled.div`
   display: flex;
-  gap: 15px;
-  grid-row: 1/2;
+  gap: 30px;
 `;
 const SelectWrap = styled.div`
+  grid-row: 2/3;
   display: flex;
   gap: 15px;
-  grid-row: 2/3;
+  place-items: center;
 `;
 
-const Button = styled(MuiButton)``;
-
-export interface IHeaderProps {
+export interface IHeaderProps<T> {
   selects: ISelectProps[];
   onChangeDate: IDatePickerProps['onChange'];
   selectedDate: IDatePickerProps['value'];
   radioButtonList: IRadioGroupProps[];
+  downloadButtonProps: IDownloadButtonProp<T>;
+  onClickSearch: () => void;
+  isFetching: boolean;
 }
-export const Header = ({
+export const Header = <T extends object>({
   selects,
   onChangeDate,
   selectedDate,
   radioButtonList,
-}: IHeaderProps) => {
-  const handleRawDataDownload = useCallback(() => {
-    console.log('down');
-  }, []);
-
+  downloadButtonProps,
+  onClickSearch,
+  isFetching,
+}: IHeaderProps<T>) => {
   return (
     <CHeader>
       <RadioWrap>
-        {radioButtonList.map(({ options, value, onChange }, i) => (
+        {radioButtonList.map(({ label, options, value, onChange }, i) => (
           <RadioButton
+            label={label}
             key={i}
             flexDirection={FlexDirection.ROW}
             options={options}
@@ -82,15 +84,25 @@ export const Header = ({
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
+        <Button
+          sx={{ height: 'fit-content' }}
+          showLoading={isFetching}
+          label={'조회'}
+          onClick={onClickSearch}
+          variant="contained"
+        />
       </SelectWrap>
-      <Button
-        justifyContent={JustifyContent.RIGHT}
-        sx={{ justifyContent: 'end', width: 'fit-content' }}
-        onClick={handleRawDataDownload}
+      <DownloadButton
+        sx={{
+          gridRow: '2/3',
+          gridColumn: '-1/-2',
+          width: 'fit-content',
+          height: 'fit-content',
+          justifySelf: 'end',
+        }}
         label={'상세 데이터 다운로드'}
+        {...downloadButtonProps}
       />
     </CHeader>
   );
 };
-
-export default Header;

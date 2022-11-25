@@ -1,22 +1,9 @@
 import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import styled from '@emotion/styled';
-import { CardTitle } from '$pages/Report/commonStyled';
-import { Card as MiCard } from 'mi-ui/src';
-import { IProductPenetration } from '$modules/report';
-
-const Card = styled(MiCard)`
-  background-color: #fafafa;
-  padding: 20px;
-`;
-
-const Div = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 80%;
-  justify-content: center;
-  align-items: center;
-`;
+import { CardTitle, Card, Content, ContentWrap } from '$pages/Report/commonStyled';
+import { IProductPenetration } from '$modules/report/research';
+import { css } from '@emotion/react';
 
 const DiffInfoWrap = styled.div`
   display: flex;
@@ -38,15 +25,27 @@ export interface IProductPenetrationRateProps {
 export const ProductPenetrationRate = ({ data }: IProductPenetrationRateProps) => {
   const { productPenetrationValue } = data[0] || {};
   return (
-    <Card>
+    <Card
+      css={css`
+        height: 30%;
+      `}
+    >
       <CardTitle>제품 보급률</CardTitle>
-      <Div>
-        <div css={dataValueStyle}>{productPenetrationValue || 0}%</div>
-        <DiffInfoWrap>
-          <InfoIcon sx={{ fontSize: 15 }} />
-          제품이 보급된 가구/전체 가구 * 100
-        </DiffInfoWrap>
-      </Div>
+      <ContentWrap>
+        <Content
+          css={css`
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          `}
+        >
+          <div css={dataValueStyle}>{productPenetrationValue || 0}%</div>
+          <DiffInfoWrap>
+            <InfoIcon sx={{ fontSize: 15 }} />
+            제품이 보급된 가구/전체 가구 * 100
+          </DiffInfoWrap>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

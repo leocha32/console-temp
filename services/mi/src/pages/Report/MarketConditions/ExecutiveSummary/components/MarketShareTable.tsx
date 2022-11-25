@@ -1,10 +1,12 @@
-import React, { useMemo, useCallback, useState } from 'react';
-import { Table, Button, TRowProps, JustifyContent } from 'mi-ui';
+import React, { useMemo, useCallback } from 'react';
+import { Table, TRowProps, Button } from 'mi-ui';
 import { ROW_OPTIONS, VALUE_ORDER, COLUMN } from './MarketShareTableConfigs';
-import { IExecutiveMarketShare, useDownloadReport } from '$modules/report';
-import { Contents, Title } from './commonStyled';
-
-export type TMarketShareTableProps = Partial<IExecutiveMarketShare>;
+import { IExecutiveMarketShare } from '$modules/report/research';
+import { Card, CardTitle } from '$pages/Report/commonStyled';
+import { Header } from './commonStyled';
+export interface IMarketShareTableProps {
+  data?: IExecutiveMarketShare;
+}
 
 const PRODUCT_ORDER = COLUMN.filter((col) => col.name !== 'rowHeader');
 
@@ -47,21 +49,16 @@ const getProductPenetration = ({ productPenetration, productName }) => {
   const findByProdName = productPenetration.find(
     ({ productGroup }) => productGroup === productName,
   );
-  return findByProdName.productPenetrationValue;
+  return findByProdName?.productPenetrationValue;
 };
 
 /**
  * API 데이터를 Column 기준에서 Row 기준으로 변경
- * @param cowayMarketShare
- * @param marketShareRank
- * @param productPenetration
+ * @param data
  */
-const makeRowData = ({ cowayMarketShare, marketShareRank, productPenetration }) => {
-  if (
-    marketShareRank.length === 0 ||
-    cowayMarketShare.length === 0 ||
-    productPenetration.length === 0
-  )
+const makeRowData = (data: IExecutiveMarketShare) => {
+  const { productPenetration, cowayMarketShare, marketShareRank } = data;
+  if (!productPenetration.length || !cowayMarketShare.length || !marketShareRank.length)
     return [];
   /**
    * SB 기준으로 데이터 순서 정렬
@@ -108,62 +105,26 @@ const makeRowData = ({ cowayMarketShare, marketShareRank, productPenetration }) 
   });
 };
 
-const MarketShareTable = ({
-  researchReportFile,
-  cowayMarketShare,
-  productPenetration,
-  marketShareRank,
-}: TMarketShareTableProps) => {
-  const [btnLoading, setBtnLoading] = useState(false);
-  const downloadReport = useDownloadReport();
-
-  const handleDownloadReport = useCallback(() => {
-    if (researchReportFile) {
-      setBtnLoading(true);
-      const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate(
-        {
-          half,
-          category,
-          filePath,
-          year,
-          fileName: originalFileName,
-        },
-        {
-          onSettled: () => {
-            setBtnLoading(false);
-          },
-        },
-      );
-    }
-  }, [researchReportFile, downloadReport]);
-
+const MarketShareTable = ({ data }: IMarketShareTableProps) => {
   const rowData = useMemo(() => {
-    return makeRowData({
-      cowayMarketShare,
-      marketShareRank,
-      productPenetration,
-    });
-  }, [cowayMarketShare, productPenetration, marketShareRank]);
+    return makeRowData(data || ({} as IExecutiveMarketShare));
+  }, [data]);
 
+  const downloadReport = useCallback(() => {
+    window.open(data?.researchReportFileUrl?.fileUrl, '_blank');
+  }, [data?.researchReportFileUrl]);
   return (
-    <Contents>
-      <Title>시장 점유율(M/S)</Title>
-      <Button
-        onClick={handleDownloadReport}
-        label={'보고서 다운로드'}
-        showLoading={btnLoading}
-        justifyContent={JustifyContent.RIGHT}
-        disabled={!researchReportFile}
-      ></Button>
-
-      <Table
-        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
-        showHeader={false}
-        rows={rowData}
-        columns={COLUMN}
-      ></Table>
-    </Contents>
+    <Card>
+      <Header>
+        <CardTitle>시장 점유율(M/S)</CardTitle>
+        <Button
+          disabled={!data?.researchReportFileUrl}
+          label={'보고서 다운로드'}
+          onClick={downloadReport}
+        ></Button>
+      </Header>
+      <Table showHeader={false} rows={rowData} columns={COLUMN}></Table>
+    </Card>
   );
 };
 

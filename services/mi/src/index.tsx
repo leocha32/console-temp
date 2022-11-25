@@ -14,24 +14,22 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: Infinity,
-      cacheTime: 0,
+      cacheTime: Infinity,
       refetchOnWindowFocus: false,
     },
   },
 });
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <RecoilRoot>
-          <ThemeProviderMui theme={createTheme()}>
-            <ThemeProvider theme={theme}>
-              <App />
-            </ThemeProvider>
-          </ThemeProviderMui>
-        </RecoilRoot>
-      </QueryClientProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <ThemeProviderMui theme={createTheme()}>
+          <ThemeProvider theme={theme}>
+            <App />
+          </ThemeProvider>
+        </ThemeProviderMui>
+      </RecoilRoot>
+    </QueryClientProvider>
+  </BrowserRouter>,
 );

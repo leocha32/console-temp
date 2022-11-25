@@ -35,6 +35,7 @@ const Columns = [
     options: {
       sx: {
         backgroundColor: 'aliceblue',
+        width: '5%',
       },
     },
   },
@@ -66,9 +67,24 @@ const Columns = [
   },
   {
     name: 'customerCount',
-    options: { textFormat: (value) => value.toLocaleString('ko-KR') },
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => value.toLocaleString('ko-KR'),
+    },
   },
-  { name: 'customerRate', options: { textFormat: (value) => `${value}%` } },
+  {
+    name: 'customerRate',
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => `${value}%`,
+    },
+  },
 ];
 
 const columnDataToRowData = (data) => {
@@ -76,9 +92,6 @@ const columnDataToRowData = (data) => {
   return data.map((d, i) => {
     return {
       name: i + '',
-      options: {
-        height: '10px',
-      },
       data: Object.keys(d).map((key) => {
         return {
           colName: key,
@@ -96,9 +109,15 @@ export const TwoAccount = ({ data }: TwoAccountProps) => {
   const rowData = columnDataToRowData(data);
 
   return (
-    <Card>
+    <Card sx={{ width: '25%' }}>
       <CardTitle>2 계정</CardTitle>
-      <Table rows={rowData} columns={Columns} showHeader={true} headers={Headers}></Table>
+      <Table
+        sx={{ overflow: 'initial' }}
+        rows={rowData}
+        columns={Columns}
+        showHeader={true}
+        headers={Headers}
+      ></Table>
     </Card>
   );
 };

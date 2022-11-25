@@ -1,10 +1,14 @@
-import React, { useCallback, useState } from 'react';
-import { Button, JustifyContent, Table } from 'mi-ui/src';
-import { ISalesVolumeSummary, useDownloadReport } from '$modules/report';
+import React, { useCallback } from 'react';
+import { Button, Table } from 'mi-ui/src';
+import { ISalesVolumeSummary } from '$modules/report/research';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './SalesVolumeTableConfigs';
-import { Contents, Title } from './commonStyled';
 
-export type TSalesVolumeTableProps = Partial<ISalesVolumeSummary>;
+import { Card, CardTitle } from '$pages/Report/commonStyled';
+import { Header } from './commonStyled';
+
+export type TSalesVolumeTableProps = {
+  data?: ISalesVolumeSummary;
+};
 
 const columnDataToRowData = (data, orderStandard) => {
   const orderedData = orderStandard.map(
@@ -51,8 +55,9 @@ const brandShareRankToRowData = (data, orderStandard) => {
   return brandShareRanks;
 };
 
-const makeRowData = ({ cowaySales, brandShareRank }) => {
-  if (cowaySales.length === 0 || brandShareRank.length === 0) return [];
+const makeRowData = (data: ISalesVolumeSummary) => {
+  const { cowaySales, brandShareRank } = data;
+  if (!cowaySales.length || !brandShareRank.length) return [];
   const summaryData = [
     ...columnDataToRowData(cowaySales, PRODUCT_ORDER),
     ...brandShareRankToRowData(brandShareRank, PRODUCT_ORDER),
@@ -66,54 +71,24 @@ const makeRowData = ({ cowaySales, brandShareRank }) => {
   });
 };
 
-const SalesVolumeTable = ({
-  cowaySales,
-  brandShareRank,
-  researchReportFile,
-}: TSalesVolumeTableProps) => {
-  const [btnLoading, setBtnLoading] = useState(false);
-  const downloadReport = useDownloadReport();
+const SalesVolumeTable = ({ data }: TSalesVolumeTableProps) => {
+  const rowData = makeRowData(data || ({} as ISalesVolumeSummary));
 
-  const handleDownloadReport = useCallback(() => {
-    if (researchReportFile) {
-      setBtnLoading(true);
-      const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate(
-        {
-          half,
-          category,
-          filePath,
-          year,
-          fileName: originalFileName,
-        },
-        {
-          onSettled: () => {
-            setBtnLoading(false);
-          },
-        },
-      );
-    }
-  }, [researchReportFile, downloadReport]);
-
-  const rowData = makeRowData({ cowaySales, brandShareRank });
-
+  const downloadReport = useCallback(() => {
+    window.open(data?.researchReportFileUrl?.fileUrl, '_blank');
+  }, [data?.researchReportFileUrl]);
   return (
-    <Contents>
-      <Title>시판 판매량(PoS)</Title>
-      <Button
-        onClick={handleDownloadReport}
-        label={'보고서 다운로드'}
-        showLoading={btnLoading}
-        justifyContent={JustifyContent.RIGHT}
-        disabled={!researchReportFile}
-      ></Button>
-      <Table
-        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
-        showHeader={false}
-        rows={rowData}
-        columns={COLUMN}
-      ></Table>
-    </Contents>
+    <Card>
+      <Header>
+        <CardTitle>시판 판매량(PoS)</CardTitle>
+        <Button
+          disabled={!data?.researchReportFileUrl}
+          label={'보고서 다운로드'}
+          onClick={downloadReport}
+        ></Button>
+      </Header>
+      <Table showHeader={false} rows={rowData} columns={COLUMN}></Table>
+    </Card>
   );
 };
 export default SalesVolumeTable;

@@ -1,143 +1,156 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
-import { PageLayout, Spinner, Card } from 'mi-ui/src';
+import React, { useCallback, useMemo, useState } from 'react';
+import { PageLayout, Spinner } from 'mi-ui/src';
 import dayjs from 'dayjs';
 import { getCrumbs } from '$utils/utils';
-import { Wrap, ContentsWrap } from '$pages/Report/commonStyled';
+import { Section, HeaderCard } from '$pages/Report/commonStyled';
 import Header from '$pages/Report/Marketing/components/Header';
-import { useMarketingCostsEfficiency } from '$modules/report/marketing/marketingCostsEfficiency';
+import {
+  IMarketingCostsEfficiencyParams,
+  useCostEfficiencyDownloadExcel,
+  useMarketingCostsEfficiency,
+  IMarketingCostStatus,
+  IMarketingEfficiencyStatus,
+} from '$modules/report/marketing';
 
 import MarketingEfficiency from './components/MarketingEfficiency';
 import MarketingStatus from './components/MarketingStatus';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { familySector, productAndFunctionalGroupSelector } from '$recoils/categories';
-import styled from '@emotion/styled';
+import { marketingCostEfficiency } from '$recoils/filter';
+import SelectedItem from '$components/SelectedItem';
 
 const TITLE = '마케팅 비용 및 효율 ';
 
-const setAllProduct = (options) => {
+const setAllOption = (options) => {
   return options.map(({ value }) => value);
 };
 
-const HeaderCard = styled(Card)`
-  margin-bottom: 15px;
-  padding: 15px 20px;
-`;
-const SelectedItemWrap = styled.div`
-  display: flex;
-  font-size: 14px;
-  color: ${({ theme }) => theme.palettes.gray.GRAY_700};
-  :not(:last-of-type) {
-    margin-bottom: 5px;
-  }
-`;
-const Dl = styled.dl`
-  margin: 0;
-`;
-const Dt = styled.dt`
-  width: 100px;
-`;
-const Dd = styled.dd`
-  margin: 0;
-`;
-
-const SelectedItem = ({ title, value }: { title: string; value: string }) => (
-  <SelectedItemWrap>
-    <Dt>{title}:</Dt>
-    <Dd>{value}</Dd>
-  </SelectedItemWrap>
-);
-
 const MarketingCostsEfficiency = () => {
+  const [filter, setFilter] = useRecoilState(marketingCostEfficiency);
+  const { product, productGroup, yyyymm } = filter;
+  const [selectedOption, setSelectedOption] = useState({
+    product,
+    productGroup,
+  });
+  const [selectedDate, setSelectedDate] = useState(yyyymm);
+  const year = dayjs(selectedDate).get('y');
+  const month = dayjs(selectedDate).get('M') + 1;
   const familyOptions = useRecoilValue(familySector({ category: '제품' }));
-  const [selectedFamily, setSelectedFamily] = useState(
-    familyOptions.map(({ value }) => value),
-  );
+  const downloadExcel = useCostEfficiencyDownloadExcel();
+
   const { product: productOptions } = useRecoilValue(
-    productAndFunctionalGroupSelector({ category: '제품', family: selectedFamily }),
+    productAndFunctionalGroupSelector({
+      category: '제품',
+      family: selectedOption.productGroup || setAllOption(familyOptions),
+    }),
   );
-  const [selectedProduct, setSelectedProduct] = useState(setAllProduct(productOptions));
-  const [selectedDate, setSelectedDate] = useState(dayjs());
   const isFamilyAllCheck = useMemo(
-    () => selectedFamily.length === familyOptions.length,
-    [selectedFamily, familyOptions],
+    () =>
+      !selectedOption.productGroup ||
+      selectedOption.productGroup?.length === familyOptions.length,
+    [selectedOption, familyOptions],
   );
   const isProductAllCheck = useMemo(
-    () => selectedProduct.length === productOptions.length,
-    [selectedProduct, productOptions],
-  );
-  const { data, refetch, isFetching } = useMarketingCostsEfficiency(
-    {
-      category2: isFamilyAllCheck ? null : selectedFamily.join(','),
-      category3: isProductAllCheck ? null : selectedProduct.join(','),
-      year: selectedDate.get('y'),
-      month: selectedDate.get('M') + 1,
-    },
-    { enabled: false },
+    () =>
+      !selectedOption.product || selectedOption.product?.length === productOptions.length,
+    [selectedOption, productOptions],
   );
 
-  useEffect(() => {
-    refetch();
-  }, [selectedProduct, selectedDate, selectedFamily]);
+  const selectItem = useMemo(() => {
+    return [
+      {
+        title: '선택한 제품군',
+        value: isFamilyAllCheck ? '전체' : selectedOption.productGroup?.join(', '),
+      },
+      {
+        title: '선택한 제품',
+        value: isProductAllCheck ? '전체' : selectedOption.product?.join(', '),
+      },
+    ];
+  }, [isFamilyAllCheck, isProductAllCheck, selectedOption]);
 
-  useEffect(() => {
-    setSelectedProduct(setAllProduct(productOptions));
-  }, [productOptions]);
+  const { data, refetch, isFetching } = useMarketingCostsEfficiency({
+    category2: isFamilyAllCheck ? null : selectedOption.productGroup?.join(','),
+    category3: isProductAllCheck ? null : selectedOption.product?.join(','),
+    year,
+    month,
+  });
 
   const handleFamilyChange = useCallback((value) => {
-    setSelectedFamily(value);
+    setSelectedOption({
+      productGroup: value,
+      product: null,
+    });
   }, []);
+
   const handleProductChange = useCallback((value) => {
-    setSelectedProduct(value);
+    setSelectedOption((pre) => ({
+      ...pre,
+      product: value,
+    }));
   }, []);
 
   const handleDateChange = useCallback((value) => {
     setSelectedDate(value);
   }, []);
 
+  const downloadButtonProps = useMemo(
+    () => ({
+      hook: downloadExcel,
+      params: {
+        year,
+        month,
+      },
+    }),
+    [downloadExcel, year, month],
+  );
+
   const selects = [
     {
       title: '제품군',
       multiple: true,
-      value: selectedFamily,
+      value: selectedOption.productGroup || setAllOption(familyOptions),
       onChange: handleFamilyChange,
       options: familyOptions,
     },
     {
       title: '제품',
       multiple: true,
-      value: selectedProduct,
+      value: selectedOption.product || setAllOption(productOptions),
       onChange: handleProductChange,
       options: productOptions,
-      disabled: !selectedFamily.length || isFamilyAllCheck,
+      disabled: !selectedOption.productGroup?.length || isFamilyAllCheck,
     },
   ];
+
+  const handleSearch = useCallback(() => {
+    refetch();
+    setFilter({
+      ...selectedOption,
+      yyyymm: selectedDate,
+    });
+  }, [refetch, setFilter, selectedOption, selectedDate]);
+
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()}>
-      <Header
+      <Header<IMarketingCostsEfficiencyParams>
         selects={selects}
         onChangeDate={handleDateChange}
         selectedDate={selectedDate}
+        downloadButtonProps={downloadButtonProps}
+        onClickSearch={handleSearch}
+        isFetching={isFetching}
       />
-      <Wrap>
-        <HeaderCard>
-          <Dl>
-            <SelectedItem
-              title="선택한 제품군"
-              value={isFamilyAllCheck ? '전체' : selectedFamily.join(', ')}
-            />
-            <SelectedItem
-              title="선택한 제품"
-              value={isProductAllCheck ? '전체' : selectedProduct.join(', ')}
-            />
-          </Dl>
-        </HeaderCard>
-
-        <ContentsWrap direction={'column'}>
-          {isFetching ? <Spinner /> : null}
-          <MarketingStatus data={data?.marketingCostStatus} />
-          <MarketingEfficiency data={data?.marketingEfficiencyStatus} />
-        </ContentsWrap>
-      </Wrap>
+      <HeaderCard>
+        <SelectedItem items={selectItem} />
+      </HeaderCard>
+      <Section>
+        {isFetching ? <Spinner /> : null}
+        <MarketingStatus data={data?.marketingCostStatus as IMarketingCostStatus} />
+        <MarketingEfficiency
+          data={data?.marketingEfficiencyStatus as IMarketingEfficiencyStatus}
+        />
+      </Section>
     </PageLayout>
   );
 };

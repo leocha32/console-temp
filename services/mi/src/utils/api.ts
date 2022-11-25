@@ -1,14 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 export const baseURL = window.location.origin;
-const MAX_TIMEOUT = 6000; // Timeout 정책 (Max:15초)
-
+const MAX_TIMEOUT = 60000;
 const initialConfig: AxiosRequestConfig = Object.freeze({
   headers: {
     Accept: 'application/json',
     email: 'leo.cha@netmarble.com',
+    baseURL,
   },
-  baseURL,
   timeout: MAX_TIMEOUT,
 });
 

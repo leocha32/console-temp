@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
-import { IMarketSpread } from 'modules/report/marketConditions';
+import { IMarketSpread } from 'modules/report/research';
 import { IBarChartProps, BarChart } from 'mi-ui';
 import {
   ChartWrap,
   DiffBox,
   Card,
-  ContentWrap,
-  Section,
   CardTitle,
   ContentTitle,
+  ContentWrap,
+  Content,
 } from '$pages/Report/commonStyled';
 
 export interface IMarketSpreadProps {
@@ -90,8 +90,8 @@ export const MarketSpread = ({ data, year }: IMarketSpreadProps) => {
   return (
     <Card>
       <CardTitle>시장 규모 (판매량 & 매출액)</CardTitle>
-      <Section>
-        <ContentWrap>
+      <ContentWrap>
+        <Content>
           <ContentTitle>연간 판매량</ContentTitle>
           <ChartInfo value={salesVolumeYoyDiff} data={volumeData} xAixData={xAixData} />
           <ChartWrap>
@@ -105,8 +105,8 @@ export const MarketSpread = ({ data, year }: IMarketSpreadProps) => {
               }}
             />
           </ChartWrap>
-        </ContentWrap>
-        <ContentWrap>
+        </Content>
+        <Content>
           <ContentTitle>연간 매출액</ContentTitle>
           <ChartInfo value={salesValueYoyDiff} data={valueData} xAixData={xAixData} />
           <ChartWrap>
@@ -120,8 +120,8 @@ export const MarketSpread = ({ data, year }: IMarketSpreadProps) => {
               }}
             />
           </ChartWrap>
-        </ContentWrap>
-      </Section>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

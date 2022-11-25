@@ -36,6 +36,7 @@ const Columns = [
     options: {
       sx: {
         backgroundColor: 'aliceblue',
+        width: '5%',
       },
     },
   },
@@ -47,21 +48,50 @@ const Columns = [
       },
     },
   },
-  { name: 'product1', options: {} },
-  { name: 'product2', options: {} },
+  {
+    name: 'product1',
+    options: {
+      sx: {},
+    },
+  },
+  {
+    name: 'product2',
+    options: {
+      sx: {},
+    },
+  },
   {
     name: 'product3',
-    options: {},
+    options: {
+      sx: {},
+    },
   },
   {
     name: 'product4',
-    options: {},
+    options: {
+      sx: {},
+    },
   },
   {
     name: 'customerCount',
-    options: { textFormat: (value) => value.toLocaleString('ko-KR') },
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => value.toLocaleString('ko-KR'),
+    },
   },
-  { name: 'customerRate', options: { textFormat: (value) => `${value}%` } },
+  {
+    name: 'customerRate',
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => `${value}%`,
+    },
+  },
 ];
 
 const columnDataToRowData = (data) => {
@@ -89,7 +119,7 @@ export type TFourAccountProps = {
 export const FourAccounts = ({ data }: TFourAccountProps) => {
   const rowData = columnDataToRowData(data);
   return (
-    <Card>
+    <Card sx={{ width: '35%' }}>
       <CardTitle>4 계정</CardTitle>
       <Table rows={rowData} columns={Columns} showHeader={true} headers={Headers}></Table>
     </Card>

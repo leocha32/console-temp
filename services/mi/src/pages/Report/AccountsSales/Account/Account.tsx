@@ -1,135 +1,177 @@
-import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useRef, useCallback, useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { IRadioGroupProps, PageLayout, Spinner } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
-import Header from './components/Header';
-import styled from '@emotion/styled';
+import { Header } from './components/Header';
 import { AccountChart, RentTable } from './components';
 import dayjs from 'dayjs';
+import { HeaderCard, Section } from '$pages/Report/commonStyled';
 import { familySector, productAndFunctionalGroupSelector } from '$recoils/categories';
-import { useAccountStatus } from '$modules/report/accountSales';
-const Wrap = styled.div`
-  display: grid;
-  grid-template-rows: 60% auto;
-  height: calc(100% - 30px);
-  grid-gap: 20px;
-  margin: 0 10px;
-  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-  position: relative;
-`;
+import {
+  useAccountStatus,
+  useAccountStatusDownloadExcel,
+  IAccountStatusRequestParams,
+} from '$modules/report/accountSales';
+import { accountAccountStatus } from '$recoils/filter';
+import { useRecoilState } from 'recoil';
+import SelectedItem from '$components/SelectedItem';
 
 const TITLE = '계정 및 판매 계정';
 const CUSTOMER_OPTIONS = ['전체', '개인', '개인사업자', '법인사업자'];
 const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 
-const setAllFunctional = (options) => {
+const setAllOption = (options) => {
   return options.map(({ value }) => value);
 };
 
 const Account = () => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [selectedDate, setSelectedDate] = useState(dayjs());
-  const [customerState, setCustomerState] = useState(CUSTOMER_OPTIONS[0]);
-  const [purchaseMethodState, setPurchaseMethodState] = useState(PURCHASE_METHOD[0]);
+  const [filter, setFilter] = useRecoilState(accountAccountStatus);
+  const { customerType, contractType, productGroup, functionalGroup, product, yyyymm } =
+    filter;
+  const [selectedDate, setSelectedDate] = useState(yyyymm);
+  const [selectedCustomerType, setSelectedCustomerType] = useState(customerType);
+  const [selectedContractType, setSelectedContractType] = useState(contractType);
+  const [selectedOption, setSelectedOption] = useState({
+    productGroup,
+    functionalGroup,
+    product,
+  });
+  const year = dayjs(selectedDate).get('y');
+  const month = dayjs(selectedDate).get('M') + 1;
+  const downloadExcel = useAccountStatusDownloadExcel();
+  const familyOptions = useRecoilValue(familySector({ category: '제품' }));
+  const { functionalGroup: functionalOptions, product: productOptions } = useRecoilValue(
+    productAndFunctionalGroupSelector({
+      category: '제품',
+      family: selectedOption.productGroup || setAllOption(familyOptions),
+    }),
+  );
+
+  const isFamilyAllCheck = useMemo(
+    () =>
+      !selectedOption.productGroup ||
+      selectedOption.productGroup?.length === familyOptions.length,
+    [selectedOption, familyOptions],
+  );
+
+  const isFunctionalAllCheck = useMemo(
+    () =>
+      !selectedOption.functionalGroup ||
+      selectedOption.functionalGroup?.length === functionalOptions.length,
+    [selectedOption, functionalOptions],
+  );
+
+  const isProductAllCheck = useMemo(
+    () =>
+      !selectedOption.product || selectedOption.product?.length === productOptions.length,
+    [selectedOption, productOptions],
+  );
+
+  const { data, refetch, isFetching, isError } = useAccountStatus({
+    'contract-type': selectedContractType,
+    'customer-type': selectedCustomerType,
+    'product-groups': isFamilyAllCheck ? null : selectedOption.productGroup?.join(','),
+    'function-groups': isFunctionalAllCheck
+      ? null
+      : selectedOption.functionalGroup?.join(','),
+    products: isProductAllCheck ? null : selectedOption.product?.join(','),
+    year,
+    month,
+  });
+
+  const selectItem = useMemo(() => {
+    return [
+      {
+        title: '선택한 제품군',
+        value: isFamilyAllCheck ? '전체' : selectedOption.productGroup?.join(', '),
+      },
+      {
+        title: '선택한 기능군',
+        value: isFunctionalAllCheck ? '전체' : selectedOption.functionalGroup?.join(', '),
+      },
+      {
+        title: '선택한 제품',
+        value: isProductAllCheck ? '전체' : selectedOption.product?.join(', '),
+      },
+    ];
+  }, [isFamilyAllCheck, isProductAllCheck, selectedOption, isFunctionalAllCheck]);
 
   const handleDateChange = useCallback((value) => {
     setSelectedDate(value);
   }, []);
 
-  const familyOptions = useRecoilValue(familySector({ category: '제품' }));
-  const [selectedFamily, setSelectedFamily] = useState(
-    familyOptions.map(({ value }) => value),
-  );
-  const { functionalGroup: functionalOptions, product: productOptions } = useRecoilValue(
-    productAndFunctionalGroupSelector({ category: '제품', family: selectedFamily }),
-  );
-  const [selectedFunctional, setSelectedFunctional] = useState(
-    setAllFunctional(functionalOptions),
-  );
-
-  const [selectedProduct, setSelectedProduct] = useState(
-    setAllFunctional(productOptions),
-  );
-
   const handleFamilyChange = useCallback((value) => {
-    setSelectedFamily(value);
+    setSelectedOption({
+      productGroup: value,
+      product: null,
+      functionalGroup: null,
+    });
   }, []);
 
   const handleFunctionalChange = useCallback((value) => {
-    setSelectedFunctional(value);
+    setSelectedOption((pre) => ({
+      ...pre,
+      functionalGroup: value,
+      product: null,
+    }));
   }, []);
 
   const handleProductChange = useCallback((value) => {
-    setSelectedProduct(value);
+    setSelectedOption((pre) => ({
+      ...pre,
+      product: value,
+    }));
   }, []);
 
   const handleCustomerChange = useCallback((target, value) => {
-    setCustomerState(value);
+    setSelectedCustomerType(value === '전체' ? null : value);
   }, []);
 
   const handlePurchaseChange = useCallback((target, value) => {
-    setPurchaseMethodState(value);
+    setSelectedContractType(value === '전체' ? null : value);
   }, []);
 
-  const isFamilyAllCheck = useMemo(
-    () => selectedFamily.length === familyOptions.length,
-    [selectedFamily, familyOptions],
-  );
-
-  const isFunctionalAllCheck = useMemo(
-    () => selectedFunctional.length === functionalOptions.length,
-    [selectedFunctional, functionalOptions],
-  );
-
-  const isProductAllCheck = useMemo(
-    () => selectedProduct.length === productOptions.length,
-    [selectedProduct, productOptions],
-  );
-
-  useEffect(() => {
-    setSelectedFunctional(setAllFunctional(functionalOptions));
-  }, [functionalOptions]);
-  useEffect(() => {
-    setSelectedProduct(setAllFunctional(productOptions));
-  }, [selectedFunctional]);
-
-  const { data, isFetching, refetch } = useAccountStatus(
-    {
-      'contract-type': purchaseMethodState === '전체' ? 'ALL' : purchaseMethodState,
-      'customer-type': customerState === '전체' ? 'ALL' : customerState,
-      'product-groups': isFamilyAllCheck ? null : selectedFamily.join(','),
-      'function-groups': isFunctionalAllCheck ? null : selectedFunctional.join(','),
-      products: isProductAllCheck ? null : selectedProduct.join(','),
-      year: selectedDate.get('y'),
-      month: selectedDate.get('M') + 1,
-    },
-    {
-      enabled: false,
-    },
-  );
-
-  useEffect(() => {
+  const handleSearch = useCallback(() => {
     refetch();
+    setFilter({
+      ...selectedOption,
+      contractType: selectedContractType,
+      customerType: selectedCustomerType,
+      yyyymm: selectedDate,
+    });
   }, [
-    purchaseMethodState,
-    customerState,
-    selectedFamily,
-    selectedFunctional,
-    selectedProduct,
+    refetch,
+    setFilter,
+    selectedContractType,
+    selectedOption,
+    selectedCustomerType,
+    selectedDate,
   ]);
+
+  const downloadButtonProps = useMemo(
+    () => ({
+      hook: downloadExcel,
+      params: {
+        year,
+        month,
+      },
+    }),
+    [downloadExcel, year, month],
+  );
 
   const selects = [
     {
       title: '제품군',
       multiple: true,
-      value: selectedFamily,
+      value: selectedOption.productGroup || setAllOption(familyOptions),
       onChange: handleFamilyChange,
       options: familyOptions,
     },
     {
       title: '기능군',
       multiple: true,
-      value: selectedFunctional,
+      value: selectedOption.functionalGroup || setAllOption(functionalOptions),
       onChange: handleFunctionalChange,
       options: functionalOptions,
       disabled: !functionalOptions.length || isFamilyAllCheck,
@@ -137,7 +179,7 @@ const Account = () => {
     {
       title: '제품',
       multiple: true,
-      value: selectedProduct,
+      value: selectedOption.product || setAllOption(productOptions),
       onChange: handleProductChange,
       options: productOptions,
       disabled: !productOptions.length || isFamilyAllCheck,
@@ -145,31 +187,40 @@ const Account = () => {
   ];
   const radioList: IRadioGroupProps[] = [
     {
+      label: '고객 유형',
       options: CUSTOMER_OPTIONS,
       onChange: handleCustomerChange,
-      value: customerState,
+      value: selectedCustomerType || CUSTOMER_OPTIONS[0],
     },
     {
+      label: '계약 유형',
       options: PURCHASE_METHOD,
       onChange: handlePurchaseChange,
-      value: purchaseMethodState,
+      value: selectedContractType || PURCHASE_METHOD[0],
     },
   ];
+
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()} ref={contentRef}>
-      <Header
+      <Header<IAccountStatusRequestParams>
         radioButtonList={radioList}
         selects={selects}
         onChangeDate={handleDateChange}
         selectedDate={selectedDate}
+        downloadButtonProps={downloadButtonProps}
+        onClickSearch={handleSearch}
+        isFetching={isFetching}
       ></Header>
-      <Wrap>
+      <HeaderCard>
+        <SelectedItem items={selectItem} />
+      </HeaderCard>
+      <Section>
         {isFetching ? <Spinner /> : null}
         <AccountChart
-          data={data?.accountStatus.monthlyAccountStatusRows || []}
+          data={!isError ? data?.accountStatus.monthlyAccountStatusRows || [] : []}
         ></AccountChart>
-        <RentTable data={data?.rentalIndicator}></RentTable>
-      </Wrap>
+        <RentTable data={!isError ? data?.rentalIndicator : undefined}></RentTable>
+      </Section>
     </PageLayout>
   );
 };

@@ -1,19 +1,8 @@
 import React from 'react';
 import { uniqBy } from 'lodash';
-import { IMajorBrandMarketShare } from '$modules/report/marketConditions/marketShare';
+import { IMajorBrandMarketShare } from '$modules/report/research';
 import { IStackBarChartProps, StackChart, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
-import styled from '@emotion/styled';
-import { CardTitle } from '$pages/Report/commonStyled';
-import { Card as MiCard } from 'mi-ui/src';
-
-const Card = styled(MiCard)`
-  display: grid;
-  grid-template-rows: min-content;
-  grid-column: 2/3;
-  grid-row: 1/3;
-  background-color: #fafafa;
-  padding: 20px;
-`;
+import { CardTitle, Card, ContentWrap, Content } from '$pages/Report/commonStyled';
 
 export interface IMajorBrandShareProps {
   data: IMajorBrandMarketShare[];
@@ -81,13 +70,17 @@ export const MajorBrandShare = ({ data }: IMajorBrandShareProps) => {
   return (
     <Card>
       <CardTitle>주요 브랜드 시장 점유율(Top 10위)</CardTitle>
-      <StackChart
-        data={volumeData}
-        xAixData={xAixData}
-        legend={legendOption}
-        grid={gridOption}
-        yAxis={yAxisOption}
-      />
+      <ContentWrap>
+        <Content>
+          <StackChart
+            data={volumeData}
+            xAixData={xAixData}
+            legend={legendOption}
+            grid={gridOption}
+            yAxis={yAxisOption}
+          />
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

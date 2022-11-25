@@ -1,47 +1,58 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { Header as CHeader } from '$pages/Report/commonStyled';
 import {
-  Button as MuiButton,
   DatePicker,
   IDatePickerProps,
   FlexDirection,
   RadioButton,
   IRadioGroupProps,
-  JustifyContent,
+  Button,
 } from 'mi-ui';
 import dayjs from 'dayjs';
+import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
 
 const FilterWrap = styled.div`
   display: flex;
   gap: 15px;
+  align-items: end;
 `;
-
-const Button = styled(MuiButton)``;
-
-export interface IHeaderProps {
+const RadioWrap = styled.div`
+  display: flex;
+  gap: 30px;
+`;
+export interface IHeaderProps<T> {
   onChangeDate: IDatePickerProps['onChange'];
   selectedDate: IDatePickerProps['value'];
   radioButtonList: IRadioGroupProps[];
+  onClickSearch: () => void;
+  downloadButtonProps: IDownloadButtonProp<T>;
+  isFetching: boolean;
 }
-export const Header = ({ onChangeDate, selectedDate, radioButtonList }: IHeaderProps) => {
-  const handleRawDataDownload = useCallback(() => {
-    console.log('down');
-  }, []);
 
+export const Header = <T extends object>({
+  onChangeDate,
+  selectedDate,
+  radioButtonList,
+  downloadButtonProps,
+  onClickSearch,
+  isFetching,
+}: IHeaderProps<T>) => {
   return (
-    <CHeader>
+    <CHeader style={{ alignItems: 'end' }}>
       <FilterWrap>
-        {radioButtonList.map(({ options, value, onChange }, i) => (
-          <RadioButton
-            key={i}
-            flexDirection={FlexDirection.ROW}
-            options={options}
-            value={value}
-            onChange={onChange}
-          ></RadioButton>
-        ))}
-
+        <RadioWrap>
+          {radioButtonList.map(({ label, options, value, onChange }, i) => (
+            <RadioButton
+              label={label}
+              key={i}
+              flexDirection={FlexDirection.ROW}
+              options={options}
+              value={value}
+              onChange={onChange}
+            ></RadioButton>
+          ))}
+        </RadioWrap>
         <DatePicker
           onChange={onChangeDate}
           value={selectedDate}
@@ -49,16 +60,15 @@ export const Header = ({ onChangeDate, selectedDate, radioButtonList }: IHeaderP
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
+        <Button
+          sx={{ height: 'fit-content', marginBottom: '2px' }}
+          showLoading={isFetching}
+          label={'조회'}
+          onClick={onClickSearch}
+          variant="contained"
+        />
       </FilterWrap>
-
-      <Button
-        justifyContent={JustifyContent.RIGHT}
-        sx={{ justifyContent: 'end', width: 'fit-content' }}
-        onClick={handleRawDataDownload}
-        label={'상세 데이터 다운로드'}
-      />
+      <DownloadButton label={'상세 데이터 다운로드'} {...downloadButtonProps} />
     </CHeader>
   );
 };
-
-export default Header;

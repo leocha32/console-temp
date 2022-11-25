@@ -1,16 +1,16 @@
 import React from 'react';
 
-import { Card, Section, CardTitle, ContentWrap } from '$pages/Report/commonStyled';
+import { Card, CardTitle, Content, ContentWrap } from '$pages/Report/commonStyled';
 import {
   IATLMediaPerformanceStatus,
   IPerformanceByMedia,
-} from '$modules/report/marketing/atl';
+} from '$modules/report/marketing';
 import styled from '@emotion/styled';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 import { Table, TRowData, TRowProps } from 'mi-ui/src';
 
 export interface IMediaPerformanceProps {
-  data?: IATLMediaPerformanceStatus;
+  data: IATLMediaPerformanceStatus;
 }
 
 const SubContents = styled.div`
@@ -117,66 +117,81 @@ const tableHeader = [
     },
   },
 ];
+
+const makeColumn = (newData, originData, exclude: string[]) => {
+  tableHeader.forEach(({ key, name }) => {
+    if (exclude.includes(key)) return;
+    newData.push({
+      colName: name,
+      value: originData[key] || '-',
+    });
+  });
+};
+
 const makeRowData = (originData: IPerformanceByMedia[]) => {
   const mediaObj = {};
+  const total = {};
   const sumRow = (name, data) => ({
     data,
     label: name,
     name,
     options: {
+      textFormat: (value) => value.toLocaleString('ko-KR'),
       colSpan: 2,
+      sx: {
+        backgroundColor: '#dbe4ec',
+        fontWeight: 600,
+      },
     },
   });
+
   originData.forEach((item) => {
     if (!Object.prototype.hasOwnProperty.call(mediaObj, item.media)) {
       mediaObj[item.media] = {
         data: [],
-        sum: item,
+        sum: {},
       };
     }
-    mediaObj[item.media].data.push(item);
+    const rows = [];
+    makeColumn(rows, item, ['media']);
+    mediaObj[item.media].data.push(rows);
+    mediaObj[item.media].sum = Object.keys(item).reduce((pre, cur) => {
+      pre[cur] = item[cur] + (pre[cur] || 0);
+      total[cur] = item[cur] + (total[cur] || 0);
+      return pre;
+    }, mediaObj[item.media].sum);
   });
+
   const rowData: TRowProps[] = [];
+  const totalData: TRowData[] = [];
+
+  makeColumn(totalData, total, ['media', 'channel']);
+
   Object.keys(mediaObj).forEach((key) => {
-    const data = mediaObj[key].data.map((item) => {
-      const row: TRowData[] = [];
-      tableHeader.forEach(({ key, name }) => {
-        if (key === 'media') return;
-        row.push({
-          colName: name,
-          value: item[key] || '-',
-        });
-      });
-      return row;
-    });
+    const sumData = [];
+    makeColumn(sumData, mediaObj[key].sum, ['media', 'channel']);
     rowData.push({
-      data,
+      data: mediaObj[key].data,
       label: key,
       name: key,
       options: {
         rowSpan: mediaObj[key].data.length,
+        textFormat: (value) => value.toLocaleString('ko-KR'),
       },
     });
-    rowData.push(
-      sumRow(`${key}계`, [
-        { value: 1, colName: '광고비(억원)' },
-        { value: 1, colName: '횟수' },
-        { value: 1, colName: '당월 누적 GRP' },
-        { value: 1, colName: 'CPRP(천원)' },
-      ]),
-    );
+    rowData.push(sumRow(`${key}계`, sumData));
   });
   rowData.push({
-    data: [
-      { value: 1, colName: '광고비(억원)' },
-      { value: 1, colName: '횟수' },
-      { value: 1, colName: '당월 누적 GRP' },
-      { value: 1, colName: 'CPRP(천원)' },
-    ],
+    data: totalData,
     label: '총계',
     name: '총계',
     options: {
       colSpan: 2,
+      textFormat: (value) => value.toLocaleString('ko-KR'),
+      sx: {
+        backgroundColor: '#84A1C3',
+        fontWeight: 600,
+      },
     },
   });
   return rowData;
@@ -189,8 +204,8 @@ const MediaPerformance = ({ data }: IMediaPerformanceProps) => {
   return (
     <Card>
       <CardTitle>ATL 매체 퍼포먼스</CardTitle>
-      <Section>
-        <ContentWrap>
+      <ContentWrap>
+        <Content>
           <SubContents>
             <SubContentWrap>
               <SubTitle>R3</SubTitle>
@@ -209,16 +224,16 @@ const MediaPerformance = ({ data }: IMediaPerformanceProps) => {
               )}
             </SubContentWrap>
           </SubContents>
-        </ContentWrap>
-        <ContentWrap flex={2}>
+        </Content>
+        <Content flex={2}>
           <Table
             showHeader
             headers={tableHeader}
             rows={rowData}
             columns={columns}
           ></Table>
-        </ContentWrap>
-      </Section>
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

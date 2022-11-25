@@ -1,14 +1,22 @@
 import React from 'react';
-import { BarChart, ChartOrient, ChartPosition, ChartTop } from 'mi-ui/src';
+import {
+  BarChart,
+  ChartOrient,
+  ChartPosition,
+  ChartTop,
+  IBarChartProps,
+} from 'mi-ui/src';
 import { CardTitle, Card } from '$pages/Report/commonStyled';
 import { IMonthlyAccountStatusRow } from '$modules/report/accountSales';
+
 const legendOption = {
   orient: ChartOrient.HORIZONTAL,
   top: ChartTop.TOP,
   padding: [5, 0, 10, 0],
 };
 const gridOption = {
-  left: '0%',
+  left: '5%',
+  right: '0',
   top: '13%',
   bottom: '10%',
 };
@@ -17,21 +25,26 @@ export type TAccountChartProps = {
   data: IMonthlyAccountStatusRow[];
 };
 
-export const AccountChart = ({ data }: TAccountChartProps) => {
+const makeChartData = (data: IMonthlyAccountStatusRow[]) => {
+  if (data.length <= 0) return { chartData: [], xAixData: [], yAxis: [] };
   const legends = new Set(data.map(({ legend }) => legend));
-  const xAixData = [...new Set(data.map(({ yearMonth }) => yearMonth))];
-  const chartData: any[] = [];
-  const summary = xAixData.map((yearMonth) => {
+
+  const xData = [...new Set(data.map(({ yearMonth }) => yearMonth))];
+
+  const summary = xData.map((yearMonth) => {
     return data
       .filter((data) => data.yearMonth === yearMonth)
       .reduce((a, b) => {
-        return { ...b, legend: '', count: a.count + b.count };
+        return { ...b, count: a.count + b.count };
       });
   });
 
-  legends.forEach((legend) => {
+  const maxValue = Math.max(...summary.map((o) => o.count));
+
+  const chartData = Array.from(legends).map((legend) => {
     const legendData = data.filter((data) => data.legend === legend);
-    const obj = {
+
+    return {
       name: legend,
       type: 'bar',
       stack: 'total',
@@ -40,7 +53,7 @@ export const AccountChart = ({ data }: TAccountChartProps) => {
         position: ChartPosition.INSIDE,
         formatter: ({ value, dataIndex }) => {
           const per = legendData.map((data) => data.rate);
-          return `${value.toLocaleString('ko-kr')} (${per[dataIndex]}%)`;
+          return `${value.toLocaleString('ko-KR')} (${per[dataIndex]}%)`;
         },
       },
       data: legendData.map((data) => data.count),
@@ -48,45 +61,53 @@ export const AccountChart = ({ data }: TAccountChartProps) => {
         focus: 'series',
       },
       markPoint: {
-        data: [
-          {
-            type: 'max',
-          },
-        ],
+        data: summary.map((sum, i) => {
+          return {
+            name: i + '',
+            value: sum.count.toLocaleString('kr-KR'),
+            coord: [i, maxValue * 0.15 + maxValue],
+          };
+        }),
         itemStyle: {
           color: 'none',
         },
         symbol: 'rect',
-        label: {
-          formatter: (params) => {
-            return '';
-            // return summary.find((sum) => sum.yearMonth === '');
-            // return legendData.map((data) => data.count);
-          },
-        },
       },
     };
-    chartData.push(obj);
   });
 
+  return {
+    chartData,
+    xAixData: xData.map(
+      (yearMonth) => `${yearMonth.slice(2, 4)}년 ${yearMonth.slice(4)}월`,
+    ),
+    yAxis: {
+      type: 'value',
+      max: maxValue * 0.2 + maxValue,
+      axisLabel: {
+        showMaxLabel: false,
+      },
+    },
+  } as {
+    chartData: IBarChartProps['data'];
+    xAixData: IBarChartProps['xAixData'];
+    yAxis: IBarChartProps['yAxis'];
+  };
+};
+
+export const AccountChart = ({ data }: TAccountChartProps) => {
+  const { chartData, xAixData, yAxis } = makeChartData(data);
+
   return (
-    <Card>
+    <Card height={350}>
       <CardTitle>계정 수</CardTitle>
       <BarChart
         grid={gridOption}
         legend={legendOption}
         data={chartData}
-        xAixData={xAixData.map((value) => `${value.slice(2, 4)}년 ${value.slice(4)}월`)}
-        yAxis={[
-          {
-            type: 'value',
-            name: 'total',
-          },
-          {
-            type: 'value',
-            name: 'Temperature',
-          },
-        ]}
+        xAixData={xAixData}
+        yAxis={yAxis}
+        useAccumulate
       />
     </Card>
   );

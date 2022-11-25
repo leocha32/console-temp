@@ -12,3 +12,11 @@ export interface IResearchReportFile {
   updatedTimestamp: number;
   blob: Blob;
 }
+
+export interface IResearchReportFileUrl {
+  year: string;
+  half: string;
+  category: string;
+  fileUrl: string;
+  updatedTimestamp: number;
+}

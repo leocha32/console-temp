@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import fileDownload from 'js-file-download';
 import html2canvas, { Options } from 'html2canvas';
 import pathName from '$constants/pathName';
 import HomeIcon from '@mui/icons-material/Home';
+import { AxiosResponse } from 'axios';
 
+export const getFileNameAndDownloadFile = ({
+  data,
+  headers,
+}: AxiosResponse<Blob, any>): void => {
+  const content = headers['content-disposition'];
+  const RegExp = /filename=([^;]+)/g;
+  const reqExpExec = RegExp.exec(content || '');
+  const fileName = reqExpExec ? reqExpExec[1] : '';
+  fileDownload(data, fileName);
+};
 export function saveImage(
   element: HTMLElement,
   fileName: string,
@@ -119,3 +130,21 @@ const changeCsstoInit = (element) => {
     element.style.height = '';
   }
 };
+
+export const retryLazy = (componentImport) =>
+  lazy(async () => {
+    const pageAlreadyRefreshed = JSON.parse(
+      window.localStorage.getItem('pageRefreshed') || 'false',
+    );
+    try {
+      const component = await componentImport();
+      window.localStorage.setItem('pageRefreshed', 'false');
+      return component;
+    } catch (error) {
+      if (!pageAlreadyRefreshed) {
+        window.localStorage.setItem('pageRefreshed', 'true');
+        return window.location.reload();
+      }
+      throw error;
+    }
+  });

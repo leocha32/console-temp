@@ -1,7 +1,8 @@
-import { CardTitle, Card } from '$pages/Report/commonStyled';
+import { CardTitle } from '$pages/Report/commonStyled';
 import { Table, TRowProps } from 'mi-ui';
 import { sortBy, cloneDeep } from 'lodash';
 import { IRentalIndicator } from '$modules/report/accountSales';
+import { Card } from '$pages/Report/commonStyled';
 
 const COLUMN = [
   {
@@ -29,7 +30,6 @@ const ROW_DATA = [
       sx: {
         backgroundColor: 'aliceblue',
       },
-      height: '10px',
       textFormat: (value) =>
         value === '평균' ? value : `${value.slice(2, 4)}년 ${value.slice(4)}월`,
     },
@@ -55,7 +55,6 @@ const ROW_DATA = [
       },
     ],
     options: {
-      height: '10px',
       textFormat: (value) => value.toLocaleString('ko-KR') + '%',
     },
   },
@@ -68,8 +67,7 @@ const ROW_DATA = [
       },
     ],
     options: {
-      height: '10px',
-      textFormat: (value) => '₩' + value.toLocaleString('ko-KR'),
+      textFormat: (value) => '₩ ' + value.toLocaleString('ko-KR'),
     },
   },
 ];
@@ -116,7 +114,7 @@ export const RentTable = ({ data }: TRendTableProps) => {
   );
 
   return (
-    <Card sx={{ display: 'grid', gridTemplateRows: '10% auto', gridGap: '20px' }}>
+    <Card>
       <CardTitle>렌탈 지표</CardTitle>
       <Table rows={rowData} columns={COLUMN} showHeader={false}></Table>
     </Card>

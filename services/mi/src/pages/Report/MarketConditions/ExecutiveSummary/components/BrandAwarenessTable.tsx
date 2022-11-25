@@ -1,11 +1,13 @@
-import React, { useCallback, useState } from 'react';
-import { Table, Button, JustifyContent } from 'mi-ui';
-import { IBrandAwarenessSummary } from '$modules/report';
+import React, { useCallback } from 'react';
+import { Table, Button } from 'mi-ui';
+import { IBrandAwarenessSummary } from '$modules/report/research';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './BrandAwarenessTableConfig';
-import { Contents, Title } from './commonStyled';
-import { useDownloadReport } from '$modules/report';
+import { Card, CardTitle } from '$pages/Report/commonStyled';
+import { Header } from './commonStyled';
 
-type TBrandAwarenessTable = Partial<IBrandAwarenessSummary>;
+type TBrandAwarenessTable = {
+  data?: IBrandAwarenessSummary;
+};
 
 const cowayBrandAwarenessToRowData = (data, orderStandard) => {
   const brandShareRanks: any = [];
@@ -58,8 +60,9 @@ const getMindTops = (topOfMindRank) => {
   };
 };
 
-const makeRowData = (cowayBrandAwareness, topOfMindRank) => {
-  if (cowayBrandAwareness.length === 0 || topOfMindRank.length === 0) return [];
+const makeRowData = (data: IBrandAwarenessSummary) => {
+  const { cowayBrandAwareness, topOfMindRank } = data;
+  if (!cowayBrandAwareness.length || !topOfMindRank.length) return [];
   const brandRowData = cowayBrandAwarenessToRowData(cowayBrandAwareness, PRODUCT_ORDER);
   const mindTops = getMindTops(topOfMindRank);
   const summaryData = [...brandRowData, mindTops];
@@ -72,53 +75,23 @@ const makeRowData = (cowayBrandAwareness, topOfMindRank) => {
   });
 };
 
-const BrandAwarenessTable = ({
-  cowayBrandAwareness,
-  topOfMindRank,
-  researchReportFile,
-}: TBrandAwarenessTable) => {
-  const [btnLoading, setBtnLoading] = useState(false);
-  const downloadReport = useDownloadReport();
-
-  const handleDownloadReport = useCallback(() => {
-    if (researchReportFile) {
-      setBtnLoading(true);
-      const { half, category, filePath, year, originalFileName } = researchReportFile;
-      downloadReport.mutate(
-        {
-          half,
-          category,
-          filePath,
-          year,
-          fileName: originalFileName,
-        },
-        {
-          onSettled: () => {
-            setBtnLoading(false);
-          },
-        },
-      );
-    }
-  }, [researchReportFile, downloadReport]);
-  const rowData = makeRowData(cowayBrandAwareness, topOfMindRank);
-
+const BrandAwarenessTable = ({ data }: TBrandAwarenessTable) => {
+  const rowData = makeRowData(data || ({} as IBrandAwarenessSummary));
+  const downloadReport = useCallback(() => {
+    window.open(data?.researchReportFileUrl?.fileUrl, '_blank');
+  }, [data?.researchReportFileUrl]);
   return (
-    <Contents>
-      <Title>브랜드 인지도</Title>
-      <Button
-        label={'보고서 다운로드'}
-        onClick={handleDownloadReport}
-        showLoading={btnLoading}
-        justifyContent={JustifyContent.RIGHT}
-        disabled={!researchReportFile}
-      ></Button>
-      <Table
-        sx={{ gridRowStart: 2, gridColumn: '1/3' }}
-        showHeader={false}
-        rows={rowData}
-        columns={COLUMN}
-      ></Table>
-    </Contents>
+    <Card>
+      <Header>
+        <CardTitle>브랜드 인지도</CardTitle>
+        <Button
+          disabled={!data?.researchReportFileUrl}
+          label={'보고서 다운로드'}
+          onClick={downloadReport}
+        ></Button>
+      </Header>
+      <Table showHeader={false} rows={rowData} columns={COLUMN}></Table>
+    </Card>
   );
 };
 export default BrandAwarenessTable;

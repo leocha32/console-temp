@@ -17,25 +17,6 @@ module.exports = {
   devServer: (devServerConfig, { env, paths }) => {
     devServerConfig = {
       hot: true,
-      onBeforeSetupMiddleware: undefined,
-      onAfterSetupMiddleware: undefined,
-      setupMiddlewares: (middlewares, devServer) => {
-        if (!devServer) {
-          throw new Error('webpack-dev-server is not defined');
-        }
-
-        if (fs.existsSync(paths.proxySetup)) {
-          require(paths.proxySetup)(devServer.app);
-        }
-
-        middlewares.push(
-          evalSourceMap(devServer),
-          redirectServedPath(paths.publicUrlOrPath),
-          noopServiceWorker(paths.publicUrlOrPath),
-        );
-
-        return middlewares;
-      },
       client: {
         overlay: {
           errors: true,
@@ -48,13 +29,13 @@ module.exports = {
       },
       historyApiFallback: true,
       allowedHosts: 'all',
-      proxy: {
-        '/v2/*': {
-          target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
-          changeOrigin: true,
-          secure: false,
-        },
-      },
+      // proxy: {
+      //   '/v2': {
+      //     target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
+      //     changeOrigin: true,
+      //     secure: false,
+      //   },
+      // },
     };
 
     return devServerConfig;

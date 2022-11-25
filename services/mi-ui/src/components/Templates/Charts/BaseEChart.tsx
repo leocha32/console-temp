@@ -76,6 +76,7 @@ export function BaseEChart({
 
     // Add chart resize listener
     // ResizeObserver is leading to a bit janky UX
+
     function resizeChart() {
       chart?.resize();
     }
@@ -92,7 +93,7 @@ export function BaseEChart({
     // Update chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
-      chart?.setOption(option, settings);
+      chart?.setOption(option, { ...settings, notMerge: true });
     }
     /**
      * Whenever theme changes we need to add option

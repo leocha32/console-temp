@@ -36,6 +36,7 @@ const Columns = [
     options: {
       sx: {
         backgroundColor: 'aliceblue',
+        width: '5%',
       },
     },
   },
@@ -63,9 +64,24 @@ const Columns = [
   },
   {
     name: 'customerCount',
-    options: { textFormat: (value) => value.toLocaleString('ko-KR') },
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => value.toLocaleString('ko-KR'),
+    },
   },
-  { name: 'customerRate', options: { textFormat: (value) => `${value}%` } },
+  {
+    name: 'customerRate',
+    options: {
+      sx: {
+        width: '10%',
+        textAlign: 'right' as const,
+      },
+      textFormat: (value) => `${value}%`,
+    },
+  },
 ];
 
 export type ThreeAccountProps = {
@@ -93,7 +109,7 @@ export const ThreeAccounts = ({ data }: ThreeAccountProps) => {
   const rowData = columnDataToRowData(data);
 
   return (
-    <Card style={{ maxHeight: '100%' }}>
+    <Card sx={{ width: '30%' }}>
       <CardTitle>3 계정</CardTitle>
       <Table rows={rowData} columns={Columns} showHeader={true} headers={Headers}></Table>
     </Card>

@@ -10,7 +10,7 @@ const menu = atom<{ open: boolean; expands: string[] }>({
   key: 'menu-status',
   default: {
     open: true,
-    expands: [],
+    expands: ['/report'],
   },
   effects: [persistAtom],
 });

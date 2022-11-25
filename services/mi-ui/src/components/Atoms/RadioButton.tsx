@@ -4,12 +4,14 @@ import {
   RadioGroup as MuiRadioGroup,
   Radio as MuiRadio,
   FormControlLabel as MuiFormControlLabel,
+  FormLabel as MuiFormLabel,
+  FormControl,
 } from '@mui/material';
-import { css } from '@emotion/react';
 
 export interface IRadioGroupProps extends MuiRadioGroupProps {
   options: string[];
   flexDirection?: FlexDirection;
+  label?: string;
 }
 
 export enum FlexDirection {
@@ -23,6 +25,7 @@ export const RadioButton = ({
   options,
   flexDirection = FlexDirection.ROW,
   onChange,
+  label,
   ...props
 }: IRadioGroupProps) => {
   const handleChange = useCallback(
@@ -34,24 +37,26 @@ export const RadioButton = ({
     [onChange],
   );
   return (
-    <MuiRadioGroup
-      {...props}
-      css={css`
-        display: flex;
-        flex-direction: ${flexDirection};
-      `}
-      defaultValue={options ? options[0] : ''}
-      name="radio-buttons-group"
-      onChange={handleChange}
-    >
-      {options.map((value) => (
-        <MuiFormControlLabel
-          key={value}
-          value={value}
-          control={<MuiRadio />}
-          label={value}
-        />
-      ))}
-    </MuiRadioGroup>
+    <FormControl>
+      <MuiFormLabel sx={{ color: 'black' }}>{label}</MuiFormLabel>
+
+      <MuiRadioGroup
+        {...props}
+        row={flexDirection === 'row'}
+        // sx={{ border: 'solid 1px lightgray', borderRadius: '4px' }}
+        defaultValue={options ? options[0] : ''}
+        name="radio-buttons-group"
+        onChange={handleChange}
+      >
+        {options.map((value) => (
+          <MuiFormControlLabel
+            key={value}
+            value={value}
+            control={<MuiRadio />}
+            label={value}
+          />
+        ))}
+      </MuiRadioGroup>
+    </FormControl>
   );
 };

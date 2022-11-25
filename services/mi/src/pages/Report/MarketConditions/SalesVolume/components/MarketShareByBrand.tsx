@@ -1,18 +1,16 @@
 import React from 'react';
-import { IMarketShareByBrand } from 'modules/report/marketConditions';
+import { IMarketShareByBrand } from 'modules/report/research';
 import _ from 'lodash';
 import { IStackBarChartProps, StackChart } from 'mi-ui';
 import { ChartLeft, ChartOrient, ChartTop } from 'mi-ui/src/constants/enum';
 
 import {
-  ChartWrap,
   CardTitle,
   Card,
-  Section,
+  Content,
   ContentWrap,
   ContentTitle,
 } from '$pages/Report/commonStyled';
-
 export interface IMarketShareByBrandProps {
   data: IMarketShareByBrand[];
 }
@@ -73,33 +71,29 @@ export const MarketShareByBrand = ({ data }: IMarketShareByBrandProps) => {
 
   return (
     <Card>
-      <CardTitle>브랜드 점유율</CardTitle>{' '}
-      <Section>
-        <ContentWrap>
+      <CardTitle>브랜드 점유율</CardTitle>
+      <ContentWrap>
+        <Content>
           <ContentTitle>판매량 기준</ContentTitle>
-          <ChartWrap>
-            <StackChart
-              data={volumeData}
-              xAixData={xAixData}
-              legend={legendOption}
-              grid={gridOption}
-              yAxis={yAxisOption}
-            />
-          </ChartWrap>
-        </ContentWrap>
-        <ContentWrap>
+          <StackChart
+            data={volumeData}
+            xAixData={xAixData}
+            legend={legendOption}
+            grid={gridOption}
+            yAxis={yAxisOption}
+          />
+        </Content>
+        <Content>
           <ContentTitle>매출액 기준</ContentTitle>
-          <ChartWrap>
-            <StackChart
-              data={valueData}
-              xAixData={xAixData}
-              legend={legendOption}
-              grid={gridOption}
-              yAxis={yAxisOption}
-            />
-          </ChartWrap>
-        </ContentWrap>
-      </Section>
+          <StackChart
+            data={valueData}
+            xAixData={xAixData}
+            legend={legendOption}
+            grid={gridOption}
+            yAxis={yAxisOption}
+          />
+        </Content>
+      </ContentWrap>
     </Card>
   );
 };

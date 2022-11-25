@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { PageLayout, Spinner } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
 import Header from '$pages/Report/Marketing/components/Header';
-import { ContentsWrap, Wrap } from '$pages/Report/commonStyled';
+import { HeaderCard, Section } from '$pages/Report/commonStyled';
 import MediaCostStatus from './components/MediaCostStatus';
 import MediaPerformance from './components/MediaPerformance';
 import CompetitorExecutionStatus from './components/CompetitorExecutionStatus';
@@ -12,115 +12,173 @@ import {
   productAndFunctionalGroupSelector,
   categorySector,
 } from '$recoils/categories';
-import { useRecoilValue } from 'recoil';
-import { useAtl } from '$modules/report/marketing/atl';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import {
+  useAtl,
+  useAtlDownloadExcel,
+  IAtlParams,
+  IATLMediaCostByCompanyStatus,
+  IATLMediaCostStatus,
+  IATLMediaPerformanceStatus,
+} from '$modules/report/marketing';
+import { marketingAtl } from '$recoils/filter/atom';
+import SelectedItem from '$components/SelectedItem';
 
 const TITLE = 'ATL';
-
+const setAllOption = (options) => {
+  return options.map(({ value }) => value);
+};
 const Atl = () => {
   const categoryOptions = useRecoilValue(categorySector);
-  const [selectedCategory, setSelectedCategory] = useState(categoryOptions[0]?.value);
-  const familyOptions = useRecoilValue(familySector({ category: selectedCategory }));
-  const [selectedFamily, setSelectedFamily] = useState(
-    familyOptions.map(({ value }) => value),
+  const [filter, setFilter] = useRecoilState(marketingAtl);
+  const { category1, category2, category3, yyyymm } = filter;
+  const [selectedOption, setSelectedOption] = useState({
+    category1,
+    category2,
+    category3,
+  });
+  const [selectedDate, setSelectedDate] = useState(yyyymm);
+  const downloadExcel = useAtlDownloadExcel();
+  const year = dayjs(selectedDate).get('y');
+  const month = dayjs(selectedDate).get('M') + 1;
+  const familyOptions = useRecoilValue(
+    familySector({ category: selectedOption?.category1 }),
   );
-
   const { product: productOptions } = useRecoilValue(
     productAndFunctionalGroupSelector({
-      category: selectedCategory,
-      family: selectedFamily,
+      category: selectedOption?.category1,
+      family: selectedOption?.category2 || setAllOption(familyOptions),
     }),
   );
-  const [selectedProduct, setSelectedProduct] = useState(
-    productOptions.map(({ value }) => value),
-  );
+
   const isFamilyAllCheck = useMemo(
-    () => selectedFamily.length === familyOptions.length,
-    [selectedFamily, familyOptions],
+    () =>
+      !selectedOption?.category2 ||
+      selectedOption?.category2?.length === familyOptions.length,
+    [selectedOption, familyOptions],
   );
 
-  const [selectedDate, setSelectedDate] = useState(dayjs().add(-1, 'M'));
-
-  const { data, isFetching, refetch } = useAtl(
-    {
-      category1: selectedCategory,
-      category2: selectedFamily.join(','),
-      category3: selectedProduct.join(','),
-      year: selectedDate.get('y'),
-      month: selectedDate.get('M') + 1,
-    },
-    {
-      enabled: false,
-    },
+  const isProductAllCheck = useMemo(
+    () =>
+      !selectedOption?.category3 ||
+      selectedOption?.category3?.length === productOptions.length,
+    [selectedOption, productOptions],
   );
 
-  useEffect(() => {
-    setSelectedFamily(familyOptions.map(({ value }) => value));
-  }, [familyOptions]);
+  const { data, isFetching, refetch } = useAtl({
+    category1: selectedOption.category1,
+    category2: isFamilyAllCheck ? null : selectedOption.category2?.join(','),
+    category3: isProductAllCheck ? null : selectedOption.category3?.join(','),
+    year,
+    month,
+  });
 
-  useEffect(() => {
-    setSelectedProduct(productOptions.map(({ value }) => value));
-  }, [productOptions]);
-
-  useEffect(() => {
-    refetch();
-  }, [selectedCategory, selectedProduct, selectedDate, selectedFamily]);
+  const selectItem = useMemo(() => {
+    return [
+      {
+        title: '선택한 제품군',
+        value: isFamilyAllCheck ? '전체' : selectedOption?.category2?.join(', '),
+      },
+      {
+        title: '선택한 제품',
+        value: isProductAllCheck ? '전체' : selectedOption?.category3?.join(', '),
+      },
+    ];
+  }, [isFamilyAllCheck, isProductAllCheck, selectedOption]);
 
   const handleFamilyChange = useCallback((value) => {
-    setSelectedFamily(value);
+    setSelectedOption((pre) => ({
+      ...pre,
+      category2: value,
+      category3: null,
+    }));
   }, []);
 
   const handleProductChange = useCallback((value) => {
-    setSelectedProduct(value);
+    setSelectedOption((pre) => ({
+      ...pre,
+      category3: value,
+    }));
   }, []);
 
   const handleCategoryChange = useCallback((value) => {
-    setSelectedCategory(value);
+    setSelectedOption({
+      category1: value,
+      category2: null,
+      category3: null,
+    });
   }, []);
 
   const handleDateChange = useCallback((value) => {
     setSelectedDate(value);
   }, []);
 
+  const handleSearch = useCallback(() => {
+    refetch();
+    setFilter({
+      ...selectedOption,
+      yyyymm: selectedDate,
+    });
+  }, [refetch, setFilter, selectedDate, selectedOption]);
+
+  const downloadButtonProps = useMemo(
+    () => ({
+      hook: downloadExcel,
+      params: {
+        year,
+        month,
+      },
+    }),
+    [downloadExcel, year, month],
+  );
   const selects = [
     {
       title: '카테고리',
-      value: selectedCategory,
+      value: selectedOption?.category1,
       onChange: handleCategoryChange,
       options: categoryOptions,
     },
     {
       title: '제품군',
       multiple: true,
-      value: selectedFamily,
+      value: selectedOption?.category2 || setAllOption(familyOptions),
       onChange: handleFamilyChange,
       options: familyOptions,
-      disabled: !selectedCategory,
+      disabled: !selectedOption?.category1,
     },
     {
       title: '제품',
       multiple: true,
-      value: selectedProduct,
+      value: selectedOption?.category3 || setAllOption(productOptions),
       onChange: handleProductChange,
       options: productOptions,
-      disabled: !selectedFamily.length || isFamilyAllCheck,
+      disabled: !selectedOption?.category2?.length || isFamilyAllCheck,
     },
   ];
+
   return (
     <PageLayout headerName={TITLE} crumbs={getCrumbs()}>
-      <Header
+      <Header<IAtlParams>
         selects={selects}
         onChangeDate={handleDateChange}
         selectedDate={selectedDate}
+        downloadButtonProps={downloadButtonProps}
+        onClickSearch={handleSearch}
+        isFetching={isFetching}
       />
-      <Wrap>
-        <ContentsWrap direction={'column'}>
-          {isFetching ? <Spinner /> : null}
-          <MediaCostStatus data={data?.atlMediaCostStatus} />
-          <MediaPerformance data={data?.atlMediaPerformanceStatus} />
-          <CompetitorExecutionStatus data={data?.atlMediaCostByCompanyStatus} />
-        </ContentsWrap>
-      </Wrap>
+      <HeaderCard>
+        <SelectedItem items={selectItem} />
+      </HeaderCard>
+      <Section>
+        {isFetching ? <Spinner /> : null}
+        <MediaCostStatus data={data?.atlMediaCostStatus as IATLMediaCostStatus} />
+        <MediaPerformance
+          data={data?.atlMediaPerformanceStatus as IATLMediaPerformanceStatus}
+        />
+        <CompetitorExecutionStatus
+          data={data?.atlMediaCostByCompanyStatus as IATLMediaCostByCompanyStatus}
+        />
+      </Section>
     </PageLayout>
   );
 };
