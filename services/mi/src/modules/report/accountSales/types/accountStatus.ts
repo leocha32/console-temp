@@ -68,17 +68,10 @@ export interface IMonthlyRentalIndicatorRow {
    */
   rentalIndicatorRow: IRentalIndicatorRow;
 }
+
 export interface IRentalIndicatorRow {
-  /**
-   * PLT 개월 수 (월)
-   */
-  pltMonth: number;
   /**
    * 계정 해약률 (%)
    */
   cancelRate: number;
-  /**
-   * ARPU (원)
-   */
-  arpu: number;
 }

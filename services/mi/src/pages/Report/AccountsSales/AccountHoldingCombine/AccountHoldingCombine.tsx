@@ -14,7 +14,7 @@ import { accountAccountCombine } from '$recoils/filter';
 
 const TITLE = '계정 보유 조합';
 
-const CUSTOMER_OPTIONS = ['전체', '개인', '개인사업자', '법인사업자'];
+const CUSTOMER_OPTIONS = ['전체', '개인', '개인사업자', '법인사업자', '기타'];
 const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 
 const AccountHoldingCombine = () => {
@@ -74,6 +74,7 @@ const AccountHoldingCombine = () => {
   };
   const downloadButtonProps = useMemo(
     () => ({
+      category: TITLE,
       hook: downloadExcel,
       params: {
         'contract-type': selectedContractType,

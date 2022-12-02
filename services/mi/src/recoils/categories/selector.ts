@@ -1,8 +1,9 @@
 import { selectorFamily, selector } from 'recoil';
 import categories from './atom';
 
-const makeResult = (data) => {
-  return data.sort().map((key) => ({
+const makeResult = ({ data, useSort = true }: { data: any; useSort?: boolean }) => {
+  const arr = useSort ? data.sort() : data;
+  return arr.map((key) => ({
     label: key,
     value: key,
   }));
@@ -13,7 +14,7 @@ export const categorySector = selector({
   get: ({ get }) => {
     const categoryList = get(categories);
     const result = Object.keys(categoryList) || [];
-    return makeResult(result);
+    return makeResult({ data: result });
   },
 });
 
@@ -21,14 +22,14 @@ export const categorySector = selector({
 export const familySector = selectorFamily({
   key: 'family-selector',
   get:
-    ({ category }: { category: string }) =>
+    ({ category, notOption }: { category: string; notOption?: boolean }) =>
     ({ get }) => {
       const categoryList = get(categories);
       if (!category || !Object.keys(categoryList)?.length) {
         return [];
       }
       const result = Object.keys(categoryList[category]);
-      return makeResult(result);
+      return notOption ? result : makeResult({ data: result, useSort: false });
     },
 });
 
@@ -63,8 +64,8 @@ export const productAndFunctionalGroupSelector = selectorFamily({
         { functionalGroup: [], product: [] },
       );
       return {
-        functionalGroup: makeResult(result.functionalGroup),
-        product: makeResult(result.product),
+        functionalGroup: makeResult({ data: result.functionalGroup }),
+        product: makeResult({ data: result.product }),
       };
     },
 });

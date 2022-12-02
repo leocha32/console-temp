@@ -96,6 +96,7 @@ const MarketingCostsEfficiency = () => {
 
   const downloadButtonProps = useMemo(
     () => ({
+      category: TITLE,
       hook: downloadExcel,
       params: {
         year,

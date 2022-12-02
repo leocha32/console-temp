@@ -1,4 +1,3 @@
-import React from 'react';
 import { PageLayout } from 'mi-ui';
 import RecentMenu from './components/RecentMenu';
 const Home = () => {

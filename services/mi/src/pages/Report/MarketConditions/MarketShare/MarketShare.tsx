@@ -45,7 +45,7 @@ const MarketShare = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
   const [year, half] = selectedItem.split('_');
-  const { data, isLoading } = useMarketShare(
+  const { data, isFetching } = useMarketShare(
     {
       year: year,
       half: half as HalfYear,
@@ -83,7 +83,7 @@ const MarketShare = () => {
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
 
       <Section direction={'row'}>
-        {isLoading ? <Spinner /> : null}
+        {isFetching ? <Spinner /> : null}
         <CowayMarketSare
           cowayMarketShare={data?.cowayMarketShare || []}
           competitorComparison={data?.competitorComparison || []}

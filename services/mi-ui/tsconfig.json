@@ -1,31 +1,13 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES6",
-    "allowJs": true,
-    "module": "esnext",
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react",
-    "noImplicitAny": false,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "lib": ["dom.iterable", "dom", "esnext", "es2015", "es2016", "es2017", "es2018", "es2020"],
     "outDir": "dist",
-    "sourceMap": true,
     "baseUrl": "src",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "paths": {
-      "$/*": ["src/*"]
-    }
+    "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

@@ -145,22 +145,24 @@ const makeRowData = (originData: IPerformanceByMedia[]) => {
     },
   });
 
-  originData.forEach((item) => {
-    if (!Object.prototype.hasOwnProperty.call(mediaObj, item.media)) {
-      mediaObj[item.media] = {
-        data: [],
-        sum: {},
-      };
-    }
-    const rows = [];
-    makeColumn(rows, item, ['media']);
-    mediaObj[item.media].data.push(rows);
-    mediaObj[item.media].sum = Object.keys(item).reduce((pre, cur) => {
-      pre[cur] = item[cur] + (pre[cur] || 0);
-      total[cur] = item[cur] + (total[cur] || 0);
-      return pre;
-    }, mediaObj[item.media].sum);
-  });
+  originData
+    .sort((a, b) => a.seqNum - b.seqNum)
+    .forEach((item) => {
+      if (!Object.prototype.hasOwnProperty.call(mediaObj, item.media)) {
+        mediaObj[item.media] = {
+          data: [],
+          sum: {},
+        };
+      }
+      const rows = [];
+      makeColumn(rows, item, ['media']);
+      mediaObj[item.media].data.push(rows);
+      mediaObj[item.media].sum = Object.keys(item).reduce((pre, cur) => {
+        pre[cur] = item[cur] + (pre[cur] || 0);
+        total[cur] = item[cur] + (total[cur] || 0);
+        return pre;
+      }, mediaObj[item.media].sum);
+    });
 
   const rowData: TRowProps[] = [];
   const totalData: TRowData[] = [];

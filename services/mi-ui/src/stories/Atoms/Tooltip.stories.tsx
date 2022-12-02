@@ -14,5 +14,5 @@ export const Tooltip: ComponentStory<typeof CTooltip> = (args: TTooltipProps) =>
 
 Tooltip.args = {
   title: 'tooltip',
-  children: <Button variant="outlined">tooltip</Button>,
+  children: <Button label={'tooltip'} variant="outlined"></Button>,
 };

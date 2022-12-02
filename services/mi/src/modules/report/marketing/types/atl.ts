@@ -100,6 +100,10 @@ export interface IR3Grp {
 
 export interface IPerformanceByMedia {
   /**
+   * 정렬 순서
+   */
+  seqNum: number;
+  /**
    * 매체
    */
   media: string;

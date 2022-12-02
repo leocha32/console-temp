@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@emotion/react';
-import { ThemeProvider as ThemeProviderMui, createTheme } from '@mui/material/styles';
+import { ThemeProvider as ThemeProviderMui } from '@mui/material/styles';
 import { MemoryRouter } from 'react-router-dom';
-import { theme } from '../src/constants/theme';
+import { theme, muiTheme } from '../src/constants/theme';
 import './style.css';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
@@ -16,7 +16,7 @@ export const parameters = {
 export const decorators = [
   (Story) => (
     <MemoryRouter>
-      <ThemeProviderMui theme={createTheme()}>
+      <ThemeProviderMui theme={muiTheme}>
         <ThemeProvider theme={theme}>
           <Story />
         </ThemeProvider>

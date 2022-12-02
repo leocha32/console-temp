@@ -1,4 +1,3 @@
-const fs = require('fs');
 const emotionPresetOptions = {};
 const emotionBabelPreset = require('@emotion/babel-preset-css-prop').default(
   undefined,
@@ -7,10 +6,6 @@ const emotionBabelPreset = require('@emotion/babel-preset-css-prop').default(
 const path = require('path');
 const { getLoader, loaderByName } = require('@craco/craco');
 const absolutePath = path.join(__dirname, '../mi-ui');
-const evalSourceMap = require('react-dev-utils/evalSourceMapMiddleware');
-const redirectServedPath = require('react-dev-utils/redirectServedPathMiddleware');
-const noopServiceWorker = require('react-dev-utils/noopServiceWorkerMiddleware');
-const TerserPlugin = require('terser-webpack-plugin');
 const posixPath = require('path/posix');
 
 module.exports = {
@@ -29,42 +24,19 @@ module.exports = {
       },
       historyApiFallback: true,
       allowedHosts: 'all',
-      // proxy: {
-      //   '/v2': {
-      //     target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
-      //     changeOrigin: true,
-      //     secure: false,
-      //   },
-      // },
+      proxy: {
+        '/v2/*': {
+          target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
     };
 
     return devServerConfig;
   },
   webpack: {
-    module: 'production',
-    output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: '[name].js',
-      chunkFilename: '[name].js',
-      publicPath: '/',
-    },
-    optimization: {
-      minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          extractComments: true,
-          minify: TerserPlugin.uglifyJsMinify,
-          terserOptions: {
-            compress: {
-              drop_console: true,
-            },
-          },
-        }),
-      ],
-      splitChunks: {
-        chunks: 'all',
-      },
-    },
+    module: 'development',
     alias: {
       $components: posixPath.resolve(__dirname, 'src/components'),
       $constants: posixPath.resolve(__dirname, 'src/constants'),
@@ -87,6 +59,13 @@ module.exports = {
     },
   },
   babel: {
+    presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
+    loaderOptions: (babelLoaderOptions, { env, paths }) => {
+      return {
+        presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
+        ...babelLoaderOptions,
+      };
+    },
     plugins: [...emotionBabelPreset.plugins],
   },
 };

@@ -2,7 +2,9 @@ import React, { ReactElement, Suspense } from 'react';
 import { Header, ISnbProps, Snb } from '../Organisms';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
-
+import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorPage } from '.';
+import * as Sentry from '@sentry/react';
 export interface ILayoutProps {
   menuStatusHook: ISnbProps['menuStatusHook'];
   onClickLogo?: () => void;
@@ -42,16 +44,25 @@ export const Layout = ({
   return (
     <>
       <Header onClick={onClickLogo}>{header}</Header>
-      <Main>
-        <Snb menu={menu} menuStatusHook={menuStatusHook} onClickMenu={onClickMenu} />
-        <Section>
-          <Wrap>
-            <Suspense>
-              <Outlet />
-            </Suspense>
-          </Wrap>
-        </Section>
-      </Main>
+      <ErrorBoundary
+        onError={(error) => {
+          Sentry.captureException(error);
+        }}
+        fallbackRender={({ resetErrorBoundary }) => (
+          <ErrorPage resetErrorBoundary={resetErrorBoundary} />
+        )}
+      >
+        <Main>
+          <Snb menu={menu} menuStatusHook={menuStatusHook} onClickMenu={onClickMenu} />
+          <Section>
+            <Wrap>
+              <Suspense>
+                <Outlet />
+              </Suspense>
+            </Wrap>
+          </Section>
+        </Main>
+      </ErrorBoundary>
     </>
   );
 };

@@ -7,6 +7,7 @@ import { IApiError } from '$types/api-error';
 export interface IDownloadButtonProp<T> extends Omit<IButtonProps, 'onClick'> {
   hook: UseMutationResult<void, AxiosError<IApiError, any>, T, unknown>;
   params: T;
+  category: string;
   onClick?: IButtonProps['onClick'];
 }
 
@@ -14,6 +15,7 @@ export const DownloadButton = <T extends object>({
   onClick,
   hook,
   params,
+  category,
   ...props
 }: IDownloadButtonProp<T>) => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +27,7 @@ export const DownloadButton = <T extends object>({
           setLoading(false);
         },
       });
+
       if (onClick instanceof Function) {
         onClick(e);
       }

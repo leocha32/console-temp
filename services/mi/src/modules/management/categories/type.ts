@@ -1,5 +1,9 @@
 export interface ICategory {
   /**
+   * 정렬 순서
+   */
+  seqNum: number;
+  /**
    * category1, 제품 | 제품외
    */
   category1: string;
@@ -29,6 +33,7 @@ export interface ICategories {
     [key: string]: {
       functionalGroup: string[];
       product: string[];
+      seqNum: number;
     };
   };
 }

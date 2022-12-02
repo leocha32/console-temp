@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import _ from 'lodash';
 import { IMajorBrandAwareness } from '$modules/report/research';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
-import { BarChart, ChartOrient, ChartTop } from 'mi-ui';
+import { ChartOrient, ChartTop } from 'mi-ui';
+import { BarChart } from '$components/Charts';
 import {
   Card,
   ChartWrap,

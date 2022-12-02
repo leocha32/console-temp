@@ -15,8 +15,10 @@ import {
   IPieChartProps,
 } from 'mi-ui';
 import { IATLMediaCostStatus } from '$modules/report/marketing';
+import { useSortFamily } from '$utils/hooks/useSortFamily';
 export interface IMediaCostStatusProps {
   data: IATLMediaCostStatus;
+  category: string;
 }
 
 const gridOptions = {
@@ -120,9 +122,16 @@ const makeChartData = (
   };
 };
 
-const MediaCostStatus = ({ data }: IMediaCostStatusProps) => {
+const MediaCostStatus = ({ data, category }: IMediaCostStatusProps) => {
+  const sortMonthlyCostByProductGroup = useSortFamily({
+    category,
+    data: data?.monthlyCostByProductGroup || [],
+    key: 'productGroup',
+  });
   const { monthlyCostByMedia, monthlyCostByProductGroup, shareByCompanies } =
-    makeChartData(data || {});
+    makeChartData(
+      { ...data, monthlyCostByProductGroup: sortMonthlyCostByProductGroup } || {},
+    );
   return (
     <Card height={350}>
       <CardTitle>ATL 매체비 현황</CardTitle>

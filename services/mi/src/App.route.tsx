@@ -1,40 +1,37 @@
 import React, { lazy } from 'react';
-import { retryLazy } from 'utils/utils';
 import { TMenu } from 'mi-ui';
 import Layout from 'components/Layout';
-const Home = retryLazy(() => import('pages/Home'));
-const Report = retryLazy(() => import('pages/Report'));
+const Home = lazy(() => import('pages/Home'));
+const Report = lazy(() => import('pages/Report'));
 // 시장 현황
-const MarketConditions = retryLazy(() => import('pages/Report/MarketConditions'));
-const SalesVolume = retryLazy(() => import('pages/Report/MarketConditions/SalesVolume'));
-const BrandAwareness = retryLazy(
-  () => import('pages/Report/MarketConditions/BrandAwareness'),
-);
-// const MarketExecutiveSummary = retryLazy(
+const MarketConditions = lazy(() => import('pages/Report/MarketConditions'));
+const SalesVolume = lazy(() => import('pages/Report/MarketConditions/SalesVolume'));
+const BrandAwareness = lazy(() => import('pages/Report/MarketConditions/BrandAwareness'));
+// const MarketExecutiveSummary = lazy(
 //   () => import('pages/Report/MarketConditions/ExecutiveSummary'),
 // );
-const MarketShare = retryLazy(() => import('pages/Report/MarketConditions/MarketShare'));
+const MarketShare = lazy(() => import('pages/Report/MarketConditions/MarketShare'));
 
 // 계정 및 판매
-const AccountsSales = retryLazy(() => import('pages/Report/AccountsSales'));
-const Account = retryLazy(() => import('pages/Report/AccountsSales/Account'));
-const AccountHoldingCombine = retryLazy(
+const AccountsSales = lazy(() => import('pages/Report/AccountsSales'));
+const Account = lazy(() => import('pages/Report/AccountsSales/Account'));
+const AccountHoldingCombine = lazy(
   () => import('pages/Report/AccountsSales/AccountHoldingCombine'),
 );
-const WarriorSales = retryLazy(() => import('pages/Report/AccountsSales/WarriorSales'));
-const SalesOrganization = retryLazy(
+const WarriorSales = lazy(() => import('pages/Report/AccountsSales/WarriorSales'));
+const SalesOrganization = lazy(
   () => import('pages/Report/AccountsSales/SalesOrganization'),
 );
-const Customer = retryLazy(() => import('pages/Report/AccountsSales/Customer'));
-const AccountExecutiveSummary = retryLazy(
+const Customer = lazy(() => import('pages/Report/AccountsSales/Customer'));
+const AccountExecutiveSummary = lazy(
   () => import('pages/Report/AccountsSales/ExecutiveSummary'),
 );
 // 마케팅
-const Marketing = retryLazy(() => import('pages/Report/Marketing'));
+const Marketing = lazy(() => import('pages/Report/Marketing'));
 
-const Atl = retryLazy(() => import('pages/Report/Marketing/Atl'));
-const Digital = retryLazy(() => import('pages/Report/Marketing/Digital'));
-const MarketingCostsEfficiency = retryLazy(
+const Atl = lazy(() => import('pages/Report/Marketing/Atl'));
+const Digital = lazy(() => import('pages/Report/Marketing/Digital'));
+const MarketingCostsEfficiency = lazy(
   () => import('pages/Report/Marketing/MarketingCostsEfficiency'),
 );
 import SummarizeIcon from '@mui/icons-material/Summarize';

@@ -9,11 +9,15 @@ export const recentMenuSelector = selector({
   },
   set: ({ set, get }, value) => {
     const newValue = [...get(recentMenu)];
-    if (
-      !newValue.find(({ currentInfo }) => currentInfo.path === value.currentInfo.path)
-    ) {
-      newValue.unshift(value);
+
+    const findIndex = newValue.findIndex(
+      ({ currentInfo }) => currentInfo.path === value.currentInfo.path,
+    );
+    newValue.unshift(value);
+    if (findIndex !== -1) {
+      newValue.splice(findIndex + 1, 1);
     }
+
     set(recentMenu, newValue);
   },
 });

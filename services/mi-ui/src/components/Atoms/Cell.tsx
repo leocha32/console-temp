@@ -56,7 +56,7 @@ export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps)
       }}
       {...props}
     >
-      {typeof value === 'object' ? value : textFormat ? textFormat(value) : value}
+      {typeof value === 'object' ? value : textFormat ? textFormat(value || '') : value}
     </TableCell>
   );
 };

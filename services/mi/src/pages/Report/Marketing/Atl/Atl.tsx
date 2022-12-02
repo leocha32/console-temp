@@ -123,6 +123,7 @@ const Atl = () => {
 
   const downloadButtonProps = useMemo(
     () => ({
+      category: TITLE,
       hook: downloadExcel,
       params: {
         year,
@@ -171,7 +172,10 @@ const Atl = () => {
       </HeaderCard>
       <Section>
         {isFetching ? <Spinner /> : null}
-        <MediaCostStatus data={data?.atlMediaCostStatus as IATLMediaCostStatus} />
+        <MediaCostStatus
+          data={data?.atlMediaCostStatus as IATLMediaCostStatus}
+          category={category1}
+        />
         <MediaPerformance
           data={data?.atlMediaPerformanceStatus as IATLMediaPerformanceStatus}
         />

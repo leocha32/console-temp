@@ -9,7 +9,8 @@ import {
   ChartWrap,
 } from '$pages/Report/commonStyled';
 import { DataCardWrap, DiffWrap, Cost, DiffInfo } from '../components/commonStyled';
-import { StackChart, IStackBarChartProps } from 'mi-ui/src';
+import { IStackBarChartProps } from 'mi-ui/src';
+import { StackChart } from '$components/Charts';
 import {
   IMarketingCostByMedia,
   IMarketingCostByMonth,
@@ -82,7 +83,7 @@ const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
   );
 
   return (
-    <Card>
+    <Card flex={1}>
       <CardTitle>마케팅비 현황</CardTitle>
       <ContentWrap>
         <Content>

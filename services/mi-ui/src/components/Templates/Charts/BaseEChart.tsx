@@ -1,6 +1,8 @@
-import React, { useRef, useEffect, CSSProperties } from 'react';
+import React, { useRef, useEffect, CSSProperties, useMemo } from 'react';
+import * as echarts from 'echarts';
+
 import { CanvasRenderer } from 'echarts/renderers';
-import { init, getInstanceByDom, use } from 'echarts/core';
+import { getInstanceByDom, use } from 'echarts/core';
 import {
   LegendComponent,
   GridComponent,
@@ -55,6 +57,8 @@ export interface IBaseEChartsProps {
   settings?: SetOptionOpts;
   loading?: boolean;
   theme?: 'light' | 'dark';
+  resize?: boolean;
+  legendClickEvent?: (e: object) => object;
 }
 export const BACKGROUND_COLOR = Object.values(ChartColor);
 
@@ -64,14 +68,39 @@ export function BaseEChart({
   loading,
   theme,
   style,
+  resize,
+  legendClickEvent = (e: object) => e,
 }: IBaseEChartsProps): JSX.Element {
   const chartRef = useRef<HTMLDivElement>(null);
+
+  const addEvent = (chart) => {
+    chart.on('legendselectchanged', (e) => {
+      legendClickEvent(e || {});
+    });
+  };
+
+  useMemo(() => {
+    if (chartRef.current !== null) {
+      const chart = getInstanceByDom(chartRef.current);
+
+      setTimeout(() => {
+        chart?.resize({
+          animation: {
+            duration: 300,
+          },
+        });
+      }, 300);
+    }
+  }, [resize]);
 
   useEffect(() => {
     // Initialize chart
     let chart: ECharts | undefined;
+
     if (chartRef.current !== null) {
-      chart = init(chartRef.current, theme);
+      const chart = echarts.init(chartRef.current, theme);
+      addEvent(chart);
+      // chart = init(chartRef.current, theme);
     }
 
     // Add chart resize listener
@@ -80,12 +109,12 @@ export function BaseEChart({
     function resizeChart() {
       chart?.resize();
     }
-    window.addEventListener('resize', resizeChart);
+    window.addEventListener('resizeChart', resizeChart);
 
     // Return cleanup function
     return () => {
       chart?.dispose();
-      window.removeEventListener('resize', resizeChart);
+      window.removeEventListener('resizeChart', resizeChart);
     };
   }, [theme]);
 
@@ -93,7 +122,10 @@ export function BaseEChart({
     // Update chart
     if (chartRef.current !== null) {
       const chart = getInstanceByDom(chartRef.current);
-      chart?.setOption(option, { ...settings, notMerge: true });
+      chart?.dispose();
+      const initChart = echarts.init(chartRef.current, theme);
+      getInstanceByDom(chartRef.current)?.setOption(option);
+      addEvent(initChart);
     }
     /**
      * Whenever theme changes we need to add option
@@ -109,5 +141,6 @@ export function BaseEChart({
       loading === true ? chart?.showLoading() : chart?.hideLoading();
     }
   }, [loading, theme]);
+
   return <div ref={chartRef} style={{ height: '100%', ...style }} />;
 }

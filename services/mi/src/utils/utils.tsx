@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import fileDownload from 'js-file-download';
 import html2canvas, { Options } from 'html2canvas';
 import pathName from '$constants/pathName';
@@ -24,11 +24,12 @@ export function saveImage(
     try {
       changeCssFitCanvas(element);
 
+      element.style.padding = '10px';
       const canvas = await html2canvas(element, options);
       canvas.toBlob((blob: any) => {
         fileDownload(blob, fileName);
       }, 'image/png');
-
+      element.style.padding = '';
       changeCsstoInit(element);
     } catch (e) {
       console.log(e);
@@ -63,9 +64,12 @@ export const downloadFile = (data, fileName): void => {
  * 이미지 변경 전 css 작업
  */
 const changeCssFitCanvas = (element) => {
+  if (!element) return;
   const tableContainer = element.querySelector('#table-container');
   const muiCards = element.getElementsByClassName('MuiCard-root');
   const muiTabs = element.getElementsByClassName('MuiTab-root');
+  element.style.height = element.clientHeight + 50 + 'px';
+  element.style.width = element.clientWidth + 100 + 'px';
 
   for (const tab of muiTabs) {
     tab['style'].display = 'inline-block';
@@ -106,6 +110,7 @@ const changeCssFitCanvas = (element) => {
  * 이미지 작업 후 css 초기화
  */
 const changeCsstoInit = (element) => {
+  if (!element) return;
   const tableContainer = element.querySelector('#table-container');
   const muiCards = element.getElementsByClassName('MuiCard-root');
   const muiTabs = element.getElementsByClassName('MuiTab-root');
@@ -118,7 +123,8 @@ const changeCsstoInit = (element) => {
     card['style'].boxShadow = '';
     card['style'].border = '';
   }
-
+  element.style.height = '';
+  element.style.width = '';
   if (tableContainer) {
     for (const child of tableContainer.children) {
       child.getElementsByTagName('button')[0].style.display = '';
@@ -127,24 +133,5 @@ const changeCsstoInit = (element) => {
     }
     tableContainer['style'].boxShadow = '';
     tableContainer['style'].overflowY = 'auto';
-    element.style.height = '';
   }
 };
-
-export const retryLazy = (componentImport) =>
-  lazy(async () => {
-    const pageAlreadyRefreshed = JSON.parse(
-      window.localStorage.getItem('pageRefreshed') || 'false',
-    );
-    try {
-      const component = await componentImport();
-      window.localStorage.setItem('pageRefreshed', 'false');
-      return component;
-    } catch (error) {
-      if (!pageAlreadyRefreshed) {
-        window.localStorage.setItem('pageRefreshed', 'true');
-        return window.location.reload();
-      }
-      throw error;
-    }
-  });

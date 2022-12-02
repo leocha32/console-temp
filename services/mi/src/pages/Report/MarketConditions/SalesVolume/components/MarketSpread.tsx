@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
 import { IMarketSpread } from 'modules/report/research';
-import { IBarChartProps, BarChart } from 'mi-ui';
+import { IBarChartProps } from 'mi-ui';
+import { BarChart } from '$components/Charts';
 import {
   ChartWrap,
   DiffBox,

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 import { IconButton, Card, CardActionArea, CardActions } from 'mi-ui';

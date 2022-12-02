@@ -1,1 +1,0 @@
-{"version":3,"file":"SingleSelect.d.ts","sourceRoot":"","sources":["../../../src/components/Atoms/SingleSelect.tsx"],"names":[],"mappings":"AACA,OAAe,EAAE,KAAK,IAAI,WAAW,EAA2B,MAAM,cAAc,CAAC;AAErF,MAAM,WAAW,kBAAmB,SAAQ,WAAW;IACrD,KAAK,CAAC,EAAE,MAAM,CAAC;CAChB;AAKD,eAAO,MAAM,YAAY,wBAAmC,kBAAkB,qDAwB7E,CAAC"}

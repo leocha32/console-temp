@@ -1,9 +1,9 @@
 import React from 'react';
 import { IMarketShareByBrand } from 'modules/report/research';
 import _ from 'lodash';
-import { IStackBarChartProps, StackChart } from 'mi-ui';
+import { IStackBarChartProps } from 'mi-ui';
 import { ChartLeft, ChartOrient, ChartTop } from 'mi-ui/src/constants/enum';
-
+import { StackChart } from '$components/Charts';
 import {
   CardTitle,
   Card,

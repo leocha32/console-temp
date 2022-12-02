@@ -6,10 +6,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "noEmit": false,
-    "sourceMap": false,
-    "noEmitOnError": true,
-    "outDir": "dist"
+    "noEmit": true
   },
   "include": ["src"]
 }

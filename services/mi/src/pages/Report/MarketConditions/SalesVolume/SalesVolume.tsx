@@ -46,7 +46,7 @@ const SalesVolume = () => {
   const year = yyyy || selectOption[0]?.value;
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
-  const { data, isLoading } = useSalesVolume(
+  const { data, isFetching } = useSalesVolume(
     {
       year,
       'product-groups': activeTab,
@@ -82,7 +82,7 @@ const SalesVolume = () => {
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
       <Section direction={'row'}>
-        {isLoading ? <Spinner /> : null}
+        {isFetching ? <Spinner /> : null}
         <MarketSpread data={data?.marketSpread || []} year={year} />
         <MarketShareByBrand data={data?.marketShareByBrand || []} />
       </Section>

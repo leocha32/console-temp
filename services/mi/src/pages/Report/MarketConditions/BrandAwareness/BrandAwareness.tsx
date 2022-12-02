@@ -40,7 +40,7 @@ const BrandAwareness = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
   const [year, half] = selectedItem.split('_');
-  const { data, isLoading } = useBrandAwareness(
+  const { data, isFetching } = useBrandAwareness(
     {
       year,
       half: half as HalfYear,
@@ -77,7 +77,7 @@ const BrandAwareness = () => {
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />
       <Section>
-        {isLoading ? <Spinner /> : null}
+        {isFetching ? <Spinner /> : null}
         <CowayBrandAwareness data={data?.cowayBrandAwareness || []} />
         <MajorBrandAwareness data={data?.majorBrandAwareness || []} />
       </Section>

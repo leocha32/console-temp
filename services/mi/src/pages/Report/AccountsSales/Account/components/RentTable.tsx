@@ -2,8 +2,11 @@ import { CardTitle } from '$pages/Report/commonStyled';
 import { Table, TRowProps } from 'mi-ui';
 import { sortBy, cloneDeep } from 'lodash';
 import { IRentalIndicator } from '$modules/report/accountSales';
-import { Card } from '$pages/Report/commonStyled';
-
+import { Card as CommonCard } from '$pages/Report/commonStyled';
+import styled from '@emotion/styled';
+const Card = styled(CommonCard)`
+  min-height: auto;
+`;
 const COLUMN = [
   {
     name: 'label',
@@ -35,18 +38,6 @@ const ROW_DATA = [
     },
   },
   {
-    name: 'pltMonth',
-    data: [
-      {
-        colName: 'label',
-        value: 'PLT 개월수(월)',
-      },
-    ],
-    options: {
-      height: '10px',
-    },
-  },
-  {
     name: 'cancelRate',
     data: [
       {
@@ -58,22 +49,10 @@ const ROW_DATA = [
       textFormat: (value) => value.toLocaleString('ko-KR') + '%',
     },
   },
-  {
-    name: 'arpu',
-    data: [
-      {
-        colName: 'label',
-        value: 'ARPU(원)',
-      },
-    ],
-    options: {
-      textFormat: (value) => '₩ ' + value.toLocaleString('ko-KR'),
-    },
-  },
 ];
 
 const columnDataToRowData = (data, avgData) => {
-  if (!data || !avgData) return [];
+  if (data?.length <= 0 || !avgData) return [];
   const rowKeys = ROW_DATA.map((data) => data.name);
   const sortData = sortBy(data, 'yearMonth').map(({ yearMonth, rentalIndicatorRow }) => {
     return {

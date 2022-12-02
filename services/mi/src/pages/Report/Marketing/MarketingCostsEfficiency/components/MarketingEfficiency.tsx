@@ -8,7 +8,8 @@ import {
   ChartWrap,
   ContentWrap,
 } from '$pages/Report/commonStyled';
-import { IMixedChartProps, MixedChart } from 'mi-ui';
+import { IMixedChartProps } from 'mi-ui';
+import { MixedChart } from '$components/Charts';
 import { DataCardWrap, Cost, DiffWrap, DiffInfo } from '../components/commonStyled';
 import {
   IMarketingEfficiencyByMonth,
@@ -140,31 +141,31 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
               <div>
                 <Cost
                   title={'전체'}
-                  value={`₩ ${Number(
+                  value={`${Number(
                     originData?.marketingEfficiency.percentOfSales,
-                  ).toLocaleString()}`}
+                  ).toLocaleString()}%`}
                 />
                 {originData?.marketingEfficiencyByProductGroups.length ? (
                   <Cost
                     title={'선택한 제품군'}
-                    value={`₩ ${Number(
+                    value={`${Number(
                       originData?.marketingEfficiencyByProductGroups[0]?.percentOfSales,
-                    ).toLocaleString()}`}
+                    ).toLocaleString()} %`}
                   />
                 ) : null}
                 {originData?.marketingEfficiencyByProducts.length ? (
                   <Cost
                     title={'선택한 제품'}
-                    value={`₩ ${Number(
+                    value={`${Number(
                       originData?.marketingEfficiencyByProducts[0]?.percentOfSales,
-                    ).toLocaleString()}`}
+                    ).toLocaleString()} %`}
                   />
                 ) : null}
               </div>
               <DiffWrap>
                 <div>
-                  <DiffInfo title={'전월 比'} value={pltCompare?.mom} unit={'p'} />
-                  <DiffInfo title={'전년 동월 比'} value={pltCompare?.yoy} unit={'p'} />
+                  <DiffInfo title={'전월 比'} value={pltCompare?.mom} unit={'%p'} />
+                  <DiffInfo title={'전년 동월 比'} value={pltCompare?.yoy} unit={'%p'} />
                 </div>
               </DiffWrap>
             </DataCardWrap>

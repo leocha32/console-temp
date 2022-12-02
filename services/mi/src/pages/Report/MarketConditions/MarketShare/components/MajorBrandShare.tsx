@@ -1,9 +1,9 @@
 import React from 'react';
 import { uniqBy } from 'lodash';
 import { IMajorBrandMarketShare } from '$modules/report/research';
-import { IStackBarChartProps, StackChart, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
+import { IStackBarChartProps, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
 import { CardTitle, Card, ContentWrap, Content } from '$pages/Report/commonStyled';
-
+import { StackChart } from '$components/Charts';
 export interface IMajorBrandShareProps {
   data: IMajorBrandMarketShare[];
 }
