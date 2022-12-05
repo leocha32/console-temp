@@ -1,8 +1,18 @@
-import React, { useRef, useEffect, CSSProperties, useMemo } from 'react';
+import React, {
+  Ref,
+  forwardRef,
+  useState,
+  useRef,
+  useEffect,
+  CSSProperties,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+} from 'react';
 import * as echarts from 'echarts';
 
 import { CanvasRenderer } from 'echarts/renderers';
-import { getInstanceByDom, use } from 'echarts/core';
+import { getInstanceByDom, use, EChartsType } from 'echarts/core';
 import {
   LegendComponent,
   GridComponent,
@@ -58,89 +68,86 @@ export interface IBaseEChartsProps {
   loading?: boolean;
   theme?: 'light' | 'dark';
   resize?: boolean;
-  legendClickEvent?: (e: object) => object;
+  legendClickEvent?: (e: object, chart: typeof echarts) => void;
 }
 export const BACKGROUND_COLOR = Object.values(ChartColor);
 
-export function BaseEChart({
-  option,
-  settings,
-  loading,
-  theme,
-  style,
-  resize,
-  legendClickEvent = (e: object) => e,
-}: IBaseEChartsProps): JSX.Element {
-  const chartRef = useRef<HTMLDivElement>(null);
-
-  const addEvent = (chart) => {
-    chart.on('legendselectchanged', (e) => {
-      legendClickEvent(e || {});
-    });
-  };
-
-  useMemo(() => {
-    if (chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current);
-
-      setTimeout(() => {
-        chart?.resize({
-          animation: {
-            duration: 300,
-          },
-        });
-      }, 300);
+const removeUndefined = (obj: object) => {
+  for (const key in obj) {
+    if (obj[key as keyof typeof obj] === undefined) {
+      delete obj[key as keyof typeof obj];
     }
-  }, [resize]);
+  }
+  return obj;
+};
 
-  useEffect(() => {
-    // Initialize chart
-    let chart: ECharts | undefined;
+const BaseEChart = forwardRef(
+  (
+    {
+      option,
+      settings,
+      loading,
+      theme,
+      style,
+      resize,
+      legendClickEvent = (e, chart) => null,
+    }: IBaseEChartsProps,
+    ref: Ref<echarts.ECharts | undefined>,
+  ): JSX.Element => {
+    const chartRef = useRef<HTMLDivElement>(null);
+    const [echartsInstance, setEchartsInstance] = useState<echarts.ECharts>();
 
-    if (chartRef.current !== null) {
-      const chart = echarts.init(chartRef.current, theme);
-      addEvent(chart);
-      // chart = init(chartRef.current, theme);
-    }
-
-    // Add chart resize listener
-    // ResizeObserver is leading to a bit janky UX
-
-    function resizeChart() {
-      chart?.resize();
-    }
-    window.addEventListener('resizeChart', resizeChart);
-
-    // Return cleanup function
-    return () => {
-      chart?.dispose();
-      window.removeEventListener('resizeChart', resizeChart);
+    const addEvent = function (chart) {
+      chart.on('legendselectchanged', (e) => {
+        legendClickEvent(e, chart);
+      });
     };
-  }, [theme]);
 
-  useEffect(() => {
-    // Update chart
-    if (chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current);
-      chart?.dispose();
-      const initChart = echarts.init(chartRef.current, theme);
-      getInstanceByDom(chartRef.current)?.setOption(option);
-      addEvent(initChart);
-    }
-    /**
-     * Whenever theme changes we need to add option
-     * and setting due to it being deleted in cleanup function
-     */
-  }, [option, settings, theme]);
+    useMemo(() => {
+      if (chartRef.current !== null) {
+        const chart = getInstanceByDom(chartRef.current);
 
-  useEffect(() => {
-    // Update chart
-    if (chartRef.current !== null) {
-      const chart = getInstanceByDom(chartRef.current);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      loading === true ? chart?.showLoading() : chart?.hideLoading();
-    }
-  }, [loading, theme]);
+        setTimeout(() => {
+          chart?.resize({
+            animation: {
+              duration: 300,
+            },
+          });
+        }, 300);
+      }
+    }, [resize]);
 
-  return <div ref={chartRef} style={{ height: '100%', ...style }} />;
-}
+    useLayoutEffect(() => {
+      const instance = echarts.init(chartRef.current as HTMLDivElement);
+      setEchartsInstance(instance);
+      addEvent(instance);
+      return () => {
+        instance.dispose();
+      };
+    }, []);
+
+    useEffect(() => {
+      const handleResize = () => {
+        echartsInstance?.resize();
+      };
+      window.addEventListener('resize', handleResize);
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, [echartsInstance]);
+
+    useEffect(() => {
+      echartsInstance?.setOption(option);
+    }, [echartsInstance, option]);
+
+    useImperativeHandle(ref, () => echartsInstance);
+
+    const obj = useMemo(() => {
+      return removeUndefined({ option, style });
+    }, [option, style]);
+
+    return <div ref={chartRef} style={{ height: '100%', width: '100%' }} {...obj} />;
+  },
+);
+BaseEChart.displayName = 'chart';
+export { BaseEChart };
