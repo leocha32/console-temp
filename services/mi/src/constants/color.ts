@@ -54,6 +54,10 @@ export const ActionColor = {
   ACTION_NAVY: '#2300AF',
 } as const;
 
+export const BrandColor = {
+  COWAY_BLUE: '#4ba5dd',
+} as const;
+
 export const PrimaryColor = {
   PRIMARY_900: '#19598f',
   PRIMARY_800: '#2178b1',

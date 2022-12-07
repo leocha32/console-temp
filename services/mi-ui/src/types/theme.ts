@@ -9,6 +9,9 @@ export interface ITheme {
     mono: {
       [key: string]: string;
     };
+    brand: {
+      [key: string]: string;
+    };
   };
   palettes: {
     blue: {

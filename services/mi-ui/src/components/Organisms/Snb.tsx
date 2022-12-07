@@ -60,7 +60,7 @@ const Drawer = styled(MuiDrawer)(
             transition: 'width 225ms cubic-bezier(0.4, 0, 0.6, 1) 0ms',
             overflowX: 'hidden',
             position: 'unset',
-            background: theme?.color.primary.PRIMARY_700,
+            background: theme?.color.brand.COWAY_BLUE,
             color: theme?.color.mono.MONO_WHITE,
             justifyContent: 'space-between',
           },
@@ -76,7 +76,7 @@ const Drawer = styled(MuiDrawer)(
             overflowX: 'hidden',
             width: `${minwidth}px`,
             position: 'unset',
-            background: theme?.color.primary.PRIMARY_700,
+            background: theme?.color.brand.COWAY_BLUE,
             color: theme?.color.mono.MONO_WHITE,
             justifyContent: 'space-between',
           },
@@ -113,7 +113,7 @@ const MenuWrap = styled.div`
     background: #d3d1cb;
   }
   &::-webkit-scrollbar-track {
-    background-color: ${({ theme }) => theme?.color.primary.PRIMARY_700};
+    background-color: ${({ theme }) => theme?.color.brand.COWAY_BLUE};
   }
   &::-webkit-scrollbar {
     width: 5px;

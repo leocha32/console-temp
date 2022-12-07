@@ -13,13 +13,15 @@ const Header = (
       font-size: 24px;
       font-weight: 700;
       display: flex;
+      flex-direction: row;
+      align-items: center;
     `}
   >
     <img
       src={logo}
       css={css`
-        height:100%
-        object-fit: fill;
+        position: sticky;
+        height: 100px;
       `}
     />
     <span

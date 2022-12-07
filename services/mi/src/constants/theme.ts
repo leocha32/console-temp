@@ -1,4 +1,11 @@
-import { BlueColor, GrayColor, MonoColor, PrimaryColor, SecondaryColor } from './color';
+import {
+  BlueColor,
+  GrayColor,
+  MonoColor,
+  PrimaryColor,
+  SecondaryColor,
+  BrandColor,
+} from './color';
 import { ITheme } from 'mi-ui';
 
 export const theme: ITheme = {
@@ -6,6 +13,7 @@ export const theme: ITheme = {
     mono: MonoColor,
     primary: PrimaryColor,
     secondary: SecondaryColor,
+    brand: BrandColor,
   },
   palettes: {
     gray: GrayColor,
