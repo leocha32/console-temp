@@ -5,16 +5,23 @@ import routes from 'App.route';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import menu from 'recoils/menu';
 import { recentMenuSelector } from 'recoils/recentMenu';
-
+import logo from '../../assets/images/logo.png';
 const Header = (
   <div
     id={'layout-header'}
     css={css`
       font-size: 24px;
       font-weight: 700;
+      display: flex;
     `}
   >
-    Coway
+    <img
+      src={logo}
+      css={css`
+        height:100%
+        object-fit: fill;
+      `}
+    />
     <span
       css={css`
         font-size: 20px;

@@ -56,12 +56,13 @@ const legendOption = {
   padding: [10, 0, 10, 0],
 };
 const gridOption = {
-  left: '15%',
-  top: '10%',
+  left: '30',
+  top: '40',
   bottom: '18%',
 };
 const yAxisOption = {
   max: 100,
+  name: '[단위: %]',
 };
 export const MajorBrandAwareness = ({ data }: IMajorBrandAwarenessProps) => {
   const { items: chartData, xAixData } = makeChartData(data);

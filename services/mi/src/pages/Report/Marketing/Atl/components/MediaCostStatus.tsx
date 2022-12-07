@@ -24,7 +24,7 @@ export interface IMediaCostStatusProps {
 const gridOptions = {
   bottom: 20,
   left: 30,
-  top: 40,
+  top: 55,
   right: 30,
 };
 
@@ -122,6 +122,10 @@ const makeChartData = (
   };
 };
 
+const yAxisOptions = {
+  name: '[단위: 억원]',
+};
+
 const MediaCostStatus = ({ data, category }: IMediaCostStatusProps) => {
   const sortMonthlyCostByProductGroup = useSortFamily({
     category,
@@ -137,19 +141,21 @@ const MediaCostStatus = ({ data, category }: IMediaCostStatusProps) => {
       <CardTitle>ATL 매체비 현황</CardTitle>
       <ContentWrap>
         <Content>
-          <ContentTitle>매체별 광고 추이</ContentTitle>
+          <ContentTitle>매체 별 광고비 추이</ContentTitle>
           <BarChart
             data={monthlyCostByMedia.data}
             grid={gridOptions}
             xAixData={monthlyCostByMedia.xAixData}
+            yAxis={yAxisOptions}
           />
         </Content>
         <Content>
-          <ContentTitle>제품군별 광고 추이</ContentTitle>
+          <ContentTitle>제품군 별 광고비 추이</ContentTitle>
           <StackChart
             grid={gridOptions}
             data={monthlyCostByProductGroup.data}
             xAixData={monthlyCostByProductGroup.xAixData}
+            yAxis={yAxisOptions}
           />
         </Content>
         <Content>

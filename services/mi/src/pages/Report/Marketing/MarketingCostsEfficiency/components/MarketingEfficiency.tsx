@@ -20,7 +20,7 @@ export interface IMarketingEfficiencyProps {
   data: IMarketingEfficiencyStatus;
 }
 const gridOption = {
-  left: 70,
+  left: 50,
   right: 40,
   bottom: 20,
 };
@@ -66,16 +66,24 @@ const chartData = [
     type: 'bar' as const,
     key: 'cpp',
     axisLabel: {
-      formatter: '{value}원',
+      formatter: '{value}',
     },
+    nameTextStyle: {
+      align: 'right' as const,
+    },
+    yAisName: '[단위: 원]',
   },
   {
     name: '매출 비중(%)',
     type: 'line' as const,
     key: 'percentOfSales',
     axisLabel: {
-      formatter: '{value}%',
+      formatter: '{value}',
     },
+    nameTextStyle: {
+      align: 'center' as const,
+    },
+    yAisName: '[단위: %]',
   },
 ];
 
@@ -178,9 +186,11 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
           <ChartWrap>
             <MixedChart
               grid={gridOption}
-              yAxis={chartData.map(({ axisLabel }) => ({
+              yAxis={chartData.map(({ axisLabel, yAisName, nameTextStyle }) => ({
                 type: 'value',
+                name: yAisName,
                 axisLabel,
+                nameTextStyle,
               }))}
               legend={{
                 data: chartData.map(({ name }) => name),

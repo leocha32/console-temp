@@ -101,16 +101,26 @@ const makeChartData = (data: IMonthlyAccountStatusRow[], orderStandard) => {
   };
 };
 
+const legendClickEvent = ({ selected }: any, chart) => {
+  const selectedLegend = Object.keys(selected).filter((select) => selected[select]);
+  const { series, xAxis } = chart.getOption();
+  const selectedData = series.filter(({ name }) =>
+    selectedLegend.find((select) => select === name),
+  );
+  const xAxisData = xAxis[0].data;
+  const markPointData = xAxisData.map((x, i) => {
+    const value = selectedData.map(({ data }) => data[i]).reduce((a, b) => a + b, 0);
+    return {
+      coord: [i, value],
+      value: value,
+    };
+  });
+};
+
 const Chart = ({ data }: TAccountChartProps) => {
   const familyOptions = useRecoilValue(familySector({ category: '제품' }));
   const orderStandard = familyOptions.map(({ value }) => value);
   const { chartData, xAixData, yAxis } = makeChartData(data, orderStandard);
-
-  const legendClickEvent = (e, chart) => {
-    const option = chart.getOption();
-    console.log(option);
-    return e;
-  };
 
   return (
     <Card flex={2}>
