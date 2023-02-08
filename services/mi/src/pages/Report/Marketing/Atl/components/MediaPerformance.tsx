@@ -2,15 +2,15 @@ import React from 'react';
 
 import { Card, CardTitle, Content, ContentWrap } from '$pages/Report/commonStyled';
 import {
-  IATLMediaPerformanceStatus,
-  IPerformanceByMedia,
+  TATLMediaPerformanceStatus,
+  TPerformanceByMedia,
 } from '$modules/report/marketing';
 import styled from '@emotion/styled';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 import { Table, TRowData, TRowProps } from 'mi-ui/src';
 
 export interface IMediaPerformanceProps {
-  data: IATLMediaPerformanceStatus;
+  data: TATLMediaPerformanceStatus;
 }
 
 const SubContents = styled.div`
@@ -128,7 +128,7 @@ const makeColumn = (newData, originData, exclude: string[]) => {
   });
 };
 
-const makeRowData = (originData: IPerformanceByMedia[]) => {
+const makeRowData = (originData: TPerformanceByMedia[]) => {
   const mediaObj = {};
   const total = {};
   const sumRow = (name, data) => ({

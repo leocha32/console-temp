@@ -1,5 +1,5 @@
 import React from 'react';
-import { ICowayBrandAwareness } from '$modules/report/research';
+import { TCowayBrandAwareness } from '$modules/report/research';
 
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
@@ -14,7 +14,7 @@ import {
 } from '$pages/Report/commonStyled';
 
 export interface ICowayBrandAwarenessProps {
-  data: ICowayBrandAwareness[];
+  data: TCowayBrandAwareness[];
 }
 
 export const DataWrap = styled.div`

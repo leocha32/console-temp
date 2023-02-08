@@ -119,6 +119,11 @@ const BaseEChart = forwardRef(
 
     useLayoutEffect(() => {
       const instance = echarts.init(chartRef.current as HTMLDivElement);
+      instance.setOption({
+        textStyle: {
+          fontFamily: 'Noto Sans KR',
+        },
+      });
       setEchartsInstance(instance);
       addEvent(instance);
       return () => {
@@ -137,7 +142,15 @@ const BaseEChart = forwardRef(
     }, [echartsInstance]);
 
     useEffect(() => {
-      echartsInstance?.setOption(option);
+      echartsInstance?.setOption(
+        {
+          ...option,
+          textStyle: {
+            fontFamily: 'Noto Sans KR',
+          },
+        },
+        { notMerge: true },
+      );
     }, [echartsInstance, option]);
 
     useImperativeHandle(ref, () => echartsInstance);

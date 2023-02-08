@@ -1,10 +1,10 @@
 import React from 'react';
-import { ICompetitorComparison } from '$modules/report/research';
+import { TCompetitorComparison } from '$modules/report/research';
 
 import { Table, TRowProps, TColumnProps } from 'mi-ui';
 
 export interface IMarketShareContrastProps {
-  data: ICompetitorComparison[];
+  data: TCompetitorComparison[];
 }
 const labelData: TRowProps[] = [
   {

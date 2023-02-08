@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { ICompetitorComparison, ICowayMarketShare } from '$modules/report/research';
+import { TCompetitorComparison, TCowayMarketShare } from '$modules/report/research';
 import { CardTitle, Card, Content, ContentWrap } from '$pages/Report/commonStyled';
 import { MarketShareContrast } from './MarketShareContrast';
 import { css } from '@emotion/react';
 
 export interface ICowayBrandAwarenessProps {
-  cowayMarketShare: ICowayMarketShare[];
-  competitorComparison: ICompetitorComparison[];
+  cowayMarketShare: TCowayMarketShare[];
+  competitorComparison: TCompetitorComparison[];
 }
 
 const dataValueStyle = (theme) => ({

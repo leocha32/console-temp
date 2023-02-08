@@ -1,23 +1,27 @@
-import React, { useCallback, useState } from 'react';
-import { Alert, IAlertProps } from 'mi-ui';
+import React, { useCallback, useState, ReactNode } from 'react';
+import { Dialog, IDialogProps } from 'mi-ui';
 
-export interface IUseAlertProps extends Omit<IAlertProps, 'text' | 'onClose' | 'open'> {
-  onClose?: () => void;
+export interface IUseAlertProps extends Omit<IDialogProps, 'text' | 'open'> {
+  onOk?: () => void;
   open?: boolean;
 }
 
 export default function useAlert({
   open: defaultOpen = false,
+  onOk,
   onClose,
   title,
+  children: propsChildren,
   ...props
 }: IUseAlertProps) {
   const [isOpened, setBeOpened] = useState<boolean>(defaultOpen);
-  const [alertText, setAlertText] = useState('');
+  const [children, setChildren] = useState<ReactNode>(propsChildren);
 
   const open = useCallback(
-    (text: string) => {
-      setAlertText(text);
+    (children?: ReactNode) => {
+      if (children) {
+        setChildren(children);
+      }
       setBeOpened(true);
     },
     [setBeOpened],
@@ -28,8 +32,15 @@ export default function useAlert({
     setBeOpened(false);
   }, [onClose, setBeOpened]);
 
+  const handleOk = useCallback(() => {
+    if (onOk) onOk();
+    setBeOpened(false);
+  }, [onOk]);
+
   const rendered = (
-    <Alert title={title} text={alertText} open={isOpened} onClose={close} {...props} />
+    <Dialog title={title} open={isOpened} onClose={close} onOk={handleOk} {...props}>
+      {children}
+    </Dialog>
   );
 
   return { rendered, open, close };

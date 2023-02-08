@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   TableRow as MuiTableRow,
   TableHead as MuiTableHead,
@@ -11,6 +10,7 @@ import styled from '@emotion/styled';
 
 export interface ITableHeaderProps extends MuiTableHeadProps {
   headers: IColumn[];
+  textAlign?: string;
 }
 
 export interface IColumn<TData = any> extends TableCellProps {
@@ -20,6 +20,7 @@ export interface IColumn<TData = any> extends TableCellProps {
   colSpan?: number;
   colSpanOffset?: number;
   rowSpan?: number;
+  icon?: React.ReactElement;
 }
 
 const Header = styled(MuiTableHead)`
@@ -27,10 +28,11 @@ const Header = styled(MuiTableHead)`
   position: sticky;
   top: 0;
 `;
-const Cell = styled(MuiTableCell)`
-  line-height: normal;
-  padding: 0;
-  text-align: center;
+const IconArea = styled.div`
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  cursor: default;
 `;
 const getDepth = (columns: IColumn[] | undefined) => {
   if (columns == null) {
@@ -52,6 +54,8 @@ const getColSpan = (column: IColumn) => {
 
   let width = 0;
   column.columns.forEach((child) => {
+    const isDisplay = child?.sx || {};
+    if (isDisplay['display'] === 'none') return;
     width += getColSpan(child);
   });
 
@@ -76,7 +80,15 @@ const getHeaders = (columns: IColumn[]) => {
         if (colSpan > 1) {
           columnDef.colSpan = colSpan;
         }
-        addItems(column.columns, depth + 1);
+        addItems(
+          column.columns.map((col) => {
+            return {
+              ...col,
+              sx: { ...column.sx, ...col.sx },
+            };
+          }),
+          depth + 1,
+        );
       } else {
         const rowSpan = maxDepth - depth;
         if (rowSpan > 1) {
@@ -98,16 +110,26 @@ export const TableHeader = ({ headers, ...props }: ITableHeaderProps) => {
       {getHeaders(headers).map((headerRow, headerRowIndex) => (
         <MuiTableRow className={'MuiTableRow-head'} key={`header-row-${headerRowIndex}`}>
           {headerRow &&
-            headerRow.map(({ name, colSpan = 1, rowSpan = 1, colSpanOffset = 0, sx }) => {
+            headerRow.map((row, idx) => {
+              const { name, colSpan = 1, rowSpan = 1, colSpanOffset = 0, sx, icon } = row;
+
               return (
-                <Cell
-                  sx={sx}
-                  key={`header-cell-${name}`}
+                <MuiTableCell
+                  sx={{ textAlign: 'center', ...sx }}
+                  key={`header-cell-${name}-${idx}`}
                   colSpan={colSpan + colSpanOffset}
                   rowSpan={rowSpan}
+                  onClick={row.onClick}
                 >
-                  {name}
-                </Cell>
+                  {icon ? (
+                    <IconArea>
+                      {name}
+                      {icon}
+                    </IconArea>
+                  ) : (
+                    name
+                  )}
+                </MuiTableCell>
               );
             })}
         </MuiTableRow>

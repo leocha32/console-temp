@@ -23,15 +23,27 @@ export const SecondaryColor = {
 } as const;
 
 export const RedColor = {
-  RED_900: '#FF0000',
-  RED_800: '#DD2121',
-  RED_700: '#D02E2E',
-  RED_600: '#BC3C3C',
-  RED_500: '#AD4747',
-  RED_400: '#FF7272',
-  RED_300: '#FFA2A2',
-  RED_200: '#FFB9B9',
-  RED_100: '#FFD9D9',
+  RED_900: '#b71c1c',
+  RED_800: '#c62828',
+  RED_700: '#d32f2f',
+  RED_600: '#e53935',
+  RED_500: '#f44336',
+  RED_400: '#ef5350',
+  RED_300: '#e57373',
+  RED_200: '#ef9a9a',
+  RED_100: '#ffcdd2',
+} as const;
+
+export const OrangeColor = {
+  ORANGE_900: '#e65100',
+  ORANGE_800: '#ef6c00',
+  ORANGE_700: '#f57c00',
+  ORANGE_600: '#fb8c00',
+  ORANGE_500: '#ff9800',
+  ORANGE_400: '#ffa726',
+  ORANGE_300: '#ffb74d',
+  ORANGE_200: '#ffcc80',
+  ORANGE_100: '#ffe0b2',
 } as const;
 
 export const BlueColor = {
@@ -46,6 +58,30 @@ export const BlueColor = {
   BLUE_100: '#F6F6FF',
 } as const;
 
+export const YellowColor = {
+  YELLOW_900: '#f57f17',
+  YELLOW_800: '#f9a825',
+  YELLOW_700: '#fbc02d',
+  YELLOW_600: '#fdd835',
+  YELLOW_500: '#ffeb3b',
+  YELLOW_400: '#ffee58',
+  YELLOW_300: '#fff176',
+  YELLOW_200: '#fff59d',
+  YELLOW_100: '#fff9c4',
+} as const;
+
+export const GreenColor = {
+  GREEN_900: '#1b5e20',
+  GREEN_800: '#2e7d32',
+  GREEN_700: '#388e3c',
+  GREEN_600: '#43a047',
+  GREEN_500: '#4caf50',
+  GREEN_400: '#66bb6a',
+  GREEN_300: '#81c784',
+  GREEN_200: '#a5d6a7',
+  GREEN_100: '#c8e6c9',
+} as const;
+
 export const ActionColor = {
   ACTION_GREEN: '#00D200',
   ACTION_BLUE: '#0F6FFF',
@@ -55,7 +91,8 @@ export const ActionColor = {
 } as const;
 
 export const BrandColor = {
-  COWAY_BLUE: '#4ba5dd',
+  COWAY_BLUE: '#00a8e3',
+  NETMARBLE_YELLOW: '#ffd800',
 } as const;
 
 export const PrimaryColor = {
@@ -106,3 +143,10 @@ export const ChartColor = {
   CHART_210: '#50E0FF',
   CHART_220: '#614092',
 } as const;
+export const VariantColor = {
+  DEFAULT: PrimaryColor.PRIMARY_700,
+  ERROR: RedColor.RED_700,
+  SUCCESS: GreenColor.GREEN_700,
+  WARNING: OrangeColor.ORANGE_700,
+  INFO: BlueColor.BLUE_700,
+};

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import { PageLayout, Spinner } from 'mi-ui';
@@ -39,12 +39,16 @@ const Footer = styled.div`
 const TITLE = '시판 판매량';
 const SalesVolume = () => {
   const [filter, setFilter] = useRecoilState(researchSalesVolume);
+  const [refState, setRefState] = useState<HTMLDivElement | null>(null);
   const selectOption = useRecoilValue(
     selectableItemsSelector(ReportIndex.reportSalesVolume),
   );
   const { yyyy } = filter;
   const year = yyyy || selectOption[0]?.value;
   const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setRefState(contentRef.current);
+  }, []);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
   const { data, isFetching } = useSalesVolume(
     {
@@ -77,7 +81,7 @@ const SalesVolume = () => {
         selectYear={String(year)}
         selectOptions={selectOption}
         onChangeSelect={handleSelectChange}
-        element={contentRef.current as HTMLElement}
+        element={refState as HTMLElement}
         title={TITLE}
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />

@@ -7,19 +7,15 @@ import { HeaderCard, Section } from '$pages/Report/commonStyled';
 import MediaCostStatus from './components/MediaCostStatus';
 import MediaPerformance from './components/MediaPerformance';
 import CompetitorExecutionStatus from './components/CompetitorExecutionStatus';
-import {
-  familySector,
-  productAndFunctionalGroupSelector,
-  categorySector,
-} from '$recoils/categories';
+import { familySector, productSelector, categorySector } from '$recoils/categories';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import {
   useAtl,
   useAtlDownloadExcel,
   IAtlParams,
-  IATLMediaCostByCompanyStatus,
-  IATLMediaCostStatus,
-  IATLMediaPerformanceStatus,
+  TATLMediaCostByCompanyStatus,
+  TATLMediaCostStatus,
+  TATLMediaPerformanceStatus,
 } from '$modules/report/marketing';
 import { marketingAtl } from '$recoils/filter/atom';
 import SelectedItem from '$components/SelectedItem';
@@ -44,8 +40,8 @@ const Atl = () => {
   const familyOptions = useRecoilValue(
     familySector({ category: selectedOption?.category1 }),
   );
-  const { product: productOptions } = useRecoilValue(
-    productAndFunctionalGroupSelector({
+  const productOptions = useRecoilValue(
+    productSelector({
       category: selectedOption?.category1,
       family: selectedOption?.category2 || setAllOption(familyOptions),
     }),
@@ -172,15 +168,16 @@ const Atl = () => {
       </HeaderCard>
       <Section>
         {isFetching ? <Spinner /> : null}
+        <CompetitorExecutionStatus
+          data={data?.atlMediaCostByCompanyStatus as TATLMediaCostByCompanyStatus}
+          shareByCompanies={data?.atlMediaCostStatus?.shareByCompanies || []}
+        />
         <MediaCostStatus
-          data={data?.atlMediaCostStatus as IATLMediaCostStatus}
+          data={data?.atlMediaCostStatus as TATLMediaCostStatus}
           category={category1}
         />
         <MediaPerformance
-          data={data?.atlMediaPerformanceStatus as IATLMediaPerformanceStatus}
-        />
-        <CompetitorExecutionStatus
-          data={data?.atlMediaCostByCompanyStatus as IATLMediaCostByCompanyStatus}
+          data={data?.atlMediaPerformanceStatus as TATLMediaPerformanceStatus}
         />
       </Section>
     </PageLayout>

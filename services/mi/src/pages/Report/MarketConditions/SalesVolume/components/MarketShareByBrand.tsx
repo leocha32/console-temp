@@ -1,7 +1,7 @@
 import React from 'react';
-import { IMarketShareByBrand } from 'modules/report/research';
+import { TMarketShareByBrand } from 'modules/report/research';
 import _ from 'lodash';
-import { IStackBarChartProps } from 'mi-ui';
+import { IStackChartProps } from 'mi-ui';
 import { ChartLeft, ChartOrient, ChartTop } from 'mi-ui/src/constants/enum';
 import { StackChart } from '$components/Charts';
 import {
@@ -12,15 +12,15 @@ import {
   ContentTitle,
 } from '$pages/Report/commonStyled';
 export interface IMarketShareByBrandProps {
-  data: IMarketShareByBrand[];
+  data: TMarketShareByBrand[];
 }
 
 const makeChartData = (
-  data: IMarketShareByBrand[],
+  data: TMarketShareByBrand[],
 ): {
   xAixData: string[];
-  volumeData: IStackBarChartProps['data'];
-  valueData: IStackBarChartProps['data'];
+  volumeData: IStackChartProps['data'];
+  valueData: IStackChartProps['data'];
 } => {
   const volumeData = {};
   const valueData = {};
@@ -62,6 +62,7 @@ const legendOption = {
 const gridOption = {
   top: '10%',
   bottom: '20%',
+  right: '10',
 };
 const yAxisOption = {
   name: '[단위: %]',

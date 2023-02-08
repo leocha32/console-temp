@@ -3,7 +3,7 @@ import { DiffBox } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 
 export const DataCardWrap = styled.div`
-  padding: 20px 20px 10px 0px;
+  padding: 20px 0px 10px;
   line-height: 25px;
   display: flex;
   flex-direction: column;
@@ -81,7 +81,7 @@ export const DiffInfo = ({
     <DiffTitle>{title}</DiffTitle>
     {value ? (
       <DiffValue>
-        {`${Math.abs(value)}${unit}`}
+        {`${Math.abs(value)?.toFixed(1)}${unit}`}
         {value ? <DiffBox value={value}>▼</DiffBox> : '◆'}
       </DiffValue>
     ) : (

@@ -26,7 +26,7 @@ interface IDataProps {
   stack: string;
   name?: string;
 }
-export interface IStackBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
+export interface IStackChartProps extends Omit<IBaseEChartsProps, 'option'> {
   data: IDataProps[];
   xAixData: string[];
   useAccumulate?: boolean;
@@ -40,12 +40,22 @@ export interface IStackBarChartProps extends Omit<IBaseEChartsProps, 'option'> {
   seriesOption?: BarSeriesOption;
   grid?: GridOption;
   yAxis?: YAXisOption;
+  textFormat?: (value: number) => number | string;
 }
 
-const getTotalData = (items: IDataProps[]) => {
-  return items.reduce<number[]>((pre, { data }) => {
-    return data.map((v, dataIndex) => v + (pre[dataIndex] ?? 0));
-  }, []);
+const getTotalData = (
+  items: IDataProps[],
+  textFormat?: IStackChartProps['textFormat'],
+) => {
+  return items.reduce<unknown[]>(
+    (pre, { data }) =>
+      data.map((v, dataIndex) => {
+        const value = Number(v);
+        const total = (Number.isNaN(value) ? 0 : value) + Number(pre[dataIndex] ?? 0);
+        return textFormat ? textFormat(total) : total;
+      }),
+    [],
+  );
 };
 
 export const StackChart = ({
@@ -62,8 +72,9 @@ export const StackChart = ({
   xAixData,
   seriesOption,
   yAxis,
+  textFormat,
   ...props
-}: IStackBarChartProps) => {
+}: IStackChartProps) => {
   const option = useMemo(() => {
     const series: any = data.map((d, index) => ({
       ...d,
@@ -80,7 +91,7 @@ export const StackChart = ({
       ...seriesOption,
     }));
     if (useAccumulate) {
-      const total = getTotalData(data);
+      const total = getTotalData(data, textFormat);
       series.push({
         data: total,
         barGap: '-100%',
@@ -141,6 +152,7 @@ export const StackChart = ({
     xAixData,
     yAxis,
     useAccumulate,
+    textFormat,
   ]);
   return data.length ? <BaseEChart {...props} option={option} /> : <EmptyContent />;
 };

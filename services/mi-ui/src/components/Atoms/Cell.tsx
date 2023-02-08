@@ -20,12 +20,17 @@ export interface ICellOptions extends MuiTableCellProps {
   colorFormat?: (value: string | number) => string;
   height?: number | string;
   fontSize?: number;
+  fontWeight?: string | number;
 }
-const TableCell = styled(MuiTableCell)`
-  line-height: normal;
-  padding: 10px 15px;
-  height: 20px;
-`;
+const TableCell = styled(MuiTableCell)(
+  {},
+  ({ fontWeight }: { fontWeight?: string | number }) => ({
+    lineHeight: 'nomal',
+    padding: '10px 15px',
+    height: '20px',
+    fontWeight: fontWeight,
+  }),
+);
 
 const defaultCellOption: ICellOptions = {
   rowSpan: 1,
@@ -34,10 +39,11 @@ const defaultCellOption: ICellOptions = {
   colorFormat: (value) => String(value),
   height: 'inherit',
   fontSize: 15,
+  fontWeight: 400,
 };
 
 export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps) => {
-  const { sx, textFormat, colorFormat } = {
+  const { sx, textFormat, colorFormat, fontWeight } = {
     ...defaultCellOption,
     ...options,
   };
@@ -47,6 +53,7 @@ export const Cell = ({ value, rowSpan, colSpan, options, ...props }: ICellProps)
   } as MuiTableCellProps;
   return (
     <TableCell
+      fontWeight={fontWeight}
       colSpan={colSpan}
       rowSpan={rowSpan ? rowSpan : 1}
       sx={{

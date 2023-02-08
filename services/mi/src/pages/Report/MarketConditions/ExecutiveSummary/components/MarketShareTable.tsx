@@ -1,11 +1,11 @@
 import React, { useMemo, useCallback } from 'react';
 import { Table, TRowProps, Button } from 'mi-ui';
 import { ROW_OPTIONS, VALUE_ORDER, COLUMN } from './MarketShareTableConfigs';
-import { IExecutiveMarketShare } from '$modules/report/research';
+import { TMarketShareSummary } from '$modules/report/research';
 import { Card, CardTitle } from '$pages/Report/commonStyled';
 import { Header } from './commonStyled';
 export interface IMarketShareTableProps {
-  data?: IExecutiveMarketShare;
+  data?: TMarketShareSummary;
 }
 
 const PRODUCT_ORDER = COLUMN.filter((col) => col.name !== 'rowHeader');
@@ -56,7 +56,7 @@ const getProductPenetration = ({ productPenetration, productName }) => {
  * API 데이터를 Column 기준에서 Row 기준으로 변경
  * @param data
  */
-const makeRowData = (data: IExecutiveMarketShare) => {
+const makeRowData = (data: TMarketShareSummary) => {
   const { productPenetration, cowayMarketShare, marketShareRank } = data;
   if (!productPenetration.length || !cowayMarketShare.length || !marketShareRank.length)
     return [];
@@ -107,7 +107,7 @@ const makeRowData = (data: IExecutiveMarketShare) => {
 
 const MarketShareTable = ({ data }: IMarketShareTableProps) => {
   const rowData = useMemo(() => {
-    return makeRowData(data || ({} as IExecutiveMarketShare));
+    return makeRowData(data || ({} as TMarketShareSummary));
   }, [data]);
 
   const downloadReport = useCallback(() => {

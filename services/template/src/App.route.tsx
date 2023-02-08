@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 //
-import { TMenu } from 'mi-ui';
+import { IRoutes } from 'mi-ui';
 import Layout from 'components/Layout';
 const Sample = lazy(() => import('pages/Sample'));
 
@@ -8,7 +8,7 @@ import AssessmentIcon from '@mui/icons-material/Assessment';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import BackupIcon from '@mui/icons-material/Backup';
 
-export const routes: TMenu[] = [
+export const routes: IRoutes[] = [
   {
     path: '/',
     element: <Layout />,

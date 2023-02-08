@@ -1,9 +1,9 @@
 import { atom } from 'recoil';
-import { IResearchSelectableItem } from '$modules/report/research';
+import { TResearchSelectableItem } from '$modules/report/research';
 
 const selectableItems = atom({
   key: 'research-selectable-items',
-  default: [] as IResearchSelectableItem[],
+  default: [] as TResearchSelectableItem[],
 });
 
 export default selectableItems;

@@ -3,12 +3,12 @@ import { AxiosError } from 'axios';
 import { IApiError } from '$types/api-error';
 import { getCategories } from '../api';
 import { CATEGORIES_KEY } from '../key';
-import { ICategorySummary } from '$modules/management/categories/type';
+import { TCategorySummary } from '$modules/management/categories/type';
 
 export const useCategories = (
-  options?: UseQueryOptions<ICategorySummary[], AxiosError<IApiError>>,
+  options?: UseQueryOptions<TCategorySummary[], AxiosError<IApiError>>,
 ) => {
-  return useQuery<ICategorySummary[], AxiosError<IApiError>>(
+  return useQuery<TCategorySummary[], AxiosError<IApiError>>(
     [CATEGORIES_KEY],
     () => getCategories(),
     options,

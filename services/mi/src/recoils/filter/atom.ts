@@ -58,3 +58,15 @@ export const marketingCostEfficiency = atom({
   default: marketingDefaultValue.costEfficiency,
   effects: [persistAtom],
 });
+
+export const marketingKeywordAnalysis = atom({
+  key: 'marketing-keyword-analysis-filter',
+  default: marketingDefaultValue.keywordAnalysis,
+  effects: [persistAtom],
+});
+
+export const marketingDigital = atom({
+  key: 'marketing-digital-filter',
+  default: marketingDefaultValue.digital,
+  effects: [persistAtom],
+});

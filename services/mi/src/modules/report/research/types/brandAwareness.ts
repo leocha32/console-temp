@@ -1,5 +1,9 @@
-import { IResearchReportFileUrl } from '$types/common';
 import { HalfYear } from '$constants/enum';
+import {
+  BrandAwareness,
+  CowayBrandAwareness,
+  MajorBrandAwareness,
+} from '$modules/mi-console-report-api';
 
 export interface IBrandAwarenessParams {
   year: string;
@@ -7,103 +11,6 @@ export interface IBrandAwarenessParams {
   'product-groups'?: string;
 }
 
-export interface IResearchBrandAwarenessResponseDto {
-  /**
-   * 브랜드 인지도
-   */
-  brandAwareness: IBrandAwareness;
-}
-
-export interface IBrandAwareness {
-  description: string;
-  /**
-   * 코웨이 브랜드 인지도
-   */
-  cowayBrandAwareness: ICowayBrandAwareness[];
-  /**
-   * 주요 브랜드 인지도
-   */
-  majorBrandAwareness: IMajorBrandAwareness[];
-  /**
-   * 리포트 파일
-   */
-  researchReportFileUrl: IResearchReportFileUrl;
-}
-
-export interface ICowayBrandAwareness {
-  /**
-   * 제품군
-   */
-  productGroup: string;
-  /**
-   * 최초 상기도
-   */
-  topOfMind: number;
-  /**
-   * 직전 반기 최초 상기도
-   */
-  topOfMindHoh: number;
-  /**
-   * 직전 반기 최초 상기도 차이
-   */
-  topOfMindHohDiff: number;
-  /**
-   * 최초 상기도 순위
-   */
-  topOfMindRank: number;
-  /**
-   * 비보조 인지도
-   */
-  unaidedAwareness: number;
-  /**
-   * 직전 반기 비보조 인지도
-   */
-  unaidedAwarenessHoh: number;
-  /**
-   * 직전 반기 비보조 인지도 차이
-   */
-  unaidedAwarenessHohDiff: number;
-  /**
-   * 보조 인지도
-   */
-  aidedAwareness: number;
-  /**
-   * 직전 반기 보조 인지도
-   */
-  aidedAwarenessHoh: number;
-  /**
-   * 직전 반기 보조 인지도 차이
-   */
-  aidedAwarenessHohDiff: number;
-}
-
-export interface IMajorBrandAwareness {
-  /**
-   * 제품군
-   */
-  productGroup: string;
-  /**
-   * 년도
-   */
-  year: string;
-  /**
-   * 반기
-   */
-  half: string;
-  /**
-   * 브랜드
-   */
-  brand: string;
-  /**
-   * 최초 상기도
-   */
-  topOfMind: number;
-  /**
-   * 비보조 인지도
-   */
-  unaidedAwareness: number;
-  /**
-   * 보조 인지도
-   */
-  aidedAwareness: number;
-}
+export type TBrandAwareness = BrandAwareness;
+export type TCowayBrandAwareness = CowayBrandAwareness;
+export type TMajorBrandAwareness = MajorBrandAwareness;

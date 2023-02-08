@@ -7,6 +7,7 @@ const path = require('path');
 const { getLoader, loaderByName } = require('@craco/craco');
 const absolutePath = path.join(__dirname, '../mi-ui');
 const posixPath = require('path/posix');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   devServer: (devServerConfig, { env, paths }) => {
@@ -26,7 +27,27 @@ module.exports = {
       allowedHosts: 'all',
       proxy: {
         '/v2/*': {
-          target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
+          target: env === 'development' ? process.env.DEV_API : process.env.PROD_API,
+          // target: 'https://mi-console-api-v2-dev-dkptan5aba-du.a.run.app',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/auth/*': {
+          target: 'https://tools.coway.do',
+          headers: {
+            'Origin-System': 'cw-mi-console',
+            'Origin-Token': 'x/WqEGFHcCkKP6n+G8W8HQ==',
+          },
+          pathRewrite: { '^/auth': '' },
+          changeOrigin: true,
+          secure: false,
+        },
+        '/profile/*': {
+          target: 'https://profile.coway.do',
+          headers: {
+            Accept: 'text/html,application/xhtml+xml,application/xml',
+          },
+          pathRewrite: { '^/profile': '' },
           changeOrigin: true,
           secure: false,
         },
@@ -36,6 +57,7 @@ module.exports = {
     return devServerConfig;
   },
   webpack: {
+    entry: './src/app.tsx',
     module: 'development',
     alias: {
       $components: posixPath.resolve(__dirname, 'src/components'),
@@ -46,7 +68,21 @@ module.exports = {
       $types: posixPath.resolve(__dirname, 'src/types'),
       $utils: posixPath.resolve(__dirname, 'src/utils'),
     },
-    plugins: [],
+    plugins: [
+      new CircularDependencyPlugin({
+        // exclude detection of files based on a RegExp
+        exclude: /a\.tsx|node_modules/,
+        // include specific files based on a RegExp
+        include: /src/,
+        // add errors to webpack instead of warnings
+        failOnError: true,
+        // allow import cycles that include an asyncronous import,
+        // e.g. via import(/* webpackMode: "weak" */ './file.js')
+        allowAsyncCycles: false,
+        // set the current working directory for displaying module paths
+        cwd: process.cwd(),
+      }),
+    ],
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(webpackConfig, loaderByName('babel-loader'));
       if (isFound) {
@@ -59,13 +95,6 @@ module.exports = {
     },
   },
   babel: {
-    presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
-    loaderOptions: (babelLoaderOptions, { env, paths }) => {
-      return {
-        presets: ['@babel/preset-env', ['@babel/preset-react', { runtime: 'automatic' }]],
-        ...babelLoaderOptions,
-      };
-    },
     plugins: [...emotionBabelPreset.plugins],
   },
 };

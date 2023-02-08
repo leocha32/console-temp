@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { Button, Table } from 'mi-ui/src';
-import { ISalesVolumeSummary } from '$modules/report/research';
+import { TSalesVolumeSummary } from '$modules/report/research';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './SalesVolumeTableConfigs';
 
 import { Card, CardTitle } from '$pages/Report/commonStyled';
 import { Header } from './commonStyled';
 
 export type TSalesVolumeTableProps = {
-  data?: ISalesVolumeSummary;
+  data?: TSalesVolumeSummary;
 };
 
 const columnDataToRowData = (data, orderStandard) => {
@@ -55,7 +55,7 @@ const brandShareRankToRowData = (data, orderStandard) => {
   return brandShareRanks;
 };
 
-const makeRowData = (data: ISalesVolumeSummary) => {
+const makeRowData = (data: TSalesVolumeSummary) => {
   const { cowaySales, brandShareRank } = data;
   if (!cowaySales.length || !brandShareRank.length) return [];
   const summaryData = [
@@ -72,7 +72,7 @@ const makeRowData = (data: ISalesVolumeSummary) => {
 };
 
 const SalesVolumeTable = ({ data }: TSalesVolumeTableProps) => {
-  const rowData = makeRowData(data || ({} as ISalesVolumeSummary));
+  const rowData = makeRowData(data || ({} as TSalesVolumeSummary));
 
   const downloadReport = useCallback(() => {
     window.open(data?.researchReportFileUrl?.fileUrl, '_blank');

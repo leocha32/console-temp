@@ -1,7 +1,7 @@
 import { CardTitle } from '$pages/Report/commonStyled';
 import { Table, TRowProps } from 'mi-ui';
 import { sortBy, cloneDeep } from 'lodash';
-import { IRentalIndicator } from '$modules/report/accountSales';
+import { TRentalIndicator } from '$modules/report/accountSales';
 import { Card as CommonCard } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 const Card = styled(CommonCard)`
@@ -46,7 +46,8 @@ const ROW_DATA = [
       },
     ],
     options: {
-      textFormat: (value) => value.toLocaleString('ko-KR') + '%',
+      textFormat: (value) =>
+        typeof value === 'number' ? `${value?.toFixed(2)}%` : value,
     },
   },
 ];
@@ -83,7 +84,7 @@ const columnDataToRowData = (data, avgData) => {
 };
 
 type TRendTableProps = {
-  data: IRentalIndicator | undefined;
+  data?: TRentalIndicator;
 };
 
 export const RentTable = ({ data }: TRendTableProps) => {

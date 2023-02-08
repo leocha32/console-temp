@@ -16,6 +16,7 @@ const ChartWrap = styled.div`
   border: 1px solid #dbdbdb;
   border-radius: 4px;
   padding: 10px;
+  min-width: 700px;
 `;
 export const FunnelStackChart: ComponentStory<typeof CFunnelStackChart> = (
   props: IFunnelStackChartProps,
@@ -32,13 +33,14 @@ FunnelStackChart.args = {
     {
       name: 'organic',
       stack: 'UV',
-      data: [60, 30, 10, 10, 2],
+      data: [60, 30, 10],
     },
     {
       name: 'paid',
       stack: 'UV',
-      data: [20, 16, 30, 10, 1],
+      data: [20, 16, 30],
     },
   ],
+  diffData: [30, 10],
   xAixData: ['UV', '주문신청', '주문완료'],
 };

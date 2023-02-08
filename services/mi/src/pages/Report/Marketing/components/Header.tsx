@@ -1,9 +1,10 @@
 import React from 'react';
 import { Header as CHeader } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
-import { Button, DatePicker, ISelectProps, Select, IDatePickerProps } from 'mi-ui';
+import { DatePicker, ISelectProps, Select, IDatePickerProps } from 'mi-ui';
 import dayjs from 'dayjs';
 import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
+import { SearchButton } from '$components/Button';
 
 const FilterWrap = styled.div`
   display: flex;
@@ -50,12 +51,7 @@ const Header = <T extends object>({
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
-        <Button
-          showLoading={isFetching}
-          label={'조회'}
-          onClick={onClickSearch}
-          variant="contained"
-        />
+        <SearchButton isLoading={isFetching} onClick={onClickSearch} />
       </FilterWrap>
       <DownloadButton label={'상세 데이터 다운로드'} {...downloadButtonProps} />
     </CHeader>

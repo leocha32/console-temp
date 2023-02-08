@@ -1,11 +1,10 @@
 import React, { PropsWithChildren } from 'react';
 import styled from '@emotion/styled';
-import dayjs from 'dayjs';
-import 'dayjs/locale/ko';
+import { UserInfo, IUserInfoProps } from './UserInfo';
 export interface IHeaderProps extends PropsWithChildren {
   height?: number;
   onClick?: () => void;
-  useClock?: boolean;
+  userInfo?: IUserInfoProps;
 }
 
 const HeaderWrap = styled.div`
@@ -25,18 +24,11 @@ const TitleWrap = styled.div`
   cursor: pointer;
 `;
 
-const ClockWrap = styled.span`
-  color: ${({ theme }) => theme.palettes.gray.GRAY_900};
-  font-weight: 500;
-  font-size: 14px;
-`;
-dayjs.locale('ko');
-const date = dayjs().format('YYYY. MM. DD(dd)');
-export const Header = ({ children, height = 40, useClock = true, onClick }: IHeaderProps) => {
+export const Header = ({ children, height = 40, onClick, userInfo }: IHeaderProps) => {
   return (
     <HeaderWrap height={height}>
       <TitleWrap onClick={onClick}> {children}</TitleWrap>
-      {useClock && <ClockWrap>{date}</ClockWrap>}
+      <UserInfo {...userInfo} />
     </HeaderWrap>
   );
 };

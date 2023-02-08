@@ -77,6 +77,9 @@ export const MixedChart = ({
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
       },
+      labelLayout: {
+        hideOverlap: true,
+      },
     }));
 
     return {

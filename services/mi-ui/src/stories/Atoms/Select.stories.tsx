@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-// Components
 import { Select as CSelect, ISelectProps } from 'components/Atoms';
 
 export default {

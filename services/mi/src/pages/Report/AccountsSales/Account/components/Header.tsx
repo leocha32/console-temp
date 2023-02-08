@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Header as CHeader } from '$pages/Report/commonStyled';
 import styled from '@emotion/styled';
 import {
   DatePicker,
@@ -9,10 +8,9 @@ import {
   FlexDirection,
   RadioButton,
   IRadioGroupProps,
-  Button,
 } from 'mi-ui/src';
 import dayjs from 'dayjs';
-import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
+import { DownloadButton, IDownloadButtonProp, SearchButton } from '$components/Button';
 
 const CHeader = styled.div`
   display: grid;
@@ -84,12 +82,10 @@ export const Header = <T extends object>({
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
-        <Button
-          sx={{ height: 'fit-content' }}
-          showLoading={isFetching}
-          label={'조회'}
+        <SearchButton
+          isLoading={isFetching}
           onClick={onClickSearch}
-          variant="contained"
+          sx={{ height: 'fit-content' }}
         />
       </SelectWrap>
       <DownloadButton

@@ -16,3 +16,8 @@ export const enum ReportIndex {
   reportMarketShare = 'report_market_share',
   reportSalesVolume = 'report_sales_volume',
 }
+
+export const enum SearchType {
+  month = '월별',
+  daily = '일별',
+}

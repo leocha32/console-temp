@@ -33,12 +33,13 @@ const RenderRowCell = ({
   rowData: TRowProps;
   columns: TColumnProps[];
 }) => {
-  const { name, data, label, options: rowOptions }: TRowProps = rowData;
+  const { name, data, options: rowOptions }: TRowProps = rowData;
   return data.map((data, i) => {
     const colOptions = columns.find(({ name }) => name === data.colName)?.options;
     const sumOptions = {
       ...rowOptions,
       ...(name === 'label' ? {} : colOptions),
+      ...data.options,
     };
 
     return (
@@ -56,8 +57,11 @@ export const TableRow = ({ columns, rowData }: ITableRowProps) => {
   const { name: rowName, data, label, options: rowOptions }: TRowProps = rowData;
   const rowSpan = rowOptions?.rowSpan || 0;
   const colOptions = {
-    sx: rowOptions?.sx,
     ...columns.find(({ name }) => 'rowHeader' === name)?.options,
+    sx: {
+      ...rowOptions?.sx,
+      ...columns.find(({ name }) => 'rowHeader' === name)?.options?.sx,
+    },
   };
 
   /**
@@ -78,18 +82,25 @@ export const TableRow = ({ columns, rowData }: ITableRowProps) => {
                 ></Cell>
               ) : null}
               <MuiTableRow key={i}>
-                {row.map(({ colName, value }, j) => {
+                {row.map(({ colName, value, options }, j) => {
                   const colOptions = columns.find(
                     ({ name }) => name === colName,
                   )?.options;
+
                   const sumOptions = {
                     ...rowOptions,
+                    ...options,
                     ...(rowName === 'label' ? {} : colOptions),
+                    sx: {
+                      ...rowOptions?.sx,
+                      ...colOptions?.sx,
+                    },
                   };
 
                   return (
                     <Cell
-                      rowSpan={1}
+                      rowSpan={options?.rowSpan ? options?.rowSpan : 1}
+                      colSpan={options?.colSpan ? options?.colSpan : 1}
                       options={sumOptions}
                       key={j}
                       name={colName}
@@ -105,7 +116,7 @@ export const TableRow = ({ columns, rowData }: ITableRowProps) => {
         <MuiTableRow sx={{ height: '40px' }}>
           {label && (
             <Cell
-              options={{ ...colOptions }}
+              options={{ ...rowOptions, ...colOptions }}
               rowSpan={rowSpan}
               colSpan={rowOptions?.colSpan || 1}
               name={'rowHeader'}

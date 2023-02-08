@@ -1,25 +1,35 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import * as Sentry from '@sentry/react';
+import { getToken, getUserEmail } from '$utils/utils';
+
 export const baseURL = window.location.origin;
 const MAX_TIMEOUT = 60000;
-
 const initialConfig: AxiosRequestConfig = Object.freeze({
   headers: {
     Accept: 'application/json',
-    email: 'leo.cha@netmarble.com',
   },
-  baseURL: process.env.REACT_APP_API || baseURL,
+  baseURL,
   timeout: MAX_TIMEOUT,
 });
 
 const createApiInstance = () => {
-  const instance = axios.create({
+  return axios.create({
     ...initialConfig,
   });
-  return instance;
 };
 
 export const api = createApiInstance();
+
+api.interceptors.request.use(async (config: AxiosRequestConfig) => {
+  const token = await getToken(true);
+  const email = getUserEmail();
+
+  if (config.headers) {
+    config.headers.Authorization = token;
+    config.headers.email = email;
+  }
+  return config;
+});
 
 api.interceptors.response.use(
   (result) => result,
@@ -29,11 +39,11 @@ api.interceptors.response.use(
     Sentry.captureException(error);
     if (error === undefined) throw error;
     if (error) {
-      const e = { ...error.response?.data, status: error.response?.status };
-      throw e;
+      throw { ...error.response?.data, status: error.response?.status };
     }
 
     throw error;
   },
 );
+
 export default api;

@@ -1,17 +1,17 @@
 import api from '$utils/api';
 import {
   IAccountStatusParams,
-  IAccountStatusResponseDto,
+  TAccountStatusResponseDto,
   IAccountStatusRequestParams,
   IAccountCombinationParams,
-  IAccountCombinationResponseDto,
+  TAccountCombinationResponseDto,
   IIAccountOwnershipParams,
 } from './types';
 import { getFileNameAndDownloadFile } from '$utils/utils';
 
 export async function getAccountStatus(
   params: IAccountStatusRequestParams,
-): Promise<IAccountStatusResponseDto> {
+): Promise<TAccountStatusResponseDto> {
   const { data } = await api({
     url: `/v2/api/console/report/account/status`,
     method: 'get',
@@ -31,7 +31,7 @@ export async function accountStatusDownloadExcel(params: IAccountStatusParams) {
 
 export async function getAccountStatusHoldingCombine(
   params: IIAccountOwnershipParams,
-): Promise<IAccountCombinationResponseDto> {
+): Promise<TAccountCombinationResponseDto> {
   const { data } = await api({
     url: `v2/api/console/report/account/combination`,
     method: 'get',

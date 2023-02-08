@@ -1,5 +1,3 @@
-@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
-
 html,
 body,
 #root {
@@ -13,10 +11,20 @@ body,
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Noto Sans KR', sans-serif;
+  font-family: 'Noto Sans KR',sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "Noto Sans KR";
+  src: url("../src/assets/font/NotoSansKR-Medium.otf") format('truetype');
+  src: url("../src/assets/font/NotoSansKR-Medium.woff") format('woff');
+  src: url("../src/assets/font/NotoSansKR-Medium.woff2") format('woff2');
+
+  font-weight: 100;
+  font-style: normal;
+
 }
 
 code {

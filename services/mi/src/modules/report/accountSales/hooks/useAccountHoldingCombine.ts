@@ -6,14 +6,14 @@ import { ACCOUNT_HOLING_COMBINE_KEY } from '$modules/report/accountSales/key';
 import { ACCOUNT_SALES_KEY } from '$modules/report/key';
 import {
   IIAccountOwnershipParams,
-  IAccountCombinationResponseDto,
+  TAccountCombinationResponseDto,
 } from '$modules/report/accountSales/types';
 
 export const useAccountHoldingCombine = (
   params: IIAccountOwnershipParams,
-  options?: UseQueryOptions<IAccountCombinationResponseDto, AxiosError<IApiError>>,
+  options?: UseQueryOptions<TAccountCombinationResponseDto, AxiosError<IApiError>>,
 ) => {
-  return useQuery<IAccountCombinationResponseDto, AxiosError<IApiError>>(
+  return useQuery<TAccountCombinationResponseDto, AxiosError<IApiError>>(
     [ACCOUNT_SALES_KEY, ACCOUNT_HOLING_COMBINE_KEY],
     () => getAccountStatusHoldingCombine(params),
     {

@@ -3,10 +3,14 @@ import { useRecoilValue } from 'recoil';
 import { IRadioGroupProps, PageLayout, Spinner } from 'mi-ui/src';
 import { getCrumbs } from '$utils/utils';
 import { Header } from './components/Header';
-import { AccountChart, RentTable } from './components';
+import { RentTable, AccountTable } from './components';
 import dayjs from 'dayjs';
 import { HeaderCard, Section } from '$pages/Report/commonStyled';
-import { familySector, productAndFunctionalGroupSelector } from '$recoils/categories';
+import {
+  familySector,
+  functionalGroupSelector,
+  productSelector,
+} from '$recoils/categories';
 import {
   useAccountStatus,
   useAccountStatusDownloadExcel,
@@ -16,7 +20,7 @@ import { accountAccountStatus } from '$recoils/filter';
 import { useRecoilState } from 'recoil';
 import SelectedItem from '$components/SelectedItem';
 
-const TITLE = '계정 및 판매 계정';
+const TITLE = '계정';
 const CUSTOMER_OPTIONS = ['전체', '개인', '개인사업자', '법인사업자', '기타'];
 const PURCHASE_METHOD = ['전체', '렌탈', '일시불'];
 
@@ -41,10 +45,24 @@ const Account = () => {
   const month = dayjs(selectedDate).get('M') + 1;
   const downloadExcel = useAccountStatusDownloadExcel();
   const familyOptions = useRecoilValue(familySector({ category: '제품' }));
-  const { functionalGroup: functionalOptions, product: productOptions } = useRecoilValue(
-    productAndFunctionalGroupSelector({
+  const functionalOptions = useRecoilValue(
+    functionalGroupSelector({
       category: '제품',
       family: selectedOption.productGroup || setAllOption(familyOptions),
+    }),
+  );
+  const isFunctionalAllCheck = useMemo(
+    () =>
+      !selectedOption.functionalGroup ||
+      selectedOption.functionalGroup?.length === functionalOptions.length,
+    [selectedOption, functionalOptions],
+  );
+
+  const productOptions = useRecoilValue(
+    productSelector({
+      category: '제품',
+      family: selectedOption.productGroup || setAllOption(familyOptions),
+      functionalGroup: isFunctionalAllCheck ? null : selectedOption.functionalGroup,
     }),
   );
 
@@ -55,20 +73,13 @@ const Account = () => {
     [selectedOption, familyOptions],
   );
 
-  const isFunctionalAllCheck = useMemo(
-    () =>
-      !selectedOption.functionalGroup ||
-      selectedOption.functionalGroup?.length === functionalOptions.length,
-    [selectedOption, functionalOptions],
-  );
-
   const isProductAllCheck = useMemo(
     () =>
       !selectedOption.product || selectedOption.product?.length === productOptions.length,
     [selectedOption, productOptions],
   );
 
-  const { data, refetch, isFetching, isError } = useAccountStatus({
+  const { data, refetch, isFetching } = useAccountStatus({
     'contract-type': selectedContractType,
     'customer-type': selectedCustomerType,
     'product-groups': isFamilyAllCheck ? null : selectedOption.productGroup?.join(','),
@@ -217,10 +228,14 @@ const Account = () => {
       </HeaderCard>
       <Section>
         {isFetching ? <Spinner /> : null}
-        <AccountChart
-          data={!isError ? data?.accountStatus.monthlyAccountStatusRows || [] : []}
-        ></AccountChart>
-        <RentTable data={!isError ? data?.rentalIndicator : undefined}></RentTable>
+        <AccountTable
+          searchInfo={{
+            selectList: [isFamilyAllCheck, isFunctionalAllCheck, isProductAllCheck],
+            date: selectedDate,
+          }}
+          data={data?.accountStatus.monthlyAccountStatusRows}
+        ></AccountTable>
+        <RentTable data={data?.rentalIndicator}></RentTable>
       </Section>
     </PageLayout>
   );

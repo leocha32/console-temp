@@ -5,10 +5,12 @@ import {
   TableContainer as MuiTableContainer,
   TableContainerProps as MuiTableContainerProps,
 } from '@mui/material';
-import { TableRow, TRowProps, TColumnProps } from './TableRow';
+import { TableRow, TRowProps, TColumnProps, TRowData } from './TableRow';
 import { TableHeader, IColumn } from './TableHeader';
 import { TableSummaryRow, TSummaryRow } from './TableSummaryRow';
 import { EmptyContent } from '../Templates/EmptyContent';
+import { useState } from 'react';
+import styled from '@emotion/styled';
 export interface ITableContainerProps extends MuiTableContainerProps {
   headers?: IColumn[];
   rows: TRowProps[];
@@ -17,6 +19,7 @@ export interface ITableContainerProps extends MuiTableContainerProps {
   summary?: TSummaryRow;
   emptyHeight?: string;
 }
+const TableBody = styled(MuiTableBody)``;
 
 export const Table = ({
   columns,
@@ -42,7 +45,7 @@ export const Table = ({
     >
       <MuiTable>
         {showHeader ? <TableHeader headers={headers}></TableHeader> : null}
-        <MuiTableBody>
+        <TableBody>
           {rows.map((row, i) => (
             <TableRow key={i} columns={columns} rowData={row}></TableRow>
           ))}
@@ -53,7 +56,7 @@ export const Table = ({
               columns={columns}
             ></TableSummaryRow>
           ) : null}
-        </MuiTableBody>
+        </TableBody>
       </MuiTable>
     </MuiTableContainer>
   );

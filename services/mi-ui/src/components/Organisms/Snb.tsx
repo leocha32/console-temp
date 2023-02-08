@@ -1,28 +1,29 @@
-import React, { ReactElement, useCallback, useMemo, ReactNode } from 'react';
+import React, { ReactElement, ReactNode, useCallback, useMemo } from 'react';
 import styled from '@emotion/styled';
 import { css, Theme } from '@emotion/react';
 import CloseIcon from '@mui/icons-material/Close';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Drawer as MuiDrawer,
   IconButton,
   List as MuiList,
   ListItem as MuiListItem,
   ListItemButton as MuiListItemButton,
-  ListItemText,
   ListItemIcon as MuiListItemIcon,
+  ListItemText,
 } from '@mui/material';
-import { TMenu } from '../../types';
+import { AccessType, IMenus } from '../../types';
 import { Dropdown, Tooltip } from '../Atoms';
+
 export interface IMenuStatus {
   expands: string[];
   open: boolean;
 }
 export interface ISnbProps {
-  menu: TMenu[];
+  menu: IMenus[]; //hidden, index 제거된 상태
   width?: number;
   minWidth?: number;
   menuStatusHook: [IMenuStatus, (menu: IMenuStatus) => void];
@@ -133,7 +134,7 @@ const ListItemButton = styled(MuiListItemButton)({
   width: '100%',
 });
 interface IMenuListProps {
-  menus: TMenu[];
+  menus: IMenus[];
   depth?: number;
   expands: string[];
   onClick: (props: IMenuClickProps) => void;
@@ -141,6 +142,7 @@ interface IMenuListProps {
   parentPath?: string;
   open: boolean;
   parentLabels?: string[];
+  parentAccess?: AccessType;
 }
 interface IMenuClickProps {
   hasChildren: boolean;
@@ -170,12 +172,26 @@ const ListItemIcon = ({
   </MuiListItemIcon>
 );
 
-const makeOptions = (children, parentPath) => {
-  return children?.map(({ children, path, label }) => {
+const makeOptions = (children, parentPath, propsParentAccess) => {
+  return children?.map(({ children, path, label, access }) => {
+    const parentAccess =
+      propsParentAccess === AccessType.ALL ? propsParentAccess : access;
+
+    const filteredChildren = children?.filter((child) => !child.index && !child.hidden);
+    const subMenu =
+      parentAccess === AccessType.ALL
+        ? filteredChildren
+        : filteredChildren?.filter(
+            (child) =>
+              child?.access === AccessType.ALL || child?.access === AccessType.SHOW,
+          );
+
     return {
       label,
       key: `${parentPath}/${path}`,
-      children: makeOptions(children, `${parentPath}/${path}`),
+      children: subMenu?.length
+        ? makeOptions(subMenu, `${parentPath}/${path}`, parentAccess)
+        : null,
     };
   });
 };
@@ -189,12 +205,24 @@ const makeList = ({
   parentPath = '',
   open,
   parentLabels = [],
+  parentAccess: propsParentAccess,
 }: IMenuListProps) => {
   depth++;
   return (
     <List disablePadding>
-      {menus.map(({ label = '', children = [], path: originPath = '', icon }) => {
-        const subMenu = children?.filter((child) => !child.index && !child.hidden);
+      {menus.map(({ label = '', children = [], path: originPath = '', icon, access }) => {
+        const parentAccess =
+          propsParentAccess === AccessType.ALL ? propsParentAccess : access;
+        const filteredChildren = children?.filter(
+          (child) => !child.index && !child.hidden,
+        );
+        const subMenu =
+          parentAccess === AccessType.ALL
+            ? filteredChildren
+            : filteredChildren?.filter(
+                (child) =>
+                  child?.access === AccessType.ALL || child?.access === AccessType.SHOW,
+              );
         const hasChildren = !!subMenu.length;
         const path = `${parentPath}/${originPath}`;
         const active =
@@ -226,7 +254,7 @@ const makeList = ({
                     <ListItemIcon depth={depth} icon={icon} />
                   </ListItemButton>
                 )}
-                options={makeOptions(children, path)}
+                options={makeOptions(subMenu, path, parentAccess)}
                 onClickOption={(key) => {
                   onClick({
                     hasChildren: false,
@@ -275,6 +303,7 @@ const makeList = ({
                   pathname,
                   parentPath: path,
                   parentLabels: [...parentLabels, label],
+                  parentAccess,
                 })
               : null}
           </ListItem>
@@ -297,12 +326,11 @@ export const Snb = ({
   const navigate = useNavigate();
   const menus = useMemo(
     () =>
-      menu
-        ?.find((route) => (route.path = '/'))
-        ?.children?.filter((child) => !child?.index) || [],
+      menu?.filter(
+        ({ access }) => access === AccessType.ALL || access === AccessType.SHOW,
+      ) || [],
     [menu],
   );
-
   const handleDrawerToggle = useCallback(() => {
     onSetMenuStatus({
       expands,
@@ -326,7 +354,7 @@ export const Snb = ({
           expands: newExpand,
         });
       } else {
-        if (onClickMenu instanceof Function) {
+        if (onClickMenu) {
           onClickMenu({ currentInfo, parentLabels });
         }
         navigate(path);

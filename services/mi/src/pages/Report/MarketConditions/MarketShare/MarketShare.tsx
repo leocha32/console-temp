@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { PageLayout, Spinner } from 'mi-ui';
 import { useMarketShare } from '$modules/report/research';
@@ -37,12 +37,16 @@ const TITLE = '시장 점유율';
 
 const MarketShare = () => {
   const [filter, setFilter] = useRecoilState(researchMarketShare);
+  const [refState, setRefState] = useState<HTMLDivElement | null>(null);
   const selectOption = useRecoilValue(
     selectableItemsSelector(ReportIndex.reportMarketShare),
   );
   const { yyyyh } = filter;
   const selectedItem = yyyyh || selectOption[0]?.value || '';
   const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setRefState(contentRef.current);
+  }, []);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
   const [year, half] = selectedItem.split('_');
   const { data, isFetching } = useMarketShare(
@@ -77,7 +81,7 @@ const MarketShare = () => {
         selectYear={selectedItem}
         selectOptions={selectOption}
         onChangeSelect={handleSelectChange}
-        element={contentRef.current as HTMLElement}
+        element={refState as HTMLElement}
         title={TITLE}
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />

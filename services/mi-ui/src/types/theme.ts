@@ -20,6 +20,15 @@ export interface ITheme {
     gray: {
       [key: string]: string;
     };
+    yellow: {
+      [key: string]: string;
+    };
+    green: {
+      [key: string]: string;
+    };
+  };
+  variant: {
+    [key: string]: string;
   };
 }
 

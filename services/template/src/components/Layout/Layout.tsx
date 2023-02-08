@@ -35,6 +35,7 @@ const Layout = () => {
       menuStatusHook={useRecoilState(menu)}
       onClickLogo={handleClickLogo}
       menu={routes}
+      headerProps={{}}
       header={Header}
     />
   );

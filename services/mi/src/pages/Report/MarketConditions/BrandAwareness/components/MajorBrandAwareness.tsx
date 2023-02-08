@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import _ from 'lodash';
-import { IMajorBrandAwareness } from '$modules/report/research';
+import { TMajorBrandAwareness } from '$modules/report/research';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 import { BarChart, ChartOrient, ChartTop } from 'mi-ui';
 import {
@@ -12,12 +12,12 @@ import {
   ContentWrap,
 } from '$pages/Report/commonStyled';
 export interface IMajorBrandAwarenessProps {
-  data: IMajorBrandAwareness[];
+  data: TMajorBrandAwareness[];
 }
 
 const BACKGROUND_COLOR = ['#5082ff', '#43d2d0', '#276781'];
 
-const makeChartData = (data: IMajorBrandAwareness[]) => {
+const makeChartData = (data: TMajorBrandAwareness[]) => {
   const items = {};
   const names = [
     { label: '보조', key: 'aidedAwareness' },
@@ -59,6 +59,7 @@ const gridOption = {
   left: '30',
   top: '40',
   bottom: '18%',
+  right: '0',
 };
 const yAxisOption = {
   max: 100,

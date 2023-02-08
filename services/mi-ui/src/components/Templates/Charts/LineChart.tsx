@@ -16,15 +16,12 @@ import {
   ChartType,
   ChartLeft,
 } from '../../../constants/enum';
+import { EmptyContent } from '../EmptyContent';
 
 use([ELineChart]);
 
-interface IDataProps {
-  data: number[];
-  name?: string;
-}
 export interface ILineChartProps extends Omit<IBaseEChartsProps, 'option'> {
-  data: IDataProps[];
+  data: LineSeriesOption[];
   xAixData: string[];
   useTooltip?: boolean;
   useLabel?: boolean;
@@ -33,7 +30,6 @@ export interface ILineChartProps extends Omit<IBaseEChartsProps, 'option'> {
   tooltip?: TooltipOption;
   title?: TitleOption;
   legend?: LegendOption;
-  label?: LineSeriesOption['label'];
   grid?: GridOption;
 }
 
@@ -47,7 +43,6 @@ export const LineChart = ({
   useLegend = true,
   useLabel = true,
   legend,
-  label,
   grid,
   ...props
 }: ILineChartProps) => {
@@ -59,10 +54,11 @@ export const LineChart = ({
       label: {
         position: ChartPosition.TOP,
         show: useLabel,
-        ...label,
+        ...d?.label,
       },
       emphasis: {
         focus: useFocus ? ('series' as const) : ('none' as const),
+        ...d?.emphasis,
       },
     }));
     return {
@@ -89,7 +85,6 @@ export const LineChart = ({
     };
   }, [
     data,
-    label,
     legend,
     grid,
     useFocus,
@@ -100,5 +95,5 @@ export const LineChart = ({
     useTooltip,
     xAixData,
   ]);
-  return <BaseEChart {...props} option={option} />;
+  return data.length ? <BaseEChart {...props} option={option} /> : <EmptyContent />;
 };

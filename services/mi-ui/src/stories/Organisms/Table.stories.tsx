@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Table as CTable, ITableContainerProps } from 'components/Organisms';
-
+import { Select } from 'components/Atoms/Select';
 export default {
   title: 'Organisms/Table',
   component: CTable,

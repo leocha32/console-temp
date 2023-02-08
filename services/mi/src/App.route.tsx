@@ -1,6 +1,12 @@
 import React, { lazy } from 'react';
-import { TMenu } from 'mi-ui';
-import Layout from 'components/Layout';
+import { IRoutes } from 'mi-ui';
+import { Layout } from 'components/Layout';
+import { FormType } from '$utils/hooks';
+import menus from '$constants/menus';
+
+import Logout from '$pages/Logout';
+import Unauthorized from '$pages/Unauthorized';
+
 const Home = lazy(() => import('pages/Home'));
 const Report = lazy(() => import('pages/Report'));
 // 시장 현황
@@ -30,114 +36,64 @@ const AccountExecutiveSummary = lazy(
 const Marketing = lazy(() => import('pages/Report/Marketing'));
 
 const Atl = lazy(() => import('pages/Report/Marketing/Atl'));
-const Digital = lazy(() => import('pages/Report/Marketing/Digital'));
+const KeywordAnalysis = lazy(() => import('pages/Report/Marketing/KeywordAnalysis'));
 const MarketingCostsEfficiency = lazy(
   () => import('pages/Report/Marketing/MarketingCostsEfficiency'),
 );
-import SummarizeIcon from '@mui/icons-material/Summarize';
+const Digital = lazy(() => import('pages/Report/Marketing/Digital'));
 
-export const routes: TMenu[] = [
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      { index: true, element: <Home /> },
-      {
-        path: 'report',
-        label: '리포트',
-        element: <Report />,
-        icon: <SummarizeIcon />,
-        children: [
-          {
-            path: 'market-conditions',
-            label: '시장 현황',
-            element: <MarketConditions />,
-            children: [
-              // {
-              //   path: 'summary',
-              //   label: 'Executive Summary',
-              //   element: <MarketExecutiveSummary />,
-              // },
-              {
-                path: 'share',
-                label: '시장 점유율',
-                element: <MarketShare />,
-              },
-              {
-                path: 'sales',
-                label: '시판 판매량',
-                element: <SalesVolume />,
-              },
-              {
-                path: 'awareness',
-                label: '브랜드 인지도',
-                element: <BrandAwareness />,
-              },
-            ],
-          },
-          {
-            path: 'accounts-sales',
-            label: '계정 및 판매',
-            element: <AccountsSales />,
-            children: [
-              {
-                path: 'summary',
-                label: 'Executive Summary',
-                element: <AccountExecutiveSummary />,
-              },
-              {
-                path: 'account',
-                label: '계정',
-                element: <Account />,
-              },
-              {
-                path: 'account-holding-combine',
-                label: '계정 보유 조합',
-                element: <AccountHoldingCombine />,
-              },
-              {
-                path: 'customer',
-                label: '고객',
-                element: <Customer />,
-              },
-              {
-                path: 'warrior-sales',
-                label: '전사 판매',
-                element: <WarriorSales />,
-              },
-              {
-                path: 'sales-organization',
-                label: '조직별 판매',
-                element: <SalesOrganization />,
-              },
-            ],
-          },
-          {
-            path: 'marketing',
-            label: '마케팅',
-            element: <Marketing />,
-            children: [
-              {
-                path: 'marketing-costs-efficiency',
-                label: '마케팅 비용 및 효율',
-                element: <MarketingCostsEfficiency />,
-              },
-              {
-                path: 'atl',
-                label: 'ATL',
-                element: <Atl />,
-              },
-              {
-                path: 'digital',
-                label: 'Digital',
-                element: <Digital />,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-];
+//관리
+const Management = lazy(() => import('pages/Management'));
+const Administrator = lazy(() => import('pages/Management/Administrator'));
+const User = lazy(() => import('pages/Management/Administrator/User'));
+const UserList = lazy(() => import('pages/Management/Administrator/User/List'));
+const UserForm = lazy(() => import('pages/Management/Administrator/User/Form'));
+
+const elementObj = {
+  layout: <Layout />,
+  home: <Home />,
+  report: <Report />,
+  research: <MarketConditions />,
+  marketShare: <MarketShare />,
+  salesVolume: <SalesVolume />,
+  brandAwareness: <BrandAwareness />,
+  account: <AccountsSales />,
+  accountExecutiveSummary: <AccountExecutiveSummary />,
+  status: <Account />,
+  combination: <AccountHoldingCombine />,
+  customer: <Customer />,
+  sales: <WarriorSales />,
+  salesOrganization: <SalesOrganization />,
+  marketing: <Marketing />,
+  marketingCostsEfficiency: <MarketingCostsEfficiency />,
+  atl: <Atl />,
+  digital: <Digital />,
+  keywordAnalysis: <KeywordAnalysis />,
+  management: <Management />,
+  data: <></>,
+  dataResearch: <></>,
+  brand: <></>,
+  performance: <></>,
+  administrator: <Administrator />,
+  user: <User />,
+  userList: <UserList />,
+  addUserForm: <UserForm formType={FormType.ADD} title={'사용자 추가'} />,
+  editUserForm: <UserForm formType={FormType.EDIT} title={'사용자 수정'} />,
+  logout: <Logout />,
+  unauthorized: <Unauthorized />,
+};
+
+const getMenu = (menu) => {
+  return menu?.map(({ elementKey, children, ...menu }) => {
+    const child = getMenu(children);
+    return {
+      ...menu,
+      element: elementObj[elementKey],
+      children: child,
+    };
+  });
+};
+
+const routes: IRoutes[] = getMenu(menus);
 
 export default routes;

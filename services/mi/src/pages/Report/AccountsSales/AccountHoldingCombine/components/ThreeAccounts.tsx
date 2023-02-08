@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'mi-ui';
 import { CardTitle, Card } from '$pages/Report/commonStyled';
-import { IProductCombinationRow } from '$modules/report/accountSales';
+import { TProductCombinationRow } from '$modules/report/accountSales';
 
 const Headers = [
   {
@@ -79,13 +79,13 @@ const Columns = [
         width: '10%',
         textAlign: 'right' as const,
       },
-      textFormat: (value) => `${value}%`,
+      textFormat: (value) => `${value.toFixed(1)}%`,
     },
   },
 ];
 
 export type ThreeAccountProps = {
-  data: IProductCombinationRow[] | null;
+  data: TProductCombinationRow[] | null;
 };
 const columnDataToRowData = (data) => {
   if (!data) return [];

@@ -4,3 +4,7 @@ export * from './PageLayout';
 export * from './TableHeader';
 export * from './Table';
 export * from './TableRow';
+export * from './UserInfo';
+export * from './DataGrid';
+export * from './Grid';
+export * from './TempGrid';

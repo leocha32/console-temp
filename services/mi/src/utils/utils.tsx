@@ -4,6 +4,23 @@ import html2canvas, { Options } from 'html2canvas';
 import pathName from '$constants/pathName';
 import HomeIcon from '@mui/icons-material/Home';
 import { AxiosResponse } from 'axios';
+import { auth, getIdToken } from './firebase';
+import { LOCAL_STORAGE_KEY } from '$recoils/key';
+
+export const getToken = async (bearer = false) => {
+  const prefix = bearer ? 'Bearer ' : '';
+  const user = auth.currentUser;
+  if (user) {
+    const token = await getIdToken(user);
+    return token ? `${prefix}${token}` : token;
+  } else return null;
+};
+
+export const getUserEmail = () => {
+  const user = auth.currentUser;
+  const item = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}');
+  return user?.email || item?.user?.email;
+};
 
 export const getFileNameAndDownloadFile = ({
   data,
@@ -39,15 +56,15 @@ export function saveImage(
 
 export const getCrumbs = () => {
   const location = window.location.pathname;
+  const pathArray = location.split('/').filter((path) => path !== '');
 
-  return location.split('/').map((path) => {
-    return path === ''
-      ? {
-          name: pathName['home'],
-          icon: <HomeIcon fontSize={'small'} sx={{ marginRight: '2px' }} />,
-        }
-      : { name: pathName[dashToCamelCase(path)] };
-  });
+  return [
+    {
+      name: pathName['home'],
+      icon: <HomeIcon fontSize={'small'} sx={{ marginRight: '2px' }} />,
+    },
+    ...pathArray.map((path) => ({ name: pathName[dashToCamelCase(path)] })),
+  ];
 };
 
 export const dashToCamelCase = (myStr) => {

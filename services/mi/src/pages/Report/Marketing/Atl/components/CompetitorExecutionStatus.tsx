@@ -1,15 +1,24 @@
 import React from 'react';
-
-import { Card, CardTitle, ContentWrap, Content } from '$pages/Report/commonStyled';
-import { ITableContainerProps, Table } from 'mi-ui/src';
+import styled from '@emotion/styled';
 import {
-  IATLMediaCostByCompanyStatus,
-  IMediaCostByCompany,
+  Card,
+  CardTitle,
+  ContentWrap,
+  Content,
+  ContentTitle,
+} from '$pages/Report/commonStyled';
+import InfoIcon from '@mui/icons-material/Info';
+import { IPieChartProps, ITableContainerProps, PieChart, Table } from 'mi-ui/src';
+import {
+  TATLMediaCostByCompanyStatus,
+  TMediaCostByCompany,
+  TShareByCompany,
 } from '$modules/report/marketing';
 import { css } from '@emotion/react';
 
 export interface ICompetitorExecutionStatusProps {
-  data: IATLMediaCostByCompanyStatus;
+  data: TATLMediaCostByCompanyStatus;
+  shareByCompanies: TShareByCompany[];
 }
 const TABLE_MAX_HEIGHT = 400;
 
@@ -51,6 +60,7 @@ const tableHeader = [
     key: 'company',
     sx: {
       backgroundColor: 'aliceblue',
+      minWidth: '70px',
     },
   },
   {
@@ -58,6 +68,7 @@ const tableHeader = [
     key: 'sum',
     sx: {
       backgroundColor: 'aliceblue',
+      minWidth: '70px',
     },
   },
   {
@@ -72,6 +83,7 @@ const tableHeader = [
     key: 'ctv',
     sx: {
       backgroundColor: 'aliceblue',
+      minWidth: '70px',
     },
   },
   {
@@ -84,7 +96,7 @@ const tableHeader = [
   },
 ];
 
-const makeRowData = (originData: IMediaCostByCompany[]): ITableContainerProps['rows'] => {
+const makeRowData = (originData: TMediaCostByCompany[]): ITableContainerProps['rows'] => {
   return originData
     .sort((a, b) => {
       if (a.company === '코웨이' || b.company === '코웨이') {
@@ -131,13 +143,47 @@ const makeRowData = (originData: IMediaCostByCompany[]): ITableContainerProps['r
     });
 };
 
-const CompetitorExecutionStatus = ({ data }: ICompetitorExecutionStatusProps) => {
+const InfoWrap = styled.div`
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: ${({ theme }) => theme.palettes.gray.GRAY_500};
+`;
+
+const makeChartData = (originData: TShareByCompany[]): IPieChartProps['data'] => {
+  return {
+    data:
+      originData
+        ?.sort((a, b) => {
+          if (a.company === '코웨이' || b.company === '코웨이') {
+            return 1;
+          }
+          return b.shareValue - a.shareValue;
+        })
+        .map(({ company, shareValue }) => ({
+          value: shareValue,
+          name: company,
+        })) || [],
+    label: {
+      formatter: '{c}%',
+    },
+    radius: '50%',
+    center: ['50%', '60%'],
+  };
+};
+
+const CompetitorExecutionStatus = ({
+  data,
+  shareByCompanies,
+}: ICompetitorExecutionStatusProps) => {
   const rowData = makeRowData(data?.mediaCostByCompanies || []);
+  const chartData = makeChartData(shareByCompanies);
   return (
     <Card>
       <CardTitle>경쟁사 집행 현황</CardTitle>
       <ContentWrap>
-        <Content>
+        <Content flex={2}>
           {rowData.length ? (
             <div
               css={(theme) => `
@@ -158,6 +204,22 @@ const CompetitorExecutionStatus = ({ data }: ICompetitorExecutionStatusProps) =>
             columns={columns}
             sx={{ maxHeight: `${TABLE_MAX_HEIGHT}px` }}
           ></Table>
+        </Content>
+        <Content>
+          <ContentTitle>SOS</ContentTitle>
+          <PieChart
+            data={chartData}
+            tooltip={{
+              valueFormatter: (value) => `${value}%`,
+            }}
+            legend={{
+              type: (chartData?.data || []).length > 20 ? 'scroll' : 'plain',
+            }}
+          />
+          <InfoWrap>
+            <InfoIcon sx={{ fontSize: 14 }} />
+            SOS = Share of Spending (광고비 점유율)
+          </InfoWrap>
         </Content>
       </ContentWrap>
     </Card>

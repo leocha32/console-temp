@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { ChartOrient, ChartPosition, ChartTop, IBarChartProps } from 'mi-ui/src';
 import { CardTitle, Card } from '$pages/Report/commonStyled';
-import { IMonthlyAccountStatusRow } from '$modules/report/accountSales';
+import { TMonthlyAccountStatusRow } from '$modules/report/accountSales';
 import { familySector } from '$recoils/categories';
 import { useRecoilValue } from 'recoil';
 import { BarChart } from '$components/Charts';
@@ -19,10 +19,10 @@ const gridOption = {
 };
 
 export type TAccountChartProps = {
-  data: IMonthlyAccountStatusRow[];
+  data: TMonthlyAccountStatusRow[];
 };
 
-const makeChartData = (data: IMonthlyAccountStatusRow[], orderStandard) => {
+const makeChartData = (data: any[], orderStandard) => {
   if (data.length <= 0) return { chartData: [], xAixData: [], yAxis: [] };
   const legends = new Set(data.map(({ legend }) => legend));
 
@@ -66,11 +66,18 @@ const makeChartData = (data: IMonthlyAccountStatusRow[], orderStandard) => {
         hideOverlap: true,
       },
       markPoint: {
+        label: {
+          show: true,
+          fontWeight: 'bold',
+          fontSize: '15px',
+          verticalAlign: 'top',
+          position: 'top',
+        },
         data: summary.map((sum, i) => {
           return {
             name: i + '',
             value: sum.count.toLocaleString('kr-KR'),
-            coord: [i, maxValue * 0.03 + maxValue],
+            coord: [i, maxValue],
           };
         }),
         itemStyle: {
@@ -109,11 +116,24 @@ const legendClickEvent = ({ selected }: any, chart) => {
   );
   const xAxisData = xAxis[0].data;
   const markPointData = xAxisData.map((x, i) => {
-    const value = selectedData.map(({ data }) => data[i]).reduce((a, b) => a + b, 0);
+    const value = selectedData.map(({ data }) => data[i] || 0).reduce((a, b) => a + b, 0);
     return {
       coord: [i, value],
-      value: value,
+      value: value.toLocaleString('kr-KR'),
     };
+  });
+
+  chart.setOption({
+    ...chart.getOption(),
+    series: series.map((s) => {
+      return {
+        ...s,
+        markPoint: {
+          ...s.markPoint,
+          data: markPointData,
+        },
+      };
+    }),
   });
 };
 

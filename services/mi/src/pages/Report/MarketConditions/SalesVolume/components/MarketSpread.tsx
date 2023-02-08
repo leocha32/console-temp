@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from '@emotion/styled';
-import { IMarketSpread } from 'modules/report/research';
+import { TMarketSpread } from 'modules/report/research';
 import { IBarChartProps } from 'mi-ui';
 import { BarChart } from '$components/Charts';
 import {
@@ -14,7 +14,7 @@ import {
 } from '$pages/Report/commonStyled';
 
 export interface IMarketSpreadProps {
-  data: IMarketSpread[];
+  data: TMarketSpread[];
   year: string;
 }
 
@@ -28,7 +28,7 @@ const ChartWrapInfo = styled.div`
 `;
 
 const makeChartData = (
-  data: IMarketSpread[],
+  data: TMarketSpread[],
 ): {
   volumeData: IBarChartProps['data'];
   valueData: IBarChartProps['data'];
@@ -61,7 +61,8 @@ const makeChartData = (
   };
 };
 const gridOption = {
-  left: '15%',
+  left: '13%',
+  right: 0,
   bottom: '5%',
 };
 const legendOption = {

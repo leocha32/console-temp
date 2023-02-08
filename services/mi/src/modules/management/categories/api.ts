@@ -1,7 +1,7 @@
 import api from '$utils/api';
-import { ICategorySummary } from '$modules/management/categories/type';
+import { TCategorySummary } from '$modules/management/categories/type';
 
-export async function getCategories(): Promise<ICategorySummary[]> {
+export async function getCategories(): Promise<TCategorySummary[]> {
   const { data } = await api({
     url: `/v2/api/console/management/category/summaries`,
     method: 'get',

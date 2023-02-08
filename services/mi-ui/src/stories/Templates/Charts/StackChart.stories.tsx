@@ -1,6 +1,6 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { StackChart as CStackChart, IStackBarChartProps } from 'components/Templates';
+import { StackChart as CStackChart, IStackChartProps } from 'components/Templates';
 import styled from '@emotion/styled';
 import { ChartLeft, ChartTop } from '../../../constants/enum';
 
@@ -16,7 +16,7 @@ const ChartWrap = styled.div`
   padding: 10px;
 `;
 export const StackChart: ComponentStory<typeof CStackChart> = (
-  props: IStackBarChartProps,
+  props: IStackChartProps,
 ) => {
   return (
     <ChartWrap>
@@ -26,7 +26,7 @@ export const StackChart: ComponentStory<typeof CStackChart> = (
 };
 
 export const AccumulateStackChart: ComponentStory<typeof CStackChart> = (
-  props: IStackBarChartProps,
+  props: IStackChartProps,
 ) => {
   return (
     <ChartWrap>

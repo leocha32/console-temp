@@ -2,7 +2,7 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import styled from '@emotion/styled';
 import { CardTitle, Card, Content, ContentWrap } from '$pages/Report/commonStyled';
-import { IProductPenetration } from '$modules/report/research';
+import { TProductPenetration } from '$modules/report/research';
 import { css } from '@emotion/react';
 
 const DiffInfoWrap = styled.div`
@@ -20,7 +20,7 @@ const dataValueStyle = (theme) => ({
 });
 
 export interface IProductPenetrationRateProps {
-  data: IProductPenetration[];
+  data: TProductPenetration[];
 }
 export const ProductPenetrationRate = ({ data }: IProductPenetrationRateProps) => {
   const { productPenetrationValue } = data[0] || {};

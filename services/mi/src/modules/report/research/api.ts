@@ -1,17 +1,17 @@
 import api from '$utils/api';
 import {
   ISalesVolumeParams,
-  ISalesVolume,
-  IBrandAwareness,
+  TSalesVolume,
+  TBrandAwareness,
   IBrandAwarenessParams,
   TMarketShareParams,
-  IMarketShare,
+  TMarketShare,
   IExecutiveSummaryRequestField,
-  IExecutiveSummaryResponseDto,
-  IResearchSelectableItem,
+  TResearchSummaryResponseDto,
+  TResearchSelectableItem,
 } from './types';
 
-export async function getSalesVolume(params: ISalesVolumeParams): Promise<ISalesVolume> {
+export async function getSalesVolume(params: ISalesVolumeParams): Promise<TSalesVolume> {
   const { data } = await api({
     url: `/v2/api/console/report/research/sales-volume`,
     method: 'get',
@@ -20,7 +20,7 @@ export async function getSalesVolume(params: ISalesVolumeParams): Promise<ISales
   return data.salesVolume;
 }
 
-export async function getMarketShare(params: TMarketShareParams): Promise<IMarketShare> {
+export async function getMarketShare(params: TMarketShareParams): Promise<TMarketShare> {
   const { data } = await api({
     url: `/v2/api/console/report/research/market-share`,
     method: 'get',
@@ -31,7 +31,7 @@ export async function getMarketShare(params: TMarketShareParams): Promise<IMarke
 
 export async function getExecutiveSummary(
   params: IExecutiveSummaryRequestField,
-): Promise<IExecutiveSummaryResponseDto> {
+): Promise<TResearchSummaryResponseDto> {
   const { data } = await api({
     url: `/v2/api/console/report/research/summary`,
     method: 'get',
@@ -42,7 +42,7 @@ export async function getExecutiveSummary(
 
 export async function getBrandAwareness(
   params: IBrandAwarenessParams,
-): Promise<IBrandAwareness> {
+): Promise<TBrandAwareness> {
   const { data } = await api({
     url: `/v2/api/console/report/research/brand-awareness`,
     method: 'get',
@@ -51,7 +51,7 @@ export async function getBrandAwareness(
   return data.brandAwareness;
 }
 
-export async function getSelectableItems(): Promise<IResearchSelectableItem[]> {
+export async function getSelectableItems(): Promise<TResearchSelectableItem[]> {
   const { data } = await api({
     url: `/v2/api/console/report/research/selectable-items`,
     method: 'get',

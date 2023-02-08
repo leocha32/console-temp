@@ -5,7 +5,7 @@ export const cookieStorage: PersistStorage = {
   setItem(key: string, value: string): void {
     Cookies.set(key, value);
   },
-  getItem(key: string): string | null {
+  getItem(key: string) {
     return Cookies.get(key) || null;
   },
 };

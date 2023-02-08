@@ -7,10 +7,10 @@ import {
   FlexDirection,
   RadioButton,
   IRadioGroupProps,
-  Button,
 } from 'mi-ui';
 import dayjs from 'dayjs';
-import { DownloadButton, IDownloadButtonProp } from '$components/Button/DownloadButton';
+
+import { SearchButton, DownloadButton, IDownloadButtonProp } from '$components/Button';
 
 const FilterWrap = styled.div`
   display: flex;
@@ -60,12 +60,10 @@ export const Header = <T extends object>({
           inputFormat={'YYYY.MM'}
           views={['year', 'month']}
         />
-        <Button
-          sx={{ height: 'fit-content', marginBottom: '2px' }}
-          showLoading={isFetching}
-          label={'조회'}
+        <SearchButton
+          isLoading={isFetching}
           onClick={onClickSearch}
-          variant="contained"
+          sx={{ height: 'fit-content', marginBottom: '2px' }}
         />
       </FilterWrap>
       <DownloadButton label={'상세 데이터 다운로드'} {...downloadButtonProps} />

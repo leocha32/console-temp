@@ -6,18 +6,11 @@ import {
   Content,
 } from '$pages/Report/commonStyled';
 import _ from 'lodash';
-import {
-  StackChart,
-  BarChart,
-  IBarChartProps,
-  IStackBarChartProps,
-  PieChart,
-  IPieChartProps,
-} from 'mi-ui';
-import { IATLMediaCostStatus } from '$modules/report/marketing';
+import { StackChart, BarChart, IBarChartProps, IStackChartProps } from 'mi-ui';
+import { TATLMediaCostStatus } from '$modules/report/marketing';
 import { useSortFamily } from '$utils/hooks/useSortFamily';
 export interface IMediaCostStatusProps {
-  data: IATLMediaCostStatus;
+  data: TATLMediaCostStatus;
   category: string;
 }
 
@@ -25,7 +18,7 @@ const gridOptions = {
   bottom: 20,
   left: 30,
   top: 55,
-  right: 30,
+  right: 0,
 };
 
 const makeBarChartXAix = (xAixData): string[] =>
@@ -40,7 +33,7 @@ const makeBarChartData = (
   xAixData,
   nameKey,
   isStack = false,
-): IBarChartProps['data'] | IStackBarChartProps['data'] => {
+): IBarChartProps['data'] | IStackChartProps['data'] => {
   const data = {};
   originData?.forEach((d) => {
     const xAixDataIdx = xAixData.indexOf(d.yearMonth);
@@ -57,18 +50,15 @@ const makeBarChartData = (
   return Object.values(data);
 };
 const makeChartData = (
-  originData: IATLMediaCostStatus,
+  originData: TATLMediaCostStatus,
 ): {
   monthlyCostByMedia: {
     xAixData: IBarChartProps['xAixData'];
     data: IBarChartProps['data'];
   };
   monthlyCostByProductGroup: {
-    xAixData: IStackBarChartProps['xAixData'];
-    data: IStackBarChartProps['data'];
-  };
-  shareByCompanies: {
-    data: IPieChartProps['data'];
+    xAixData: IStackChartProps['xAixData'];
+    data: IStackChartProps['data'];
   };
 } => {
   const monthlyCostByMediaXAixData = _.uniqBy(
@@ -96,28 +86,7 @@ const makeChartData = (
         monthlyCostByProductGroupXAixData,
         'productGroup',
         true,
-      ) as IStackBarChartProps['data'],
-    },
-    shareByCompanies: {
-      data: {
-        data:
-          originData?.shareByCompanies
-            ?.sort((a, b) => {
-              if (a.company === '코웨이' || b.company === '코웨이') {
-                return 1;
-              }
-              return b.shareValue - a.shareValue;
-            })
-            .map(({ company, shareValue }) => ({
-              value: shareValue,
-              name: company,
-            })) || [],
-        label: {
-          formatter: '{c}%',
-        },
-        radius: '50%',
-        center: ['50%', '60%'],
-      },
+      ) as IStackChartProps['data'],
     },
   };
 };
@@ -132,10 +101,9 @@ const MediaCostStatus = ({ data, category }: IMediaCostStatusProps) => {
     data: data?.monthlyCostByProductGroup || [],
     key: 'productGroup',
   });
-  const { monthlyCostByMedia, monthlyCostByProductGroup, shareByCompanies } =
-    makeChartData(
-      { ...data, monthlyCostByProductGroup: sortMonthlyCostByProductGroup } || {},
-    );
+  const { monthlyCostByMedia, monthlyCostByProductGroup } = makeChartData(
+    { ...data, monthlyCostByProductGroup: sortMonthlyCostByProductGroup } || {},
+  );
   return (
     <Card height={350}>
       <CardTitle>ATL 매체비 현황</CardTitle>
@@ -156,18 +124,6 @@ const MediaCostStatus = ({ data, category }: IMediaCostStatusProps) => {
             data={monthlyCostByProductGroup.data}
             xAixData={monthlyCostByProductGroup.xAixData}
             yAxis={yAxisOptions}
-          />
-        </Content>
-        <Content>
-          <ContentTitle>SOS</ContentTitle>
-          <PieChart
-            data={shareByCompanies.data}
-            tooltip={{
-              valueFormatter: (value) => `${value}%`,
-            }}
-            legend={{
-              type: (shareByCompanies?.data?.data || []).length > 13 ? 'scroll' : 'plain',
-            }}
           />
         </Content>
       </ContentWrap>

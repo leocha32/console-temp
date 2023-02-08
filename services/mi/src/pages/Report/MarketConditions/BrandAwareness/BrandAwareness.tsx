@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { PageLayout, Spinner } from 'mi-ui';
 import { getCrumbs } from '$utils/utils';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -32,12 +32,16 @@ const tabItems = [
 const TITLE = '브랜드 인지도 ';
 const BrandAwareness = () => {
   const [filter, setFilter] = useRecoilState(researchBrandAwareness);
+  const [refState, setRefState] = useState<HTMLDivElement | null>(null);
   const selectOption = useRecoilValue(
     selectableItemsSelector(ReportIndex.reportBrandAwareness),
   );
   const { yyyyh } = filter;
   const selectedItem = yyyyh || selectOption[0]?.value || '';
   const contentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setRefState(contentRef.current);
+  }, []);
   const [activeTab, setActiveTab] = useState(tabItems[0].value);
   const [year, half] = selectedItem.split('_');
   const { data, isFetching } = useBrandAwareness(
@@ -72,7 +76,7 @@ const BrandAwareness = () => {
         selectYear={selectedItem}
         selectOptions={selectOption}
         onChangeSelect={handleSelectChange}
-        element={contentRef.current as HTMLElement}
+        element={refState as HTMLElement}
         title={TITLE}
       />
       <Tabs items={tabItems} value={activeTab} onChange={handleTabChange} />

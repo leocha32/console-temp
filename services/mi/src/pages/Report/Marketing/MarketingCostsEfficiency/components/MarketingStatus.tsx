@@ -9,24 +9,24 @@ import {
   ChartWrap,
 } from '$pages/Report/commonStyled';
 import { DataCardWrap, DiffWrap, Cost, DiffInfo } from '../components/commonStyled';
-import { IStackBarChartProps } from 'mi-ui/src';
+import { IStackChartProps } from 'mi-ui/src';
 import { StackChart } from '$components/Charts';
 import {
-  IMarketingCostByMedia,
-  IMarketingCostByMonth,
-  IMarketingCostStatus,
+  TMarketingCostByMedia,
+  TMarketingCostByMonth,
+  TMarketingCostStatus,
 } from '$modules/report/marketing';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 
 export interface IMarketingStatusProps {
-  data: IMarketingCostStatus;
+  data: TMarketingCostStatus;
 }
 
 const makeChartData = (
-  originData: IMarketingCostByMonth[],
+  originData: TMarketingCostByMonth[],
 ): {
   xAixData: string[];
-  data: IStackBarChartProps['data'];
+  data: IStackChartProps['data'];
 } => {
   const data = {};
   const xAixData = _.uniqBy(originData, 'yearMonth').map(({ yearMonth }) => yearMonth);
@@ -37,7 +37,7 @@ const makeChartData = (
       data[media] = {
         name: media,
         stack: 'brand',
-        data: Array(xAixData.length),
+        data: Array(xAixData.length).fill('-'),
       };
     }
     data[media].data[xAixDataIdx] = cost;
@@ -61,7 +61,7 @@ const yAxisOption = {
   name: '[단위: 억원]',
 };
 
-const makeCostDescription = (data: IMarketingCostByMedia[]) => {
+const makeCostDescription = (data: TMarketingCostByMedia[]) => {
   return `( ${data.map(({ cost, media }) => `${media} ${cost}억`).join(' | ')} )`;
 };
 
@@ -127,7 +127,9 @@ const MarketingStatus = ({ data: originData }: IMarketingStatusProps) => {
         <Content flex={4}>
           <ChartWrap>
             <StackChart
+              useAccumulate
               data={data}
+              textFormat={(value) => value.toFixed(1)}
               xAixData={xAixData}
               grid={gridOption}
               yAxis={yAxisOption}

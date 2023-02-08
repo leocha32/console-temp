@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react';
 import { Table, Button } from 'mi-ui';
-import { IBrandAwarenessSummary } from '$modules/report/research';
+import { TBrandAwarenessSummary } from '$modules/report/research';
 import { ROW_OPTIONS, PRODUCT_ORDER, COLUMN } from './BrandAwarenessTableConfig';
 import { Card, CardTitle } from '$pages/Report/commonStyled';
 import { Header } from './commonStyled';
 
 type TBrandAwarenessTable = {
-  data?: IBrandAwarenessSummary;
+  data?: TBrandAwarenessSummary;
 };
 
 const cowayBrandAwarenessToRowData = (data, orderStandard) => {
@@ -60,7 +60,7 @@ const getMindTops = (topOfMindRank) => {
   };
 };
 
-const makeRowData = (data: IBrandAwarenessSummary) => {
+const makeRowData = (data: TBrandAwarenessSummary) => {
   const { cowayBrandAwareness, topOfMindRank } = data;
   if (!cowayBrandAwareness.length || !topOfMindRank.length) return [];
   const brandRowData = cowayBrandAwarenessToRowData(cowayBrandAwareness, PRODUCT_ORDER);
@@ -76,7 +76,7 @@ const makeRowData = (data: IBrandAwarenessSummary) => {
 };
 
 const BrandAwarenessTable = ({ data }: TBrandAwarenessTable) => {
-  const rowData = makeRowData(data || ({} as IBrandAwarenessSummary));
+  const rowData = makeRowData(data || ({} as TBrandAwarenessSummary));
   const downloadReport = useCallback(() => {
     window.open(data?.researchReportFileUrl?.fileUrl, '_blank');
   }, [data?.researchReportFileUrl]);

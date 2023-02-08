@@ -6,14 +6,14 @@ import { ACCOUNT_STATUS } from '$modules/report/accountSales/key';
 import { ACCOUNT_SALES_KEY } from '$modules/report/key';
 import {
   IAccountStatusRequestParams,
-  IAccountStatusResponseDto,
+  TAccountStatusResponseDto,
 } from '$modules/report/accountSales/types';
 
 export const useAccountStatus = (
   params: IAccountStatusRequestParams,
-  options?: UseQueryOptions<IAccountStatusResponseDto, AxiosError<IApiError>>,
+  options?: UseQueryOptions<TAccountStatusResponseDto, AxiosError<IApiError>>,
 ) => {
-  return useQuery<IAccountStatusResponseDto, AxiosError<IApiError>>(
+  return useQuery<TAccountStatusResponseDto, AxiosError<IApiError>>(
     [ACCOUNT_SALES_KEY, ACCOUNT_STATUS],
     () => getAccountStatus(params),
     {

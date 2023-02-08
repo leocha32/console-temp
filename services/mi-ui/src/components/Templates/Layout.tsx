@@ -1,15 +1,17 @@
 import React, { ReactElement, Suspense } from 'react';
-import { Header, ISnbProps, Snb } from '../Organisms';
+import { Header, IHeaderProps } from '../Organisms/Header';
+import { Snb, ISnbProps } from '../Organisms/Snb';
 import styled from '@emotion/styled';
 import { Outlet } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
-import { ErrorPage } from '.';
+import { ErrorPage } from './ErrorPage';
 import * as Sentry from '@sentry/react';
 export interface ILayoutProps {
   menuStatusHook: ISnbProps['menuStatusHook'];
   onClickLogo?: () => void;
   onClickMenu?: ISnbProps['onClickMenu'];
   menu: ISnbProps['menu'];
+  headerProps: IHeaderProps;
   header?: ReactElement;
 }
 
@@ -37,13 +39,13 @@ const Wrap = styled.div`
 export const Layout = ({
   menu,
   menuStatusHook,
-  onClickLogo,
-  header,
   onClickMenu,
+  header,
+  headerProps,
 }: ILayoutProps) => {
   return (
     <>
-      <Header onClick={onClickLogo}>{header}</Header>
+      <Header {...headerProps}>{header}</Header>
       <ErrorBoundary
         onError={(error) => {
           Sentry.captureException(error);

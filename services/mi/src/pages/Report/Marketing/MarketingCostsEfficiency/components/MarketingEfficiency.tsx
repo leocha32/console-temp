@@ -12,12 +12,12 @@ import { IMixedChartProps } from 'mi-ui';
 import { MixedChart } from '$components/Charts';
 import { DataCardWrap, Cost, DiffWrap, DiffInfo } from '../components/commonStyled';
 import {
-  IMarketingEfficiencyByMonth,
-  IMarketingEfficiencyStatus,
+  TMarketingEfficiencyByMonth,
+  TMarketingEfficiencyStatus,
 } from '$modules/report/marketing';
 import { EmptyContent } from 'mi-ui/src/components/Templates/EmptyContent';
 export interface IMarketingEfficiencyProps {
-  data: IMarketingEfficiencyStatus;
+  data: TMarketingEfficiencyStatus;
 }
 const gridOption = {
   left: 50,
@@ -25,8 +25,10 @@ const gridOption = {
   bottom: 20,
 };
 
+const SPLIT_NUMBER = 4;
+
 const makeChartData = (
-  originData: IMarketingEfficiencyByMonth[],
+  originData: TMarketingEfficiencyByMonth[],
 ): {
   xAixData: string[];
   data: IMixedChartProps['data'];
@@ -43,7 +45,7 @@ const makeChartData = (
       data['percentOfSales'] = Array(xAixData.length);
     }
     data['cpp'][xAixDataIdx] = cpp;
-    data['percentOfSales'][xAixDataIdx] = percentOfSales;
+    data['percentOfSales'][xAixDataIdx] = percentOfSales?.toFixed(1);
   });
   const result = chartData.map(({ name, type, key }) => ({
     name,
@@ -84,6 +86,7 @@ const chartData = [
       align: 'center' as const,
     },
     yAisName: '[단위: %]',
+    max: (data) => Math.round(Math.max(...data.map((d) => (d ? Number(d) : 0))) * 2),
   },
 ];
 
@@ -151,14 +154,14 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
                   title={'전체'}
                   value={`${Number(
                     originData?.marketingEfficiency.percentOfSales,
-                  ).toLocaleString()}%`}
+                  ).toLocaleString()}%p`}
                 />
                 {originData?.marketingEfficiencyByProductGroups.length ? (
                   <Cost
                     title={'선택한 제품군'}
                     value={`${Number(
                       originData?.marketingEfficiencyByProductGroups[0]?.percentOfSales,
-                    ).toLocaleString()} %`}
+                    ).toLocaleString()} %p`}
                   />
                 ) : null}
                 {originData?.marketingEfficiencyByProducts.length ? (
@@ -166,7 +169,7 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
                     title={'선택한 제품'}
                     value={`${Number(
                       originData?.marketingEfficiencyByProducts[0]?.percentOfSales,
-                    ).toLocaleString()} %`}
+                    ).toLocaleString()} %p`}
                   />
                 ) : null}
               </div>
@@ -186,12 +189,18 @@ const MarketingEfficiency = ({ data: originData }: IMarketingEfficiencyProps) =>
           <ChartWrap>
             <MixedChart
               grid={gridOption}
-              yAxis={chartData.map(({ axisLabel, yAisName, nameTextStyle }) => ({
-                type: 'value',
-                name: yAisName,
-                axisLabel,
-                nameTextStyle,
-              }))}
+              yAxis={chartData.map(
+                ({ name, axisLabel, yAisName, nameTextStyle, max }) => ({
+                  type: 'value',
+                  name: yAisName,
+                  axisLabel,
+                  nameTextStyle,
+                  max: max
+                    ? max(data.find((d) => d.name === name)?.data ?? [])
+                    : undefined,
+                  splitNumber: SPLIT_NUMBER,
+                }),
+              )}
               legend={{
                 data: chartData.map(({ name }) => name),
               }}

@@ -64,7 +64,7 @@ export const CardTitle = styled.h3`
 `;
 
 export const ContentTitle = styled.h4`
-  margin: 15px 0 5px;
+  margin: 15px 0 10px;
 `;
 
 export const Content = styled.div`
@@ -89,6 +89,9 @@ export const ContentWrap = styled.div`
         theme?: Theme;
       }) =>
         direction === 'row' ? `1px solid ${theme?.palettes.gray.GRAY_300}` : 'none'};
+      padding: ${({ direction = 'row' }: { direction?: string }) =>
+        direction === 'row' ? `0 20px 0 0` : '0 0 20px 0 '};
+
       border-bottom: ${({
         direction = 'row',
         theme,
@@ -107,4 +110,38 @@ export const HeaderCard = styled(MiCard)`
   margin-top: 15px;
   padding: 15px 20px;
   overflow: unset;
+`;
+
+export const DataWrap = styled.div`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const DataValue = styled.div`
+  color: ${({ theme }) => theme.color.primary.PRIMARY_900};
+  font-weight: 600;
+  font-size: 40px;
+  font-size: ${({ length = 0 }: { length?: number }) =>
+    length > 10 ? '1.9rem' : '40px'};
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const DiffInfoWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.palettes.gray.GRAY_500};
+`;
+
+export const CardHeader = styled.div`
+  display: flex;
+  justify-content: end;
+  border-bottom: ${({ theme }) => `1px solid ${theme.palettes.gray.GRAY_300}`};
 `;

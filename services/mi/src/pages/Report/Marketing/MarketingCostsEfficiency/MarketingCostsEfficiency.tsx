@@ -8,14 +8,14 @@ import {
   IMarketingCostsEfficiencyParams,
   useCostEfficiencyDownloadExcel,
   useMarketingCostsEfficiency,
-  IMarketingCostStatus,
-  IMarketingEfficiencyStatus,
+  TMarketingCostStatus,
+  TMarketingEfficiencyStatus,
 } from '$modules/report/marketing';
 
 import MarketingEfficiency from './components/MarketingEfficiency';
 import MarketingStatus from './components/MarketingStatus';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { familySector, productAndFunctionalGroupSelector } from '$recoils/categories';
+import { familySector, productSelector } from '$recoils/categories';
 import { marketingCostEfficiency } from '$recoils/filter';
 import SelectedItem from '$components/SelectedItem';
 
@@ -38,8 +38,8 @@ const MarketingCostsEfficiency = () => {
   const familyOptions = useRecoilValue(familySector({ category: '제품' }));
   const downloadExcel = useCostEfficiencyDownloadExcel();
 
-  const { product: productOptions } = useRecoilValue(
-    productAndFunctionalGroupSelector({
+  const productOptions = useRecoilValue(
+    productSelector({
       category: '제품',
       family: selectedOption.productGroup || setAllOption(familyOptions),
     }),
@@ -147,9 +147,9 @@ const MarketingCostsEfficiency = () => {
       </HeaderCard>
       <Section>
         {isFetching ? <Spinner /> : null}
-        <MarketingStatus data={data?.marketingCostStatus as IMarketingCostStatus} />
+        <MarketingStatus data={data?.marketingCostStatus as TMarketingCostStatus} />
         <MarketingEfficiency
-          data={data?.marketingEfficiencyStatus as IMarketingEfficiencyStatus}
+          data={data?.marketingEfficiencyStatus as TMarketingEfficiencyStatus}
         />
       </Section>
     </PageLayout>

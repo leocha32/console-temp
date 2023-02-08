@@ -4,13 +4,13 @@ import { IApiError } from '$types/api-error';
 import { getMarketShare } from '$modules/report/research/api';
 import { MARKET_SHARE_KEY } from '$modules/report/research/key';
 import { RESEARCH_KEY } from '$modules/report/key';
-import { TMarketShareParams, IMarketShare } from '$modules/report/research/types';
+import { TMarketShareParams, TMarketShare } from '$modules/report/research/types';
 
 export const useMarketShare = (
   params: TMarketShareParams,
-  options?: UseQueryOptions<IMarketShare, AxiosError<IApiError>>,
+  options?: UseQueryOptions<TMarketShare, AxiosError<IApiError>>,
 ) => {
-  return useQuery<IMarketShare, AxiosError<IApiError>>(
+  return useQuery<TMarketShare, AxiosError<IApiError>>(
     [RESEARCH_KEY, MARKET_SHARE_KEY, params],
     () => getMarketShare(params),
     options,

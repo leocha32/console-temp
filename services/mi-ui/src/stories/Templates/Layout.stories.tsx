@@ -20,6 +20,9 @@ export const Layout: ComponentStory<typeof CLayout> = (props: ILayoutProps) => {
 };
 
 Layout.args = {
-  menu,
+  menu:
+    menu
+      ?.find((route) => (route.path = '/'))
+      ?.children?.filter((child) => !child?.index && !child.hidden) || [],
   header: <h2>Storybook</h2>,
 };

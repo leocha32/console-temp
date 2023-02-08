@@ -1,19 +1,19 @@
 import React from 'react';
 import { uniqBy } from 'lodash';
-import { IMajorBrandMarketShare } from '$modules/report/research';
-import { IStackBarChartProps, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
+import { TMajorBrandMarketShare } from '$modules/report/research';
+import { IStackChartProps, ChartOrient, ChartLeft, ChartTop } from 'mi-ui';
 import { CardTitle, Card, ContentWrap, Content } from '$pages/Report/commonStyled';
 import { StackChart } from '$components/Charts';
 export interface IMajorBrandShareProps {
-  data: IMajorBrandMarketShare[];
+  data: TMajorBrandMarketShare[];
 }
 
 const makeChartData = (
-  data: IMajorBrandMarketShare[],
+  data: TMajorBrandMarketShare[],
 ): {
   xAixData: string[];
-  volumeData: IStackBarChartProps['data'];
-  valueData: IStackBarChartProps['data'];
+  volumeData: IStackChartProps['data'];
+  valueData: IStackChartProps['data'];
 } => {
   const volumeData = {};
   const valueData = {};
@@ -58,11 +58,13 @@ const legendOption = {
   padding: 10,
 };
 const gridOption = {
-  left: '15%',
+  left: '10%',
   top: '10%',
+  right: '10',
 };
 const yAxisOption = {
   max: 100,
+  name: '[단위: %]',
 };
 
 export const MajorBrandShare = ({ data }: IMajorBrandShareProps) => {
